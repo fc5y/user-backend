@@ -1,3 +1,7 @@
+const { getSum } = require("../utils");
+
 it("Sample test", () => {
-  expect(1).toBe(1);
+  x = 5
+  y = 5
+  expect(getSum(x, y)).toEqual(11);
 });
