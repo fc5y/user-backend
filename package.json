@@ -1,0 +1,28 @@
+{
+  "name": "user-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ENV=dev nodemon src/index.js",
+    "start": "ENV=prod node src/index.js",
+    "test": "jests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fc5y/user-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fc5y/user-backend/issues"
+  },
+  "homepage": "https://github.com/fc5y/user-backend#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jest": "^26.4.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
