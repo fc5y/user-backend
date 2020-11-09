@@ -12,15 +12,29 @@ module.exports = (sequelize) => {
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
-		username: {
+		email: {
 			allowNull: false,
 			type: DataTypes.STRING,
 			unique: true,
 			validate: {
-				// We require usernames to have length of at least 3, and
-				// only use letters, numbers and underscores.
-				is: /^\w{3,}$/
+				isEmail: true
 			}
 		},
+		name: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		school_name: {
+			type: DataTypes.STRING,
+			allowNull: true,
+		},
+		password: { // hashed password have length of 64
+			type: DataTypes.STRING(64),
+			unique: true,
+			allowNull: false,
+			validate: {
+				is: /^[0-9a-zA-Z]{64}$/i
+			}
+		}
 	});
 };
