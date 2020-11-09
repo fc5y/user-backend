@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
 				isEmail: true
 			}
 		},
-		name: {
+		full_name: {
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
@@ -35,6 +35,10 @@ module.exports = (sequelize) => {
 			validate: {
 				is: /^[0-9a-zA-Z]{64}$/i
 			}
-		}
+		},
+		avatar_url: {
+			type: DataTypes.STRING,
+		},
+
 	});
 };
