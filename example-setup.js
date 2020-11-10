@@ -1,18 +1,18 @@
-const sequelize = require('./sequelize');
+const db = require("./models/index.js");
 
-async function reset() {
+async function initDb() {
 	console.log('Will rewrite the SQLite example database, adding some dummy data.');
 
-	await sequelize.sync({ force: true });
-
-	await sequelize.models.user.bulkCreate([
-		{ username: 'jack-sparrow' },
-		{ username: 'white-beard' },
-		{ username: 'black-beard' },
-		{ username: 'brown-beard' },
-	]);
-
+	await db.sequelize.sync();
+	await db.sequelize.models.User.bulkCreate([
+		{
+			full_name: 'jack-sparrow',
+			email: 'testemail@gmail.com',
+			password: '1234',
+		},
+	]).catch(function (err) {
+	});
 	console.log('Done!');
 }
 
-reset();
+initDb();

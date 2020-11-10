@@ -1,26 +1,56 @@
-const { DataTypes } = require('sequelize');
-
-// We export a function that defines the model.
-// This function will automatically receive as parameter the Sequelize connection object.
-module.exports = (sequelize) => {
-	sequelize.define('user', {
-		// The following specification of the 'id' attribute could be omitted
-		// since it is the default.
-		id: {
-			allowNull: false,
-			autoIncrement: true,
-			primaryKey: true,
-			type: DataTypes.INTEGER
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+	const User = sequelize.define('User', {
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      autoIncrement: false,
+    },
+    full_name: {
+		type: DataTypes.STRING,
+		unique: true,
+		validate: {
+			// We require usernames to have length of at least 3, and
+			// only use letters, numbers and underscores.
+			is: /^\w{3,50}$/
 		},
-		username: {
-			allowNull: false,
-			type: DataTypes.STRING,
-			unique: true,
-			validate: {
-				// We require usernames to have length of at least 3, and
-				// only use letters, numbers and underscores.
-				is: /^\w{3,}$/
-			}
+		allowNull: false,
+	},
+    email: {
+		type: DataTypes.STRING,
+		unique: true,
+		validate: {
+			// We require usernames to have length of at least 3, and
+			// only use letters, numbers and underscores.
+			is: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 		},
-	});
+		allowNull: false,
+	},
+    password: {
+		type: DataTypes.STRING,
+		unique: true,
+		validate: {
+			// We require usernames to have length of at least 3, and
+			// only use letters, numbers and underscores.
+			is: /^\w{3,50}$/
+		},
+		allowNull: false,
+	},
+    school_name: {
+		type: DataTypes.STRING,
+		unique: false,
+		validate: {
+			// We require usernames to have length of at least 3, and
+			// only use letters, numbers and underscores.
+			is: /^\w{3,50}$/
+		},
+		allowNull: true,
+	}
+  });
+	return User;
 };
