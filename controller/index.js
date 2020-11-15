@@ -4,7 +4,7 @@ const getHelloWorld = (req, res) => {
 
 const getHiThere = (req, res) => {
   return res.status(200).send("Hi There");
-}
+};
 
 module.exports = {
   getHelloWorld,
