@@ -8,10 +8,10 @@ async function initDb() {
 
   await db.sequelize.sync();
   const userObject = {
-    fullName: "Test User",
+    full_name: "Test User",
     email: "testemail@gmail.com",
     password: "1234",
-    isEmailVerified: false,
+    is_email_verified: false,
   };
   updateOrCreate(
     db.sequelize.models.User,

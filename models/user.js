@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      fullName: {
+      full_name: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
           is: /^([0-9a-zA-Z].*?@([0-9a-zA-Z].*\.\w{2,4}))$/gm,
         },
       },
-      schoolName: {
+      school_name: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -45,26 +45,36 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      avatarUrl: {
+      avatar: {
         type: DataTypes.STRING,
         allowNull: true,
         unique: true,
       },
-      isEmailVerified: {
+      is_email_verified: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
       },
-      createdAt: {
+      verify_token: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      verify_token_expired_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      created_at: {
         allowNull: false,
         type: DataTypes.DATE,
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: DataTypes.DATE,
       },
     },
     {
+      updatedAt: "updated_at",
+      createdAt: "created_at",
       sequelize,
       modelName: "User",
     }
