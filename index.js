@@ -2,7 +2,8 @@ const express = require("express");
 const routes = require("./routes");
 const sequelize = require('./sequelize');
 const bodyParser = require('body-parser');
-const exampleSetup = require('./example-setup') // Delete this line after the first setup
+// 'exampleSetup' is assigned a value but never used
+const exampleSetup = require('./example-setup'); // Delete this line after the first setup
 
 const app = express();
 
@@ -19,6 +20,7 @@ async function assertDatabaseConnectionOk() {
 	} catch (error) {
 		console.log('Unable to connect to the database:');
 		console.log(error.message);
+		// error:  'process' is not defined
 		process.exit(1);
 	}
 }
@@ -26,8 +28,7 @@ async function assertDatabaseConnectionOk() {
 // PORT
 const PORT = process.env.PORT || 4000;
 assertDatabaseConnectionOk().then(() => {
-
-  	app.listen(PORT, () => {
+	app.listen(PORT, () => {
 		console.log(`[User Backend] Listen on port ${PORT}`);
 	});
 });

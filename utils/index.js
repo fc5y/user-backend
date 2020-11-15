@@ -1,7 +1,3 @@
-const getSum = (a, b) => {
-  return a + b;
-};
-
 // A helper function to assert the request ID param is valid
 // and convert it to a number (since it comes as a string by default)
 function getIdParam(req) {
@@ -13,6 +9,5 @@ function getIdParam(req) {
 }
 
 module.exports = {
-  getSum,
-  getIdParam
+	getIdParam
 };

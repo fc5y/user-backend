@@ -1,10 +1,10 @@
-const { getIdParam } = require('../utils') 
-const { models } = require('../sequelize')
+const { getIdParam } = require('../utils'); 
+const { models } = require('../sequelize');
 
 async function getAll(req, res) {
 	const users = await models.user.findAll();
 	res.status(200).json(users);
-};
+}
 
 async function getById(req, res) {
 	const id = getIdParam(req);
@@ -14,16 +14,16 @@ async function getById(req, res) {
 	} else {
 		res.status(404).send('404 - Not found');
 	}
-};
+}
 
 async function create(req, res) {
 	if (req.body.id) {
-		res.status(400).send(`Bad request: ID should not be provided, since it is determined automatically by the database.`)
+		res.status(400).send(`Bad request: ID should not be provided, since it is determined automatically by the database.`);
 	} else {
 		await models.user.create(req.body);
 		res.status(201).end();
 	}
-};
+}
 
 async function update(req, res) {
 	const id = getIdParam(req);
@@ -40,7 +40,7 @@ async function update(req, res) {
 		res.status(404).send('User not found');
 	}
 	
-};
+}
 
 async function remove(req, res) {
 	const id = getIdParam(req);
@@ -50,7 +50,7 @@ async function remove(req, res) {
 		}
 	});
 	res.status(200).end();
-};
+}
 
 module.exports = {
 	getAll,
