@@ -1,17 +1,17 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require("sequelize");
 
 // TODO: Keep credentials in env variables
 const sequelize = new Sequelize({
-  dialect: 'mysql',
-  database: 'fc5y_backend',
-  username: 'root',
-  password: 'LOVE12344',
+  dialect: "mysql",
+  database: "fc5y_backend",
+  username: "root",
+  password: "LOVE12344",
   logQueryParameters: true,
-  benchmark: true
+  benchmark: true,
 });
 
 const modelDefiners = [
-  require('./models/user'),
+  require("./models/user"),
   // Add more models here...
   // require('./models/item'),
 ];

@@ -9,5 +9,5 @@ function getIdParam(req) {
 }
 
 module.exports = {
-  getIdParam
+  getIdParam,
 };
