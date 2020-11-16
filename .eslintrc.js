@@ -18,5 +18,6 @@ module.exports = {
     "linebreak-style": ["error", "unix"],
     semi: ["error", "always"],
     "prettier/prettier": ["error", { singleQuote: false }],
+    "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
   },
 };

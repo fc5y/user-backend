@@ -2,6 +2,17 @@
 
 User Backend for fc5y project
 
+# DB Set up
+
+DB information: ./config/config.json
+
+To run db migration:
+```
+npx sequelize-cli db:migrate # run migration
+npx sequelize-cli db:migrate:undo # undo the last migration
+npx sequelize-cli db:migrate:status # migration log
+```
+
 # How to run
 
 Development:
