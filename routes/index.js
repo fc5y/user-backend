@@ -1,16 +1,11 @@
 const express = require("express");
-const defaultController = require("../controller/index");
 const userController = require("../controller/user");
 
 const router = express.Router();
 
 //  @METHOD   GET
-//  @PATH     /hi
-router.get("/hi", defaultController.getHiThere);
-
-//  @METHOD   GET
-//  @PATH     /*
-// router.get("*", defaultController.getHelloWorld);
+//  @PATH     /users
+// router.get("/users", userController.getUsers);
 
 // We create a wrapper to workaround async errors not being transmitted correctly.
 function makeHandlerAwareOfAsyncErrors(handler) {

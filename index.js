@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const app = express();
 
 const db = require("./models/index.js");
-require("./example-setup");
+const { initDb } = require("./initDb.js");
 
 // Routes
 app.use(bodyParser.json());
@@ -15,6 +15,7 @@ async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
   try {
     await db.sequelize.authenticate();
+    initDb();
     console.log("Database connection OK!");
   } catch (error) {
     console.log("Unable to connect to the database:");

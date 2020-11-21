@@ -1,6 +1,6 @@
 const { getIdParam } = require("../utils");
 const db = require("../models/index.js");
-const models = db.sequelize.models
+const models = db.sequelize.models;
 
 async function getAll(req, res) {
   console.log(db);

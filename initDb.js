@@ -28,4 +28,6 @@ async function initDb() {
   console.log("Done!");
 }
 
-initDb();
+module.exports = {
+  initDb,
+};
