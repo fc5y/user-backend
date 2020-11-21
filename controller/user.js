@@ -1,8 +1,9 @@
 const { getIdParam } = require("../utils");
-const db = require("../index.js");
-const models = db.models;
+const db = require("../models/index.js");
+const models = db.sequelize.models
 
 async function getAll(req, res) {
+  console.log(db);
   const users = await models.User.findAll();
   res.status(200).json(users);
 }
