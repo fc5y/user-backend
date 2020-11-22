@@ -35,7 +35,7 @@ async function create(req, res) {
       );
   } else {
     const user = await models.User.create(req.body);
-    res.status(201).json({
+    res.status(200).json({
       id: user.id,
       full_name: user.full_name,
       school_name: user.school_name,
