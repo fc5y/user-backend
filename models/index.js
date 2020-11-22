@@ -1,6 +1,6 @@
 "use strict";
 
-require('dotenv').config()
+require("dotenv").config();
 const Sequelize = require("sequelize");
 const db = {};
 

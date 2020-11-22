@@ -1,11 +1,11 @@
 const { getIdParam } = require("../utils");
 const db = require("../models/index.js");
-const models = db.sequelize.models
+const models = db.sequelize.models;
 
 async function getAll(req, res) {
   console.log(db);
   const users = await models.User.findAll({
-    attributes: [ 'id', 'full_name', 'email', 'is_email_verified' ]
+    attributes: ["id", "full_name", "email", "is_email_verified"],
   });
   res.status(200).json(users);
 }
@@ -17,8 +17,9 @@ async function getById(req, res) {
     res.status(200).json({
       id: user.id,
       full_name: user.full_name,
+      school_name: user.school_name,
       email: user.email,
-      is_email_verified: user.is_email_verified
+      is_email_verified: user.is_email_verified,
     });
   } else {
     res.status(404).send("404 - Not found");
@@ -33,8 +34,14 @@ async function create(req, res) {
         `Bad request: ID should not be provided, since it is determined automatically by the database.`
       );
   } else {
-    await models.User.create(req.body);
-    res.status(201).end();
+    const user = await models.User.create(req.body);
+    res.status(201).json({
+      id: user.id,
+      full_name: user.full_name,
+      school_name: user.school_name,
+      email: user.email,
+      is_email_verified: user.is_email_verified,
+    });
   }
 }
 
