@@ -4,7 +4,9 @@ const models = db.sequelize.models
 
 async function getAll(req, res) {
   console.log(db);
-  const users = await models.User.findAll();
+  const users = await models.User.findAll({
+    attributes: [ 'id', 'full_name', 'email', 'is_email_verified' ]
+  });
   res.status(200).json(users);
 }
 
@@ -12,7 +14,12 @@ async function getById(req, res) {
   const id = getIdParam(req);
   const user = await models.User.findByPk(id);
   if (user) {
-    res.status(200).json(user);
+    res.status(200).json({
+      id: user.id,
+      full_name: user.full_name,
+      email: user.email,
+      is_email_verified: user.is_email_verified
+    });
   } else {
     res.status(404).send("404 - Not found");
   }
