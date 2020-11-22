@@ -3,9 +3,14 @@ const db = require("../models/index.js");
 const models = db.sequelize.models;
 
 async function getAll(req, res) {
-  console.log(db);
   const users = await models.User.findAll({
-    attributes: ["id", "full_name", "email", "is_email_verified"],
+    attributes: [
+      "id",
+      "full_name",
+      "school_name",
+      "email",
+      "is_email_verified",
+    ],
   });
   res.status(200).json(users);
 }
@@ -45,19 +50,34 @@ async function create(req, res) {
   }
 }
 
-async function update(req, res) {
+async function update(req, res, next) {
   const id = getIdParam(req);
-
-  const user = await models.User.findByPk(id);
-  if (user) {
-    models.User.update(req.body, {
-      where: {
-        id: id,
-      },
-    });
-    res.status(200).send("Updated");
+  if (req.body.id) {
+    res
+      .status(400)
+      .send(
+        `Bad request: ID should not be provided, since it is determined automatically by the database.`
+      );
   } else {
-    res.status(404).send("User not found");
+    await models.User.update(
+      { full_name: req.body.full_name, school_name: req.body.school_name },
+      { where: { id: id } }
+    )
+      .then((rowsUpdate) => {
+        if (rowsUpdate == 0) {
+          res.status(404).send("User not found");
+        }
+      })
+      .catch(next);
+
+    const user = await models.User.findByPk(id);
+    res.status(200).json({
+      id: user.id,
+      full_name: user.full_name,
+      school_name: user.school_name,
+      email: user.email,
+      is_email_verified: user.is_email_verified,
+    });
   }
 }
 
