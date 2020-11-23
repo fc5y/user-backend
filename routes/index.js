@@ -23,18 +23,24 @@ function makeHandlerAwareOfAsyncErrors(handler) {
   };
 }
 
-router.get("/api/users", makeHandlerAwareOfAsyncErrors(userController.getAll));
 router.get(
-  "/api/users/:id",
+  "/api/v1/users",
+  makeHandlerAwareOfAsyncErrors(userController.getAll)
+);
+router.get(
+  "/api/v1/users/:id",
   makeHandlerAwareOfAsyncErrors(userController.getById)
 );
-router.post("/api/users", makeHandlerAwareOfAsyncErrors(userController.create));
+router.post(
+  "/api/v1/users",
+  makeHandlerAwareOfAsyncErrors(userController.create)
+);
 router.put(
-  "/api/users/:id",
+  "/api/v1/users/:id",
   makeHandlerAwareOfAsyncErrors(userController.update)
 );
 router.delete(
-  "/api/users/:id",
+  "/api/v1/users/:id",
   makeHandlerAwareOfAsyncErrors(userController.remove)
 );
 

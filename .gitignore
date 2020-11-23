@@ -3,3 +3,5 @@ keys
 .DS_Store
 
 .env
+.env.dev
+.env.test
