@@ -1,4 +1,4 @@
-const { getIdParam } = require("../utils");
+const { getIdParam, statusCode } = require("../utils");
 const db = require("../models/index.js");
 const models = db.sequelize.models;
 
@@ -12,14 +12,14 @@ async function getAll(req, res) {
       "is_email_verified",
     ],
   });
-  res.status(200).json(users);
+  res.status(statusCode.SUCCESS).json(users);
 }
 
 async function getById(req, res) {
   const id = getIdParam(req);
   const user = await models.User.findByPk(id);
   if (user) {
-    res.status(200).json({
+    res.status(statusCode.SUCCESS).json({
       id: user.id,
       full_name: user.full_name,
       school_name: user.school_name,
@@ -27,20 +27,20 @@ async function getById(req, res) {
       is_email_verified: user.is_email_verified,
     });
   } else {
-    res.status(404).send("404 - Not found");
+    res.status(statusCode.NOT_FOUND).send("404 - Not found");
   }
 }
 
 async function create(req, res) {
   if (req.body.id) {
     res
-      .status(400)
+      .status(statusCode.BAD_REQUEST)
       .send(
         `Bad request: ID should not be provided, since it is determined automatically by the database.`
       );
   } else {
     const user = await models.User.create(req.body);
-    res.status(200).json({
+    res.status(statusCode.SUCCESS).json({
       id: user.id,
       full_name: user.full_name,
       school_name: user.school_name,
@@ -54,24 +54,29 @@ async function update(req, res, next) {
   const id = getIdParam(req);
   if (req.body.id) {
     res
-      .status(400)
+      .status(statusCode.BAD_REQUEST)
       .send(
         `Bad request: ID should not be provided, since it is determined automatically by the database.`
       );
   } else {
     await models.User.update(
-      { full_name: req.body.full_name, school_name: req.body.school_name },
-      { where: { id: id } }
+      {
+        full_name: req.body.full_name,
+        school_name: req.body.school_name,
+      },
+      {
+        where: { id: id },
+      }
     )
       .then((rowsUpdate) => {
         if (rowsUpdate == 0) {
-          res.status(404).send("User not found");
+          res.status(statusCode.NOT_FOUND).send("User not found");
         }
       })
       .catch(next);
 
     const user = await models.User.findByPk(id);
-    res.status(200).json({
+    res.status(statusCode.SUCCESS).json({
       id: user.id,
       full_name: user.full_name,
       school_name: user.school_name,
@@ -88,7 +93,7 @@ async function remove(req, res) {
       id: id,
     },
   });
-  res.status(200).end();
+  res.status(statusCode.SUCCESS).end();
 }
 
 module.exports = {
