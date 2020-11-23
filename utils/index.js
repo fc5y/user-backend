@@ -8,6 +8,13 @@ function getIdParam(req) {
   throw new TypeError(`Invalid ':id' param: "${id}"`);
 }
 
+const statusCode = {
+  SUCCESS: 200,
+  BAD_REQUEST: 400,
+  NOT_FOUND: 404,
+};
+
 module.exports = {
   getIdParam,
+  statusCode,
 };
