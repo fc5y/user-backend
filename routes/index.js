@@ -1,7 +1,9 @@
 const express = require("express");
 const defaultController = require("../controller/index");
 const userController = require("../controller/user");
-const authController = require('../controller/auth')
+const authController = require("../controller/auth");
+const jwt = require("express-jwt");
+
 require("dotenv").config({ silent: true });
 
 const router = express.Router();
@@ -51,7 +53,12 @@ router.delete(
 // Auth
 router.post(
   "/api/v1/login",
+  jwt({
+    secret: process.env.JWT_SECRET,
+    algorithms: ["HS256"],
+    credentialsRequired: false,
+  }),
   makeHandlerAwareOfAsyncErrors(authController.login)
-)
+);
 
 module.exports = router;
