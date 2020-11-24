@@ -11,6 +11,11 @@ async function getAll(req, res) {
       "email",
       "is_email_verified",
     ],
+    where: {
+      full_name: req.query.full_name,
+      email: req.query.email,
+      school_name: req.query.school_name,
+    },
   });
   res.status(statusCode.SUCCESS).json(users);
 }
