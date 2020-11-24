@@ -4,11 +4,17 @@ require('dotenv').config({ slient: true });
 
 const db = require("../models/index.js");
 const models = db.sequelize.models;
-const { statusCode } = require('../utils')
+const { statusCode } = require('../utils');
 
 async function login (req, res) {
   if (req.user)
-    return res.status(statusCode.BAD_REQUEST).send("Already signed in");
+    return res.status(statusCode.SUCCESS).json({
+      msg: "Already logined",
+      data:
+      {
+        access_token: jwt.sign({ email: req.user.email }, process.env.JWT_SECRET)
+      }
+    })
   
   let { email, password } = req.body;
   if (!email || !password)
