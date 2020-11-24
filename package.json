@@ -12,10 +12,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "post-merge": "num run migrate",
-      "post-rebase": "num run migrate",
-      "post-checkout": "num run migrate"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
