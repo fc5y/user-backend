@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const app = express();
 
 const db = require("./models/index.js");
+require("./utils/email-sender");
 require("./example-setup");
 
 // Routes

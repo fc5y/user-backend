@@ -1,4 +1,5 @@
 const { getIdParam, statusCode } = require("../utils");
+const { createMessage, sendMail } = require("../utils/email-sender");
 const db = require("../models/index.js");
 const models = db.sequelize.models;
 
@@ -96,10 +97,23 @@ async function remove(req, res) {
   res.status(statusCode.SUCCESS).end();
 }
 
+async function sendMailApi(req, res) {
+  const message = createMessage(
+    "Lam Do <admin@freecontest.net>",
+    "Hello from Free Contest",
+    "Say Hi from Freecontest",
+    '<p><b>Hello</b> to myself <img src="cid:note@node"/></p>' +
+      "<p>Here's a nyan cat for you as an embedded attachment:<br/></p>"
+  );
+  sendMail(message);
+  res.status(statusCode.SUCCESS).end();
+}
+
 module.exports = {
   getAll,
   getById,
   create,
   update,
   remove,
+  sendMailApi,
 };
