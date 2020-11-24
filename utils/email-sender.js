@@ -1,5 +1,6 @@
 var nodemailer = require("nodemailer");
 
+// TODO: Move clientId, clientSecret, accessToken, refreshToken to config file
 var transport = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
