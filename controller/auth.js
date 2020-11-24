@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 require('dotenv').config({ slient: true });
 
-const { statusCode } = require('../utils');
 const db = require("../models/index.js");
 const models = db.sequelize.models;
+const { statusCode } = require('../utils')
 
 async function login (req, res) {
   if (req.user)
