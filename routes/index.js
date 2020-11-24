@@ -1,6 +1,8 @@
 const express = require("express");
 const defaultController = require("../controller/index");
 const userController = require("../controller/user");
+const authController = require("../controller/auth");
+const jwt = require("express-jwt");
 require("dotenv").config({ silent: true });
 
 const router = express.Router();
@@ -46,16 +48,21 @@ router.delete(
   "/api/v1/users/:id",
   makeHandlerAwareOfAsyncErrors(userController.remove)
 );
+
+// Auth
+router.post(
+  "/api/v1/login",
+  jwt({
+    secret: process.env.JWT_SECRET,
+    algorithms: ["HS256"],
+    credentialsRequired: false,
+  }),
+  makeHandlerAwareOfAsyncErrors(authController.login)
+);
+
 router.get(
   "/api/send_email",
   makeHandlerAwareOfAsyncErrors(userController.sendMailApi)
 );
-
-// Auth
-// router.post(
-//   "/api/v1/login",
-//   jwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"], credentialsRequired: false }),
-//   makeHandlerAwareOfAsyncErrors(authController.login)
-// )
 
 module.exports = router;
