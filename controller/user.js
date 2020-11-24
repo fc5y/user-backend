@@ -2,10 +2,22 @@ const { getIdParam, statusCode } = require("../utils");
 const db = require("../models/index.js");
 const models = db.sequelize.models;
 
+function buildUserJson(user) {
+  return {
+    id: user.id,
+    username: user.username,
+    full_name: user.full_name,
+    school_name: user.school_name,
+    email: user.email,
+    is_email_verified: user.is_email_verified,
+  };
+}
+
 async function getAll(req, res) {
   const users = await models.User.findAll({
     attributes: [
       "id",
+      "username",
       "full_name",
       "school_name",
       "email",
@@ -19,13 +31,7 @@ async function getById(req, res) {
   const id = getIdParam(req);
   const user = await models.User.findByPk(id);
   if (user) {
-    res.status(statusCode.SUCCESS).json({
-      id: user.id,
-      full_name: user.full_name,
-      school_name: user.school_name,
-      email: user.email,
-      is_email_verified: user.is_email_verified,
-    });
+    res.status(statusCode.SUCCESS).json(buildUserJson(user));
   } else {
     res.status(statusCode.NOT_FOUND).send("404 - Not found");
   }
@@ -40,13 +46,7 @@ async function create(req, res) {
       );
   } else {
     const user = await models.User.create(req.body);
-    res.status(statusCode.SUCCESS).json({
-      id: user.id,
-      full_name: user.full_name,
-      school_name: user.school_name,
-      email: user.email,
-      is_email_verified: user.is_email_verified,
-    });
+    res.status(statusCode.SUCCESS).json(buildUserJson(user));
   }
 }
 
@@ -76,13 +76,7 @@ async function update(req, res, next) {
       .catch(next);
 
     const user = await models.User.findByPk(id);
-    res.status(statusCode.SUCCESS).json({
-      id: user.id,
-      full_name: user.full_name,
-      school_name: user.school_name,
-      email: user.email,
-      is_email_verified: user.is_email_verified,
-    });
+    res.status(statusCode.SUCCESS).json(buildUserJson(user));
   }
 }
 
