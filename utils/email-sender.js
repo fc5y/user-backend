@@ -7,7 +7,7 @@ var transport = nodemailer.createTransport({
   secure: true,
   auth: {
     type: "OAuth2",
-    user: "admin@freecontest.net",
+    user: "support@freecontest.net",
     clientId:
       "842534347250-gab56cijki54o5u10nqqtujsqk8hdh98.apps.googleusercontent.com",
     clientSecret: "FhZRuS7e-Jv5QPDz9KpqKLL1",
@@ -21,7 +21,7 @@ var transport = nodemailer.createTransport({
 function createMessage(recipients, subject, textBody, htmlBody) {
   const message = {
     // sender info
-    from: "FreeContest <admin@freecontest.net>",
+    from: "Free Contest <support@freecontest.net>",
     // Comma separated list of recipients
     to: recipients,
     // Subject of the message

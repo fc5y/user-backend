@@ -99,7 +99,7 @@ async function remove(req, res) {
 
 async function sendMailApi(req, res) {
   const message = createMessage(
-    "Lam Do <admin@freecontest.net>",
+    "Lam Do <backend@freecontest.net>",
     "Hello from Free Contest",
     "Say Hi from Freecontest",
     '<p><b>Hello</b> to myself <img src="cid:note@node"/></p>' +
