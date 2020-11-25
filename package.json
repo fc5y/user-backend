@@ -7,11 +7,13 @@
     "dev": "ENV=dev nodemon index.js",
     "start": "ENV=prod node index.js",
     "test": "jest",
-    "lint": "./node_modules/.bin/eslint \"./**/*.js\" --fix"
+    "lint": "./node_modules/.bin/eslint \"./**/*.js\" --fix",
+    "migrate": "npx sequelize-cli db:migrate"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "post-merge": "npm run migrate"
     }
   },
   "lint-staged": {

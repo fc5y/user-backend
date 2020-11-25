@@ -20,6 +20,16 @@ module.exports = (sequelize) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
+      username: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        unique: true,
+        validate: {
+          // We require usernames to have length of at least 3, and
+          // only use letters and whitespace.
+          is: /^[A-Za-z\s]{3,50}/,
+        },
+      },
       full_name: {
         type: DataTypes.STRING,
         allowNull: false,
