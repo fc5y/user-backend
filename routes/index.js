@@ -2,7 +2,7 @@ const express = require("express");
 const defaultController = require("../controller/index");
 const userController = require("../controller/user");
 const authController = require("../controller/auth");
-const isLogined = require("../middlewares/isLogined");
+const isLoggedIn = require("../middlewares/isLoggedIn");
 require("dotenv").config({ silent: true });
 
 const router = express.Router();
@@ -30,12 +30,12 @@ function makeHandlerAwareOfAsyncErrors(handler) {
 
 router.get(
   "/api/v1/users",
-  makeHandlerAwareOfAsyncErrors(isLogined),
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getAll)
 );
 router.get(
   "/api/v1/users/:id",
-  makeHandlerAwareOfAsyncErrors(isLogined),
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getById)
 );
 router.post(
@@ -44,12 +44,12 @@ router.post(
 );
 router.put(
   "/api/v1/users/:id",
-  makeHandlerAwareOfAsyncErrors(isLogined),
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.update)
 );
 router.delete(
   "/api/v1/users/:id",
-  makeHandlerAwareOfAsyncErrors(isLogined),
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.remove)
 );
 
