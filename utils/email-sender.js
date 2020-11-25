@@ -34,6 +34,7 @@ function createMessage(recipients, subject, textBody, htmlBody) {
   return message;
 }
 
+// Followed this guide: https://www.youtube.com/watch?v=jhxzhpFanfU
 function sendMail(message) {
   transport.sendMail(message, function (error) {
     if (error) {
@@ -42,9 +43,6 @@ function sendMail(message) {
       return;
     }
     console.log("Message sent successfully!");
-
-    // if you don't want to use this transport object anymore, uncomment following line
-    //transport.close(); // close the connection pool
   });
 }
 
