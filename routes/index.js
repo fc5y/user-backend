@@ -3,6 +3,7 @@ const defaultController = require("../controller/index");
 const userController = require("../controller/user");
 const authController = require("../controller/auth");
 const jwt = require("express-jwt");
+const { FcError } = require("../error");
 require("dotenv").config({ silent: true });
 
 const router = express.Router();
@@ -21,7 +22,16 @@ function makeHandlerAwareOfAsyncErrors(handler) {
     try {
       await handler(req, res);
     } catch (error) {
-      next(error);
+
+      if (error instanceof FcError) {
+        res.status(400).send({
+          code: error.code,
+          msg: error.msg,
+          data: error.data
+        });
+      } else {
+        next(error);
+      }
     }
   };
 }
