@@ -16,7 +16,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "npm run lint"
+      "./node_modules/.bin/eslint \"./**/*.js\""
     ]
   },
   "repository": {
