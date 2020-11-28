@@ -1,6 +1,5 @@
 const { getIdParam, statusCode } = require("../utils");
 const db = require("../models/index.js");
-const errors = require("../error");
 const models = db.sequelize.models;
 
 async function getAll(req, res) {
@@ -28,7 +27,7 @@ async function getById(req, res) {
       is_email_verified: user.is_email_verified,
     });
   } else {
-    throw new errors.FcError(errors.USER_NOT_FOUND)
+    res.status(statusCode.NOT_FOUND).send("404 - Not found");
   }
 }
 
