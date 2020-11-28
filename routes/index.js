@@ -22,12 +22,11 @@ function makeHandlerAwareOfAsyncErrors(handler) {
     try {
       await handler(req, res);
     } catch (error) {
-
       if (error instanceof FcError) {
         res.status(400).send({
           code: error.code,
           msg: error.msg,
-          data: error.data
+          data: error.data,
         });
       } else {
         next(error);

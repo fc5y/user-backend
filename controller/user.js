@@ -28,7 +28,7 @@ async function getById(req, res) {
       is_email_verified: user.is_email_verified,
     });
   } else {
-    throw new errors.FcError(errors.USER_NOT_FOUND)
+    throw new errors.FcError(errors.USER_NOT_FOUND);
   }
 }
 
