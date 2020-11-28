@@ -4,7 +4,6 @@ const bodyParser = require("body-parser");
 const app = express();
 
 const db = require("./models/index.js");
-require("./example-setup");
 
 // Routes
 app.use(bodyParser.json());
