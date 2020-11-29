@@ -9,7 +9,7 @@ const { statusCode } = require("../utils");
 async function login(req, res) {
   if (req.user)
     return res.status(statusCode.SUCCESS).json({
-      msg: "Already logined",
+      msg: "Already logged in",
       data: {
         access_token: jwt.sign(
           { email: req.user.email },
