@@ -12,7 +12,7 @@ async function initDb() {
     full_name: "Test User",
     username: "test",
     email: "testemail@gmail.com",
-    password: "1234",
+    password: bcrypt.hashSync("1234"),
     is_email_verified: false,
   };
   const anotherUser = {

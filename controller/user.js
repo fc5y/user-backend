@@ -14,17 +14,41 @@ function buildUserJson(user) {
 }
 
 async function getAll(req, res) {
-  const users = await models.User.findAll({
-    attributes: [
-      "id",
-      "username",
-      "full_name",
-      "school_name",
-      "email",
-      "is_email_verified",
-    ],
+  let filter = {};
+  let hasProperty = false;
+  const attrs = ["full_name", "school_name", "email"];
+  attrs.forEach((param) => {
+    if (Object.prototype.hasOwnProperty.call(req.query, param)) {
+      filter[param] = req.query[param];
+      hasProperty = true;
+    }
   });
-  res.status(statusCode.SUCCESS).json(users);
+  if (hasProperty) {
+    const users = await models.User.findAll({
+      attributes: [
+        "id",
+        "username",
+        "full_name",
+        "school_name",
+        "email",
+        "is_email_verified",
+      ],
+      where: filter,
+    });
+    res.status(statusCode.SUCCESS).json(users);
+  } else {
+    const users = await models.User.findAll({
+      attributes: [
+        "id",
+        "username",
+        "full_name",
+        "school_name",
+        "email",
+        "is_email_verified",
+      ],
+    });
+    res.status(statusCode.SUCCESS).json(users);
+  }
 }
 
 async function getById(req, res) {
