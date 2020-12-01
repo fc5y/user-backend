@@ -121,7 +121,7 @@ async function verifyAccount(req, res) {
   models.User.findByPk(id).then((user) => {
     console.log(user);
     if (user.is_email_verified) {
-      res.status(400).json({
+      res.status(statusCode.BAD_REQUEST).json({
         code: 3001,
         msg: "Account had been verified!",
         data: {},
