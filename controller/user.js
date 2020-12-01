@@ -99,30 +99,68 @@ async function create(req, res) {
 async function createVerifyToken(req, res) {
   const id = getIdParam(req);
   const token = jsonwebtoken.sign({ id: id }, process.env.JWT_SECRET, {
-    expiresIn: "1800",
+    expiresIn: "600000",
   });
-  await models.User.update(
-    { verify_token: createVerifyToken(id) },
+  models.User.update(
+    { verify_token: token },
     {
       where: { id: id },
     }
   );
-  res.status(statusCode.SUCCESS).send({ token: token });
+  res.status(statusCode.SUCCESS).send({
+    code: 0,
+    msg: "Success",
+    data: { id: id, verify_token: token },
+  });
 }
 
 async function verifyAccount(req, res) {
-  const token = req.body.token;
-  jsonwebtoken.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      res.status(statusCode.BAD_REQUEST).send("Token has expired");
+  const id = getIdParam(req);
+  const token = req.query.token;
+  console.log(id, token);
+  models.User.findByPk(id).then((user) => {
+    console.log(user);
+    if (user.is_email_verified) {
+      res.status(400).json({
+        code: 3001,
+        msg: "Account had been verified!",
+        data: {},
+      });
     } else {
-      models.User.update(
-        { is_email_verified: true },
-        {
-          where: { id: decoded.payload.id },
-        }
-      );
-      res.status(statusCode.SUCCESS).send("OK");
+      if (user.verify_token !== token) {
+        res.status(statusCode.BAD_REQUEST).send({
+          code: 3001,
+          msg: "Invalid token",
+        });
+      } else {
+        jsonwebtoken.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+          if (err) {
+            res.status(statusCode.BAD_REQUEST).send({
+              code: 3001,
+              msg: "Token has expired",
+            });
+          } else {
+            models.User.update(
+              { is_email_verified: true },
+              { where: { id: decoded.id } }
+            ).then((rowsUpdate) => {
+              if (rowsUpdate[0] === 0) {
+                res.status(statusCode.BAD_REQUEST).send({
+                  code: 2001,
+                  msg: "User not found",
+                });
+              }
+              models.User.findByPk(id).then((updatedUser) => {
+                res.status(statusCode.SUCCESS).send({
+                  code: 0,
+                  msg: "Success",
+                  data: buildUserJson(updatedUser),
+                });
+              });
+            });
+          }
+        });
+      }
     }
   });
 }
@@ -136,24 +174,19 @@ async function update(req, res, next) {
         `Bad request: ID should not be provided, since it is determined automatically by the database.`
       );
   } else {
-    await models.User.update(
-      {
-        full_name: req.body.full_name,
-        school_name: req.body.school_name,
-      },
-      {
-        where: { id: id },
-      }
-    )
+    await models.User.update(req.body, {
+      where: { id: id },
+    })
       .then((rowsUpdate) => {
-        if (rowsUpdate == 0) {
+        if (rowsUpdate[0] == 0) {
           res.status(statusCode.NOT_FOUND).send("User not found");
+        } else {
+          models.User.findByPk(id).then((user) => {
+            res.status(statusCode.SUCCESS).json(buildUserJson(user));
+          });
         }
       })
       .catch(next);
-
-    const user = await models.User.findByPk(id);
-    res.status(statusCode.SUCCESS).json(buildUserJson(user));
   }
 }
 

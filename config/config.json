@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "root",
-    "password": "",
+    "username": "fc5y",
+    "password": "fc5y",
     "database": "fc5y_dev",
     "host": "127.0.0.1",
     "dialect": "mysql"
