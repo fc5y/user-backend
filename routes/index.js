@@ -53,6 +53,16 @@ router.delete(
   makeHandlerAwareOfAsyncErrors(userController.remove)
 );
 
+router.get(
+  "/api/v1/verify/:id",
+  makeHandlerAwareOfAsyncErrors(userController.createVerifyToken)
+);
+
+router.post(
+  "/api/v1/verify/:id",
+  makeHandlerAwareOfAsyncErrors(userController.verifyAccount)
+);
+
 // Auth
 router.post(
   "/api/v1/login",
