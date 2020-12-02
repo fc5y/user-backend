@@ -1,10 +1,10 @@
-const { getIdParam, statusCode } = require("../utils");
+const { getIdParam, statusCode, expiredAfter } = require("../utils");
 const db = require("../models/index.js");
 const models = db.sequelize.models;
 
 const jsonwebtoken = require("jsonwebtoken");
 
-const saltRounds = 10;
+const SALT_ROUNDS = 10;
 const bcrypt = require("bcrypt");
 
 require("dotenv").config({ silent: true });
@@ -21,7 +21,7 @@ function buildUserJson(user) {
 }
 
 function sanitizeUserDetails(data) {
-  const salt = bcrypt.genSaltSync(saltRounds);
+  const salt = bcrypt.genSaltSync(SALT_ROUNDS);
   const hashedPassword = bcrypt.hashSync(data.password, salt);
   let userDetails = {
     username: data.username,
@@ -98,28 +98,51 @@ async function create(req, res) {
 
 async function createVerifyToken(req, res) {
   const id = getIdParam(req);
-  const token = jsonwebtoken.sign({ id: id }, process.env.JWT_SECRET, {
-    expiresIn: "600000",
-  });
-  models.User.update(
-    { verify_token: token },
-    {
-      where: { id: id },
-    }
-  );
-  res.status(statusCode.SUCCESS).send({
-    code: 0,
-    msg: "Success",
-    data: { id: id, verify_token: token },
+  models.User.findByPk(id).then((user) => {
+    jsonwebtoken.sign(
+      { email: user.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: expiredAfter,
+      },
+      (err, token) => {
+        if (err) {
+          res.status(statusCode.BAD_REQUEST).send({
+            code: 3005,
+            msg: err.name,
+            data: {},
+          });
+        } else {
+          models.User.update(
+            { verify_token: token },
+            {
+              where: { id: id },
+            }
+          ).then((rowsUpdate) => {
+            if (rowsUpdate[0] === 0) {
+              res.status(statusCode.BAD_REQUEST).send({
+                code: 2001,
+                msg: "User not found",
+                data: {},
+              });
+            } else {
+              res.status(statusCode.SUCCESS).send({
+                code: 0,
+                msg: "Success",
+                data: { id: id, verify_token: token },
+              });
+            }
+          });
+        }
+      }
+    );
   });
 }
 
 async function verifyAccount(req, res) {
   const id = getIdParam(req);
   const token = req.query.token;
-  console.log(id, token);
   models.User.findByPk(id).then((user) => {
-    console.log(user);
     if (user.is_email_verified) {
       res.status(statusCode.BAD_REQUEST).json({
         code: 3001,
@@ -129,8 +152,9 @@ async function verifyAccount(req, res) {
     } else {
       if (user.verify_token !== token) {
         res.status(statusCode.BAD_REQUEST).send({
-          code: 3001,
+          code: 3005,
           msg: "Invalid token",
+          data: {},
         });
       } else {
         jsonwebtoken.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -140,24 +164,33 @@ async function verifyAccount(req, res) {
               msg: "Token has expired",
             });
           } else {
-            models.User.update(
-              { is_email_verified: true },
-              { where: { id: decoded.id } }
-            ).then((rowsUpdate) => {
-              if (rowsUpdate[0] === 0) {
-                res.status(statusCode.BAD_REQUEST).send({
-                  code: 2001,
-                  msg: "User not found",
-                });
-              }
-              models.User.findByPk(id).then((updatedUser) => {
-                res.status(statusCode.SUCCESS).send({
-                  code: 0,
-                  msg: "Success",
-                  data: buildUserJson(updatedUser),
-                });
+            if (decoded.email !== user.email) {
+              res.status(statusCode.BAD_REQUEST).send({
+                code: 3005,
+                msg: "Invalid token",
+                data: {},
               });
-            });
+            } else {
+              models.User.update(
+                { is_email_verified: true },
+                { where: { id: id } }
+              ).then((rowsUpdate) => {
+                if (rowsUpdate[0] === 0) {
+                  res.status(statusCode.BAD_REQUEST).send({
+                    code: 2001,
+                    msg: "User not found",
+                  });
+                } else {
+                  models.User.findByPk(id).then((updatedUser) => {
+                    res.status(statusCode.SUCCESS).send({
+                      code: 0,
+                      msg: "Success",
+                      data: buildUserJson(updatedUser),
+                    });
+                  });
+                }
+              });
+            }
           }
         });
       }

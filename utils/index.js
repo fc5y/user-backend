@@ -14,7 +14,10 @@ const statusCode = {
   NOT_FOUND: 404,
 };
 
+const expiredAfter = "600000"; // ms
+
 module.exports = {
   getIdParam,
   statusCode,
+  expiredAfter,
 };
