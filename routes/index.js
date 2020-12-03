@@ -2,6 +2,7 @@ const express = require("express");
 const defaultController = require("../controller/index");
 const userController = require("../controller/user");
 const authController = require("../controller/auth");
+const cors = require("cors");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 require("dotenv").config({ silent: true });
 
@@ -25,6 +26,9 @@ function makeHandlerAwareOfAsyncErrors(handler) {
     }
   };
 }
+
+// CORs
+router.use(cors());
 
 // User
 
