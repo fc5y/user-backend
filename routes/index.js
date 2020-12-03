@@ -26,6 +26,14 @@ function makeHandlerAwareOfAsyncErrors(handler) {
   };
 }
 
+// CORs
+router.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", process.env.ORIGINS);
+  res.header("Access-Control-Allow-Headers", process.env.ORIGINS);
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+  next();
+});
+
 // User
 
 router.get(
