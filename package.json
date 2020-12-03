@@ -8,7 +8,8 @@
     "start": "ENV=prod node index.js",
     "test": "jest",
     "lint": "./node_modules/.bin/eslint \"./**/*.js\" --fix",
-    "migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed"
+    "migrate": "npx sequelize-cli db:migrate",
+    "seed": "npx sequelize-cli db:seed:all"
   },
   "husky": {
     "hooks": {
