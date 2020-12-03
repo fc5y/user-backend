@@ -3,6 +3,7 @@ const defaultController = require("../controller/index");
 const userController = require("../controller/user");
 const authController = require("../controller/auth");
 const jwt = require("express-jwt");
+const cors = require("cors");
 require("dotenv").config({ silent: true });
 
 const router = express.Router();
@@ -27,12 +28,7 @@ function makeHandlerAwareOfAsyncErrors(handler) {
 }
 
 // CORs
-router.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.ORIGINS);
-  res.header("Access-Control-Allow-Headers", process.env.ORIGINS);
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-  next();
-});
+router.use(cors());
 
 // User
 
