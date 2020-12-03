@@ -1,7 +1,7 @@
 var nodemailer = require("nodemailer");
 
 // TODO: Move clientId, clientSecret, accessToken, refreshToken to config file
-var transport = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
   secure: true,
@@ -36,14 +36,14 @@ function createMessage(recipients, subject, textBody, htmlBody) {
 
 // Followed this guide: https://www.youtube.com/watch?v=jhxzhpFanfU
 function sendMail(message) {
-  transport.sendMail(message, function (error) {
+  transporter.sendMail(message, function (error) {
     if (error) {
-      console.log("Error occured");
-      console.log(error.message);
-      return;
+      console.log("Message sent unsuccessfully. Error: ", error.message);
+      return false;
     }
-    console.log("Message sent successfully!");
   });
+  console.log("Message sent successfully!");
+  return true;
 }
 
 module.exports = {
