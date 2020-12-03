@@ -2,6 +2,7 @@ const express = require("express");
 const defaultController = require("../controller/index");
 const userController = require("../controller/user");
 const authController = require("../controller/auth");
+const cors = require("cors");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 require("dotenv").config({ silent: true });
 
@@ -25,6 +26,9 @@ function makeHandlerAwareOfAsyncErrors(handler) {
     }
   };
 }
+
+// CORs
+router.use(cors());
 
 // User
 
@@ -51,6 +55,16 @@ router.delete(
   "/api/v1/users/:id",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.remove)
+);
+
+router.get(
+  "/api/v1/verify/:id",
+  makeHandlerAwareOfAsyncErrors(userController.createVerifyToken)
+);
+
+router.post(
+  "/api/v1/verify/:id",
+  makeHandlerAwareOfAsyncErrors(userController.verifyAccount)
 );
 
 // Auth
