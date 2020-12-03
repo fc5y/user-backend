@@ -60,9 +60,4 @@ router.post(
   makeHandlerAwareOfAsyncErrors(authController.login)
 );
 
-router.get(
-  "/api/send_email",
-  makeHandlerAwareOfAsyncErrors(userController.sendMailApi)
-);
-
 module.exports = router;
