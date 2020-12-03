@@ -4,11 +4,10 @@ require("dotenv").config({ slient: true });
 
 const db = require("../models/index.js");
 const models = db.sequelize.models;
-const { statusCode } = require("../utils");
-const EMAIL_REGEX = /^([0-9a-zA-Z].*?@([0-9a-zA-Z].*\.\w{2,4}))$/;
+const { statusCode, emailRegex } = require("../utils");
 
 function isEmail(email_or_username) {
-  return EMAIL_REGEX.test(email_or_username);
+  return emailRegex.test(email_or_username);
 }
 
 async function login(req, res) {
