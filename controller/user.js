@@ -5,7 +5,7 @@ const models = db.sequelize.models;
 const jsonwebtoken = require("jsonwebtoken");
 
 const SALT_ROUNDS = 10;
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 require("dotenv").config({ silent: true });
 
