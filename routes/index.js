@@ -5,6 +5,7 @@ const authController = require("../controller/auth");
 const cors = require("cors");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const { FcError } = require("../utils/error");
+const { statusCode } = require("../utils");
 require("dotenv").config({ silent: true });
 
 const router = express.Router();
@@ -25,7 +26,7 @@ function makeHandlerAwareOfAsyncErrors(handler) {
     } catch (error) {
       console.log(error);
       if (error instanceof FcError) {
-        res.status(400).send({
+        res.status(statusCode.BAD_REQUEST).send({
           code: error.code,
           msg: error.msg,
           data: error.data,
