@@ -4,10 +4,14 @@ require("dotenv").config({ slient: true });
 
 const db = require("../models/index.js");
 const models = db.sequelize.models;
-const { statusCode } = require("../utils");
+const { statusCode, emailRegex } = require("../utils");
+
+function isEmail(email_or_username) {
+  return emailRegex.test(email_or_username);
+}
 
 async function login(req, res) {
-  if (req.user)
+  if (req.user) {
     return res.status(statusCode.SUCCESS).json({
       msg: "Already logged in",
       data: {
@@ -17,20 +21,38 @@ async function login(req, res) {
         ),
       },
     });
+  }
 
-  let { email, password } = req.body;
-  if (!email || !password)
+  const { email_or_username, password } = req.body;
+  if (!email_or_username || !password) {
     return res
       .status(statusCode.BAD_REQUEST)
-      .send("Email or password is incorrect");
+      .send("Email/Username or password is incorrect");
+  }
 
-  let users = await models.User.findOne({ where: { email } });
-  if (!users)
+  let user;
+  if (isEmail(email_or_username)) {
+    user = await models.User.findOne({
+      where: {
+        email: email_or_username,
+      },
+    });
+  } else {
+    user = await models.User.findOne({
+      where: {
+        username: email_or_username,
+      },
+    });
+  }
+
+  if (!user) {
     return res
       .status(statusCode.BAD_REQUEST)
-      .send("Email or password is incorrect");
+      .send("Email/Username or password is incorrect");
+  }
 
-  if (bcrypt.compareSync(password, users.password)) {
+  if (bcrypt.compareSync(password, user.password)) {
+    const email = user.email;
     return res.status(statusCode.SUCCESS).json({
       msg: "Login successful",
       data: {
@@ -41,7 +63,7 @@ async function login(req, res) {
 
   return res
     .status(statusCode.BAD_REQUEST)
-    .send("Email or password is incorrect");
+    .send("Email/Username or password is incorrect");
 }
 
 module.exports = {

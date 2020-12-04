@@ -1,5 +1,6 @@
 "use strict";
 const { Model, DataTypes } = require("sequelize");
+const { emailRegex } = require("../utils/index");
 
 module.exports = (sequelize) => {
   class User extends Model {
@@ -45,7 +46,7 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           // email validation
-          is: /^([0-9a-zA-Z].*?@([0-9a-zA-Z].*\.\w{2,4}))$/gm,
+          is: emailRegex,
         },
       },
       school_name: {
