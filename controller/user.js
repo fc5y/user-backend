@@ -201,19 +201,15 @@ async function verifyAccount(req, res) {
 
 async function update(req, res, next) {
   const id = getIdParam(req);
-  if (req.body.id) {
-    res
-      .status(statusCode.BAD_REQUEST)
-      .send(
-        `Bad request: ID should not be provided, since it is determined automatically by the database.`
-      );
+  if (!req.body.id) {
+    throw new errors.FcError(errors.MISSING_USER_ID);
   } else {
     await models.User.update(req.body, {
       where: { id: id },
     })
       .then((rowsUpdate) => {
         if (rowsUpdate[0] == 0) {
-          res.status(statusCode.NOT_FOUND).send("User not found");
+          throw new errors.FcError(errors.USER_NOT_FOUND);
         } else {
           models.User.findByPk(id).then((user) => {
             res.status(statusCode.SUCCESS).json(buildUserJson(user));
