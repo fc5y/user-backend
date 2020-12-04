@@ -36,7 +36,7 @@ function sanitizeUserDetails(data) {
   return userDetails;
 }
 
-async function getAll(req, res) {
+async function getAll(req, _res) {
   let filter = {};
   let hasProperty = false;
   const attrs = ["full_name", "school_name", "email"];
@@ -58,7 +58,7 @@ async function getAll(req, res) {
       ],
       where: filter,
     });
-    res.status(statusCode.SUCCESS).json(users);
+    return { users: users };
   } else {
     const users = await models.User.findAll({
       attributes: [
@@ -70,15 +70,15 @@ async function getAll(req, res) {
         "is_email_verified",
       ],
     });
-    res.status(statusCode.SUCCESS).json(users);
+    return { users: users };
   }
 }
 
-async function getById(req, res) {
+async function getById(req, _res) {
   const id = getIdParam(req);
   const user = await models.User.findByPk(id);
   if (user) {
-    res.status(statusCode.SUCCESS).json(buildUserJson(user));
+    return buildUserJson(user);
   } else {
     throw new errors.FcError(errors.USER_NOT_FOUND);
   }
@@ -199,12 +199,12 @@ async function verifyAccount(req, res) {
   });
 }
 
-async function update(req, res, next) {
+async function update(req, _res, next) {
   const id = getIdParam(req);
   if (!req.body.id) {
     throw new errors.FcError(errors.MISSING_USER_ID);
   } else {
-    await models.User.update(req.body, {
+    models.User.update(req.body, {
       where: { id: id },
     })
       .then((rowsUpdate) => {
@@ -212,7 +212,7 @@ async function update(req, res, next) {
           throw new errors.FcError(errors.USER_NOT_FOUND);
         } else {
           models.User.findByPk(id).then((user) => {
-            res.status(statusCode.SUCCESS).json(buildUserJson(user));
+            return buildUserJson(user);
           });
         }
       })

@@ -22,7 +22,14 @@ router.get("/hi", defaultController.getHiThere);
 function makeHandlerAwareOfAsyncErrors(handler) {
   return async function (req, res, next) {
     try {
-      await handler(req, res, next);
+      const data = await handler(req, res, next);
+      if (data) {
+        res.status(statusCode.SUCCESS).send({
+          code: 0,
+          msg: "",
+          data: data,
+        });
+      }
     } catch (error) {
       console.log(error);
       if (error instanceof FcError) {
