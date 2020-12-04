@@ -4,7 +4,7 @@ const userController = require("../controller/user");
 const authController = require("../controller/auth");
 const cors = require("cors");
 const isLoggedIn = require("../middlewares/isLoggedIn");
-const { FcError, SYSTEM_ERROR, errorMap } = require("../utils/error");
+const { FcError, SYSTEM_ERROR } = require("../utils/error");
 const { statusCode } = require("../utils");
 require("dotenv").config({ silent: true });
 
@@ -28,13 +28,14 @@ function makeHandlerAwareOfAsyncErrors(handler) {
         res.status(statusCode.BAD_REQUEST).send({
           code: error.code,
           msg: error.msg,
-          data: error.data,
+          data: error.data || {},
         });
       } else {
+        const error = new FcError(SYSTEM_ERROR);
         res.status(statusCode.BAD_REQUEST).send({
-          error: SYSTEM_ERROR,
-          error_msg: errorMap[SYSTEM_ERROR],
-          data: {},
+          code: error.code,
+          msg: error.msg,
+          data: error.data || {},
         });
       }
     }

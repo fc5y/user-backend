@@ -4,6 +4,7 @@ const MISSING_FULLNAME = 1003;
 const MISSING_USER_ID = 1004;
 const USER_NOT_FOUND = 2001;
 
+const LOGIN_REQUIRED = 3001;
 const EMAIL_USERNAME_PASSWORD_INVALID = 3006;
 
 const SYSTEM_ERROR = 4002;
@@ -17,6 +18,7 @@ errorMap[USER_NOT_FOUND] = "User not found";
 errorMap[EMAIL_USERNAME_PASSWORD_INVALID] =
   "Email/Username or password is invalid";
 errorMap[SYSTEM_ERROR] = "System Error";
+errorMap[LOGIN_REQUIRED] = "Login required";
 
 class FcError extends Error {
   constructor(errCode, data = null) {
@@ -36,4 +38,5 @@ module.exports = {
   USER_NOT_FOUND,
   EMAIL_USERNAME_PASSWORD_INVALID,
   SYSTEM_ERROR,
+  LOGIN_REQUIRED,
 };

@@ -58,7 +58,11 @@ async function getAll(req, res) {
       ],
       where: filter,
     });
-    res.status(statusCode.SUCCESS).json(users);
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "",
+      data: { users: users },
+    });
   } else {
     const users = await models.User.findAll({
       attributes: [
@@ -70,7 +74,11 @@ async function getAll(req, res) {
         "is_email_verified",
       ],
     });
-    res.status(statusCode.SUCCESS).json(users);
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "",
+      data: { users: users },
+    });
   }
 }
 
@@ -78,7 +86,11 @@ async function getById(req, res) {
   const id = getIdParam(req);
   const user = await models.User.findByPk(id);
   if (user) {
-    res.status(statusCode.SUCCESS).json(buildUserJson(user));
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "",
+      data: { user: buildUserJson(user) },
+    });
   } else {
     throw new errors.FcError(errors.USER_NOT_FOUND);
   }
@@ -212,7 +224,11 @@ async function update(req, res, next) {
           throw new errors.FcError(errors.USER_NOT_FOUND);
         } else {
           models.User.findByPk(id).then((user) => {
-            res.status(statusCode.SUCCESS).json(buildUserJson(user));
+            res.status(statusCode.SUCCESS).json({
+              code: 0,
+              msg: "",
+              data: { user: buildUserJson(user) },
+            });
           });
         }
       })

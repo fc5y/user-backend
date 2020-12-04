@@ -14,6 +14,7 @@ function isEmail(email_or_username) {
 async function login(req, res) {
   if (req.user) {
     return res.status(statusCode.SUCCESS).json({
+      code: 0,
       msg: "Already logged in",
       data: {
         access_token: jwt.sign(
@@ -51,6 +52,7 @@ async function login(req, res) {
   if (bcrypt.compareSync(password, user.password)) {
     const email = user.email;
     return res.status(statusCode.SUCCESS).json({
+      code: 0,
       msg: "Login successful",
       data: {
         access_token: jwt.sign({ email }, process.env.JWT_SECRET),
