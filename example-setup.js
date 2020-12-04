@@ -10,12 +10,14 @@ async function initDb() {
   await db.sequelize.sync();
   const userObject = {
     full_name: "Test User",
+    username: "test",
     email: "testemail@gmail.com",
-    password: "1234",
+    password: bcrypt.hashSync("1234"),
     is_email_verified: false,
   };
   const anotherUser = {
     full_name: "Another Test",
+    username: "another",
     email: "another@test.com",
     password: bcrypt.hashSync("12345678"),
     is_email_verified: false,

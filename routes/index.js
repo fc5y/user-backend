@@ -2,8 +2,9 @@ const express = require("express");
 const defaultController = require("../controller/index");
 const userController = require("../controller/user");
 const authController = require("../controller/auth");
-const jwt = require("express-jwt");
-const { FcError } = require("../error");
+const cors = require("cors");
+const isLoggedIn = require("../middlewares/isLoggedIn");
+const { FcError } = require("../utils");
 require("dotenv").config({ silent: true });
 
 const router = express.Router();
@@ -20,7 +21,7 @@ router.get("/hi", defaultController.getHiThere);
 function makeHandlerAwareOfAsyncErrors(handler) {
   return async function (req, res, next) {
     try {
-      await handler(req, res);
+      await handler(req, res, next);
     } catch (error) {
       if (error instanceof FcError) {
         res.status(400).send({
@@ -35,14 +36,19 @@ function makeHandlerAwareOfAsyncErrors(handler) {
   };
 }
 
+// CORs
+router.use(cors());
+
 // User
 
 router.get(
   "/api/v1/users",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getAll)
 );
 router.get(
   "/api/v1/users/:id",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getById)
 );
 router.post(
@@ -51,21 +57,28 @@ router.post(
 );
 router.put(
   "/api/v1/users/:id",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.update)
 );
 router.delete(
   "/api/v1/users/:id",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.remove)
+);
+
+router.get(
+  "/api/v1/verify/:id",
+  makeHandlerAwareOfAsyncErrors(userController.createVerifyToken)
+);
+
+router.post(
+  "/api/v1/verify/:id",
+  makeHandlerAwareOfAsyncErrors(userController.verifyAccount)
 );
 
 // Auth
 router.post(
   "/api/v1/login",
-  jwt({
-    secret: process.env.JWT_SECRET,
-    algorithms: ["HS256"],
-    credentialsRequired: false,
-  }),
   makeHandlerAwareOfAsyncErrors(authController.login)
 );
 
