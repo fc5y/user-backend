@@ -4,7 +4,7 @@ const userController = require("../controller/user");
 const authController = require("../controller/auth");
 const cors = require("cors");
 const isLoggedIn = require("../middlewares/isLoggedIn");
-const { FcError } = require("../utils/error");
+const { FcError, SYSTEM_ERROR, errorMap } = require("../utils/error");
 const { statusCode } = require("../utils");
 require("dotenv").config({ silent: true });
 
@@ -22,16 +22,8 @@ router.get("/hi", defaultController.getHiThere);
 function makeHandlerAwareOfAsyncErrors(handler) {
   return async function (req, res, next) {
     try {
-      const data = await handler(req, res, next);
-      if (data) {
-        res.status(statusCode.SUCCESS).send({
-          code: 0,
-          msg: "",
-          data: data,
-        });
-      }
+      await handler(req, res, next);
     } catch (error) {
-      console.log(error);
       if (error instanceof FcError) {
         res.status(statusCode.BAD_REQUEST).send({
           code: error.code,
@@ -39,7 +31,11 @@ function makeHandlerAwareOfAsyncErrors(handler) {
           data: error.data,
         });
       } else {
-        next(error);
+        res.status(statusCode.BAD_REQUEST).send({
+          error: SYSTEM_ERROR,
+          error_msg: errorMap[SYSTEM_ERROR],
+          data: {},
+        });
       }
     }
   };

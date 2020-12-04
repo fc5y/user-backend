@@ -4,18 +4,24 @@ require("dotenv").config({ slient: true });
 
 const db = require("../models/index.js");
 const models = db.sequelize.models;
-const { emailRegex } = require("../utils");
+const { statusCode, emailRegex } = require("../utils");
 const errors = require("../utils/error");
 
 function isEmail(email_or_username) {
   return emailRegex.test(email_or_username);
 }
 
-async function login(req, _res) {
+async function login(req, res) {
   if (req.user) {
-    return {
-      access_token: jwt.sign({ email: req.user.email }, process.env.JWT_SECRET),
-    };
+    return res.status(statusCode.SUCCESS).json({
+      msg: "Already logged in",
+      data: {
+        access_token: jwt.sign(
+          { email: req.user.email },
+          process.env.JWT_SECRET
+        ),
+      },
+    });
   }
 
   const { email_or_username, password } = req.body;
@@ -44,9 +50,12 @@ async function login(req, _res) {
 
   if (bcrypt.compareSync(password, user.password)) {
     const email = user.email;
-    return {
-      access_token: jwt.sign({ email }, process.env.JWT_SECRET),
-    };
+    return res.status(statusCode.SUCCESS).json({
+      msg: "Login successful",
+      data: {
+        access_token: jwt.sign({ email }, process.env.JWT_SECRET),
+      },
+    });
   }
 
   throw new errors.FcError(errors.EMAIL_USERNAME_PASSWORD_INVALID);

@@ -36,7 +36,7 @@ function sanitizeUserDetails(data) {
   return userDetails;
 }
 
-async function getAll(req, _res) {
+async function getAll(req, res) {
   let filter = {};
   let hasProperty = false;
   const attrs = ["full_name", "school_name", "email"];
@@ -58,7 +58,7 @@ async function getAll(req, _res) {
       ],
       where: filter,
     });
-    return { users: users };
+    res.status(statusCode.SUCCESS).json(users);
   } else {
     const users = await models.User.findAll({
       attributes: [
@@ -70,15 +70,15 @@ async function getAll(req, _res) {
         "is_email_verified",
       ],
     });
-    return { users: users };
+    res.status(statusCode.SUCCESS).json(users);
   }
 }
 
-async function getById(req, _res) {
+async function getById(req, res) {
   const id = getIdParam(req);
   const user = await models.User.findByPk(id);
   if (user) {
-    return buildUserJson(user);
+    res.status(statusCode.SUCCESS).json(buildUserJson(user));
   } else {
     throw new errors.FcError(errors.USER_NOT_FOUND);
   }
@@ -199,7 +199,7 @@ async function verifyAccount(req, res) {
   });
 }
 
-async function update(req, _res, next) {
+async function update(req, res, next) {
   const id = getIdParam(req);
   if (!req.body.id) {
     throw new errors.FcError(errors.MISSING_USER_ID);
@@ -212,7 +212,7 @@ async function update(req, _res, next) {
           throw new errors.FcError(errors.USER_NOT_FOUND);
         } else {
           models.User.findByPk(id).then((user) => {
-            return buildUserJson(user);
+            res.status(statusCode.SUCCESS).json(buildUserJson(user));
           });
         }
       })
