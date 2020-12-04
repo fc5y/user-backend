@@ -72,5 +72,13 @@ router.post(
   "/api/v1/login",
   makeHandlerAwareOfAsyncErrors(authController.login)
 );
+router.post(
+  "/api/v1/send_otp",
+  makeHandlerAwareOfAsyncErrors(authController.sendOtp)
+);
+router.post(
+  "/api/v1/signup",
+  makeHandlerAwareOfAsyncErrors(authController.signup)
+);
 
 module.exports = router;

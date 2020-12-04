@@ -17,6 +17,7 @@ let sequelize = new Sequelize({
 
 const modelDefiners = [
   require("./user"),
+  require("./email_verification"),
   // Add more models here...
   // require('./models/item'),
 ];
