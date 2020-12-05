@@ -17,6 +17,8 @@ let sequelize = new Sequelize({
 
 const modelDefiners = [
   require("./user"),
+  require("./contest"),
+  require("./user_contest_mapping"),
   // Add more models here...
   // require('./models/item'),
 ];
