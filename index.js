@@ -36,4 +36,13 @@ assertDatabaseConnectionOk().then(() => {
   app.listen(PORT, () => {
     console.log(`[User Backend] Listen on port ${PORT}`);
   });
+
+  app.use(function (req, res) {
+    // Handle uncaught error
+    res.status(400).json({
+      code: 1001,
+      msg: "Bad request",
+      data: null,
+    });
+  });
 });
