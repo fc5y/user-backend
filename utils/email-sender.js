@@ -1,10 +1,9 @@
 var nodemailer = require("nodemailer");
 const errors = require("./error");
 
-// TODO: Move clientId, clientSecret, accessToken, refreshToken to config file
 const transporter = nodemailer.createTransport({
   host: process.env.GMAIL_HOST,
-  port: 465,
+  port: process.env.GMAIL_PORT,
   secure: true,
   auth: {
     type: "OAuth2",
