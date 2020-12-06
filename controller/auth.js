@@ -90,8 +90,7 @@ async function login(req, res) {
 
 async function signup(req, res) {
   const user = await models.User.create(sanitizeUserDetails(req.body));
-  if (user == undefined)
-    throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
+  if (!user) throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
 
   res.status(statusCode.SUCCESS).json({
     code: 0,
