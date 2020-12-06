@@ -7,7 +7,9 @@
     "dev": "ENV=dev nodemon index.js",
     "start": "ENV=prod node index.js",
     "test": "jest",
-    "lint": "./node_modules/.bin/eslint \"./**/*.js\" --fix"
+    "lint": "./node_modules/.bin/eslint \"./**/*.js\" --fix",
+    "migrate": "npx sequelize-cli db:migrate",
+    "seed": "npx sequelize-cli db:seed:all"
   },
   "husky": {
     "hooks": {
@@ -16,7 +18,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "npm run lint"
+      "./node_modules/.bin/eslint \"./**/*.js\""
     ]
   },
   "repository": {
@@ -31,6 +33,7 @@
   "homepage": "https://github.com/fc5y/user-backend#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mysql2": "^2.2.5",
