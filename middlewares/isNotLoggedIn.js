@@ -1,8 +1,7 @@
-const { statusCode } = require("../utils");
+const errors = require("../utils/error");
 
 const isNotLoggedIn = (req, res, next) => {
-  if (req.user)
-    return res.status(statusCode.FORBIDDEN).send("You must logout to continue");
+  if (req.user) throw new errors.FcError(errors.LOGOUT_REQUIRED);
   next();
 };
 

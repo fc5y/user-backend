@@ -5,6 +5,7 @@ const db = require("../models/index.js");
 const models = db.sequelize.models;
 const { statusCode, emailRegex } = require("../utils");
 const errors = require("../utils/error");
+const { buildUserJson } = require("./user");
 
 const SALT_ROUNDS = 10;
 const bcrypt = require("bcryptjs");
@@ -26,17 +27,6 @@ function sanitizeUserDetails(data) {
     is_email_verified: data.is_email_verified,
   };
   return userDetails;
-}
-
-function buildUserJson(user) {
-  return {
-    id: user.id,
-    username: user.username,
-    full_name: user.full_name,
-    school_name: user.school_name,
-    email: user.email,
-    is_email_verified: user.is_email_verified,
-  };
 }
 
 async function login(req, res) {

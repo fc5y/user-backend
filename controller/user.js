@@ -216,6 +216,7 @@ async function remove(req, res) {
 }
 
 module.exports = {
+  buildUserJson,
   getAll,
   getById,
   createVerifyToken,

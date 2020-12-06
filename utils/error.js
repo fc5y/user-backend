@@ -8,6 +8,7 @@ const USER_NOT_FOUND = 2001;
 
 const LOGIN_REQUIRED = 3001;
 const EMAIL_USERNAME_PASSWORD_INVALID = 3006;
+const LOGOUT_REQUIRED = 3007;
 
 const SYSTEM_ERROR = 4002;
 
@@ -21,6 +22,7 @@ errorMap[ID_IS_NOT_EXPECTED] =
 errorMap[USER_NOT_FOUND] = "User not found";
 errorMap[EMAIL_USERNAME_PASSWORD_INVALID] =
   "Email/Username or password is invalid";
+errorMap[LOGOUT_REQUIRED] = "Logout required";
 errorMap[SYSTEM_ERROR] = "System Error";
 errorMap[LOGIN_REQUIRED] = "Login required";
 
@@ -42,6 +44,7 @@ module.exports = {
   ID_IS_NOT_EXPECTED,
   USER_NOT_FOUND,
   EMAIL_USERNAME_PASSWORD_INVALID,
+  LOGOUT_REQUIRED,
   SYSTEM_ERROR,
   LOGIN_REQUIRED,
 };
