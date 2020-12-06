@@ -1,13 +1,41 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 require("dotenv").config({ slient: true });
 
 const db = require("../models/index.js");
 const models = db.sequelize.models;
 const { statusCode, emailRegex } = require("../utils");
 
+const SALT_ROUNDS = 10;
+const bcrypt = require("bcryptjs");
+
 function isEmail(email_or_username) {
   return emailRegex.test(email_or_username);
+}
+
+function sanitizeUserDetails(data) {
+  const salt = bcrypt.genSaltSync(SALT_ROUNDS);
+  const hashedPassword = bcrypt.hashSync(data.password, salt);
+  let userDetails = {
+    username: data.username,
+    full_name: data.full_name,
+    email: data.email,
+    school_name: data.school_name,
+    password: hashedPassword,
+    avatar: data.avatar,
+    is_email_verified: data.is_email_verified,
+  };
+  return userDetails;
+}
+
+function buildUserJson(user) {
+  return {
+    id: user.id,
+    username: user.username,
+    full_name: user.full_name,
+    school_name: user.school_name,
+    email: user.email,
+    is_email_verified: user.is_email_verified,
+  };
 }
 
 async function login(req, res) {
@@ -25,9 +53,10 @@ async function login(req, res) {
 
   const { email_or_username, password } = req.body;
   if (!email_or_username || !password) {
-    return res
-      .status(statusCode.BAD_REQUEST)
-      .send("Email/Username or password is incorrect");
+    return res.status(statusCode.BAD_REQUEST).json({
+      code: statusCode.BAD_REQUEST,
+      msg: "Email/Username or password is incorrect",
+    });
   }
 
   let user;
@@ -46,14 +75,16 @@ async function login(req, res) {
   }
 
   if (!user) {
-    return res
-      .status(statusCode.BAD_REQUEST)
-      .send("Email/Username or password is incorrect");
+    return res.status(statusCode.BAD_REQUEST).json({
+      code: statusCode.BAD_REQUEST,
+      msg: "Email/Username or password is incorrect",
+    });
   }
 
   if (bcrypt.compareSync(password, user.password)) {
     const email = user.email;
     return res.status(statusCode.SUCCESS).json({
+      code: statusCode.SUCCESS,
       msg: "Login successful",
       data: {
         access_token: jwt.sign({ email }, process.env.JWT_SECRET),
@@ -61,11 +92,30 @@ async function login(req, res) {
     });
   }
 
-  return res
-    .status(statusCode.BAD_REQUEST)
-    .send("Email/Username or password is incorrect");
+  return res.status(statusCode.BAD_REQUEST).json({
+    code: statusCode.BAD_REQUEST,
+    msg: "Email/Username or password is incorrect",
+  });
+}
+
+async function signup(req, res) {
+  if (req.body.id) {
+    res
+      .status(statusCode.BAD_REQUEST)
+      .send(
+        `Bad request: ID should not be provided, since it is determined automatically by the database.`
+      );
+  } else {
+    const user = await models.User.create(sanitizeUserDetails(req.body));
+    res.status(statusCode.SUCCESS).json({
+      code: statusCode.SUCCESS,
+      msg: "Create user successful",
+      data: buildUserJson(user),
+    });
+  }
 }
 
 module.exports = {
   login,
+  signup,
 };

@@ -4,6 +4,7 @@ const userController = require("../controller/user");
 const authController = require("../controller/auth");
 const cors = require("cors");
 const isLoggedIn = require("../middlewares/isLoggedIn");
+const isNotLoggedIn = require("../middlewares/isNotLoggedIn");
 require("dotenv").config({ silent: true });
 
 const router = express.Router();
@@ -42,10 +43,6 @@ router.get(
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getById)
 );
-router.post(
-  "/api/v1/users",
-  makeHandlerAwareOfAsyncErrors(userController.create)
-);
 router.put(
   "/api/v1/users/:id",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
@@ -71,6 +68,11 @@ router.post(
 router.post(
   "/api/v1/login",
   makeHandlerAwareOfAsyncErrors(authController.login)
+);
+router.post(
+  "/api/v1/signup",
+  makeHandlerAwareOfAsyncErrors(isNotLoggedIn),
+  makeHandlerAwareOfAsyncErrors(authController.signup)
 );
 
 module.exports = router;
