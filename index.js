@@ -14,7 +14,7 @@ app.use(
     secret: process.env.JWT_SECRET,
     algorithms: ["HS256"],
     credentialsRequired: false,
-  })
+  }),
 );
 app.use("/", routes);
 
@@ -48,21 +48,20 @@ assertDatabaseConnectionOk().then(() => {
 
   // Handle caught error
   app.use(function (err, req, res, next) {
-
     switch (err.name) {
-    case "UnauthorizedError":
-      res.status(400).json({
-        code: 3005,
-        msg: err.code,
-        data: null,
-      });
-      break;
-    default:
-      res.status(400).json({
-        code: 1001,
-        msg: "Bad request",
-        data: null,
-      });
+      case "UnauthorizedError":
+        res.status(400).json({
+          code: 3005,
+          msg: err.code,
+          data: null,
+        });
+        break;
+      default:
+        res.status(400).json({
+          code: 1001,
+          msg: "Bad request",
+          data: null,
+        });
     }
   });
 });
