@@ -6,6 +6,7 @@ const jsonwebtoken = require("jsonwebtoken");
 
 const SALT_ROUNDS = 10;
 const bcrypt = require("bcryptjs");
+const errors = require("../utils/error");
 
 require("dotenv").config({ silent: true });
 
@@ -57,7 +58,11 @@ async function getAll(req, res) {
       ],
       where: filter,
     });
-    res.status(statusCode.SUCCESS).json(users);
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "",
+      data: { users: users },
+    });
   } else {
     const users = await models.User.findAll({
       attributes: [
@@ -69,7 +74,11 @@ async function getAll(req, res) {
         "is_email_verified",
       ],
     });
-    res.status(statusCode.SUCCESS).json(users);
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "",
+      data: { users: users },
+    });
   }
 }
 
@@ -77,9 +86,13 @@ async function getById(req, res) {
   const id = getIdParam(req);
   const user = await models.User.findByPk(id);
   if (user) {
-    res.status(statusCode.SUCCESS).json(buildUserJson(user));
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "",
+      data: { user: buildUserJson(user) },
+    });
   } else {
-    res.status(statusCode.NOT_FOUND).send("404 - Not found");
+    throw new errors.FcError(errors.USER_NOT_FOUND);
   }
 }
 
@@ -200,22 +213,22 @@ async function verifyAccount(req, res) {
 
 async function update(req, res, next) {
   const id = getIdParam(req);
-  if (req.body.id) {
-    res
-      .status(statusCode.BAD_REQUEST)
-      .send(
-        `Bad request: ID should not be provided, since it is determined automatically by the database.`
-      );
+  if (!req.body.id) {
+    throw new errors.FcError(errors.MISSING_USER_ID);
   } else {
-    await models.User.update(req.body, {
+    models.User.update(req.body, {
       where: { id: id },
     })
       .then((rowsUpdate) => {
         if (rowsUpdate[0] == 0) {
-          res.status(statusCode.NOT_FOUND).send("User not found");
+          throw new errors.FcError(errors.USER_NOT_FOUND);
         } else {
           models.User.findByPk(id).then((user) => {
-            res.status(statusCode.SUCCESS).json(buildUserJson(user));
+            res.status(statusCode.SUCCESS).json({
+              code: 0,
+              msg: "",
+              data: { user: buildUserJson(user) },
+            });
           });
         }
       })

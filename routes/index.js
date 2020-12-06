@@ -4,6 +4,8 @@ const userController = require("../controller/user");
 const authController = require("../controller/auth");
 const cors = require("cors");
 const isLoggedIn = require("../middlewares/isLoggedIn");
+const { FcError, SYSTEM_ERROR } = require("../utils/error");
+const { statusCode } = require("../utils");
 require("dotenv").config({ silent: true });
 
 const router = express.Router();
@@ -22,7 +24,20 @@ function makeHandlerAwareOfAsyncErrors(handler) {
     try {
       await handler(req, res, next);
     } catch (error) {
-      next(error);
+      if (error instanceof FcError) {
+        res.status(statusCode.BAD_REQUEST).send({
+          code: error.code,
+          msg: error.msg,
+          data: error.data || {},
+        });
+      } else {
+        const error = new FcError(SYSTEM_ERROR);
+        res.status(statusCode.BAD_REQUEST).send({
+          code: error.code,
+          msg: error.msg,
+          data: error.data || {},
+        });
+      }
     }
   };
 }
