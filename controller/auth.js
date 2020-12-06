@@ -4,6 +4,7 @@ require("dotenv").config({ slient: true });
 const db = require("../models/index.js");
 const models = db.sequelize.models;
 const { statusCode, emailRegex } = require("../utils");
+const errors = require("../utils/error");
 
 const SALT_ROUNDS = 10;
 const bcrypt = require("bcryptjs");
@@ -41,6 +42,7 @@ function buildUserJson(user) {
 async function login(req, res) {
   if (req.user) {
     return res.status(statusCode.SUCCESS).json({
+      code: 0,
       msg: "Already logged in",
       data: {
         access_token: jwt.sign(
@@ -53,10 +55,7 @@ async function login(req, res) {
 
   const { email_or_username, password } = req.body;
   if (!email_or_username || !password) {
-    return res.status(statusCode.BAD_REQUEST).json({
-      code: statusCode.BAD_REQUEST,
-      msg: "Email/Username or password is incorrect",
-    });
+    throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
   }
 
   let user;
@@ -75,36 +74,25 @@ async function login(req, res) {
   }
 
   if (!user) {
-    return res.status(statusCode.BAD_REQUEST).json({
-      code: statusCode.BAD_REQUEST,
-      msg: "Email/Username or password is incorrect",
-    });
+    throw new errors.FcError(errors.EMAIL_USERNAME_PASSWORD_INVALID);
   }
 
   if (bcrypt.compareSync(password, user.password)) {
     const email = user.email;
     return res.status(statusCode.SUCCESS).json({
-      code: statusCode.SUCCESS,
+      code: 0,
       msg: "Login successful",
       data: {
         access_token: jwt.sign({ email }, process.env.JWT_SECRET),
       },
     });
   }
-
-  return res.status(statusCode.BAD_REQUEST).json({
-    code: statusCode.BAD_REQUEST,
-    msg: "Email/Username or password is incorrect",
-  });
+  throw new errors.FcError(errors.EMAIL_USERNAME_PASSWORD_INVALID);
 }
 
 async function signup(req, res) {
   if (req.body.id) {
-    res
-      .status(statusCode.BAD_REQUEST)
-      .send(
-        `Bad request: ID should not be provided, since it is determined automatically by the database.`
-      );
+    throw new errors.FcError(errors.ID_IS_NOT_EXPECTED);
   } else {
     const user = await models.User.create(sanitizeUserDetails(req.body));
     res.status(statusCode.SUCCESS).json({
