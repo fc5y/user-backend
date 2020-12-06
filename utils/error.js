@@ -14,6 +14,7 @@ const EMAIL_EXISTED = 3010;
 const USERNAME_EXISTED = 3011;
 
 const SYSTEM_ERROR = 4002;
+const SEND_EMAIL_ERROR = 4003;
 
 let errorMap = {};
 errorMap[MISSING_REQUIRED_FIELDS] = "Missing required field(s)";
@@ -30,6 +31,7 @@ errorMap[OTP_INVALID] = "OTP is invalid";
 errorMap[OTP_EXPIRED] = "OTP is expired";
 errorMap[EMAIL_EXISTED] = "Email existed";
 errorMap[USERNAME_EXISTED] = "Username existed";
+errorMap[SEND_EMAIL_ERROR] = "Send email Error";
 
 class FcError extends Error {
   constructor(errCode, data = null) {
@@ -55,4 +57,5 @@ module.exports = {
   OTP_EXPIRED,
   EMAIL_EXISTED,
   USERNAME_EXISTED,
+  SEND_EMAIL_ERROR,
 };

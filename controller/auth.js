@@ -11,6 +11,7 @@ const SALT_ROUNDS = 10;
 const bcrypt = require("bcryptjs");
 const otpGenerator = require("otp-generator");
 const { updateOrCreate } = require("../utils/models.js");
+const { createMessage, sendMail } = require("../utils/email-sender");
 
 function isEmail(email_or_username) {
   return emailRegex.test(email_or_username);
@@ -108,7 +109,7 @@ async function sendOtp(req, res) {
   });
   const now = new Date();
   const expired_time = new Date(now.getTime() + 10 * 60000); // 10 minutes later
-  updateOrCreate(
+  await updateOrCreate(
     models.EmailVerification,
     { email: req.body.email },
     {
@@ -116,17 +117,18 @@ async function sendOtp(req, res) {
       otp: otp,
       expired_time: expired_time,
     }
-  )
-    .then(function (_result) {
-      return res.status(statusCode.SUCCESS).send({
-        code: 0,
-        msg: "OTP sent",
-        data: {},
-      });
-    })
-    .catch(function (_err) {
-      throw new errors.FcError(errors.SYSTEM_ERROR);
-    });
+  );
+  const message = createMessage(
+    req.body.email,
+    "Email verification",
+    "OTP: " + otp
+  );
+  await sendMail(message);
+  return res.status(statusCode.SUCCESS).send({
+    code: 0,
+    msg: "Sent OTP successfully",
+    data: {},
+  });
 }
 
 async function checkOtp(req) {
