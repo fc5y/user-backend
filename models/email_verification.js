@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
         },
       },
       expired_time: {
-        type: DataTypes.TIME,
+        type: DataTypes.DATE,
         allowNull: false,
       },
     },

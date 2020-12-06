@@ -3,9 +3,7 @@ const db = require("../models/index.js");
 const models = db.sequelize.models;
 
 const jsonwebtoken = require("jsonwebtoken");
-
-const SALT_ROUNDS = 10;
-const bcrypt = require("bcryptjs");
+const errors = require("../utils/error");
 
 require("dotenv").config({ silent: true });
 
@@ -18,21 +16,6 @@ function buildUserJson(user) {
     email: user.email,
     is_email_verified: user.is_email_verified,
   };
-}
-
-function sanitizeUserDetails(data) {
-  const salt = bcrypt.genSaltSync(SALT_ROUNDS);
-  const hashedPassword = bcrypt.hashSync(data.password, salt);
-  let userDetails = {
-    username: data.username,
-    full_name: data.full_name,
-    email: data.email,
-    school_name: data.school_name,
-    password: hashedPassword,
-    avatar: data.avatar,
-    is_email_verified: data.is_email_verified,
-  };
-  return userDetails;
 }
 
 async function getAll(req, res) {
@@ -57,7 +40,11 @@ async function getAll(req, res) {
       ],
       where: filter,
     });
-    res.status(statusCode.SUCCESS).json(users);
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "",
+      data: { users: users },
+    });
   } else {
     const users = await models.User.findAll({
       attributes: [
@@ -69,30 +56,25 @@ async function getAll(req, res) {
         "is_email_verified",
       ],
     });
-    res.status(statusCode.SUCCESS).json(users);
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "",
+      data: { users: users },
+    });
   }
 }
 
 async function getById(req, res) {
-  const id = getIdParam(req);
-  const user = await models.User.findByPk(id);
+  const user_id = !req.params.id ? req.user.id : getIdParam(req);
+  const user = await models.User.findByPk(user_id);
   if (user) {
-    res.status(statusCode.SUCCESS).json(buildUserJson(user));
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "",
+      data: { user: buildUserJson(user) },
+    });
   } else {
-    res.status(statusCode.NOT_FOUND).send("404 - Not found");
-  }
-}
-
-async function create(req, res) {
-  if (req.body.id) {
-    res
-      .status(statusCode.BAD_REQUEST)
-      .send(
-        `Bad request: ID should not be provided, since it is determined automatically by the database.`
-      );
-  } else {
-    const user = await models.User.create(sanitizeUserDetails(req.body));
-    res.status(statusCode.SUCCESS).json(buildUserJson(user));
+    throw new errors.FcError(errors.USER_NOT_FOUND);
   }
 }
 
@@ -200,22 +182,22 @@ async function verifyAccount(req, res) {
 
 async function update(req, res, next) {
   const id = getIdParam(req);
-  if (req.body.id) {
-    res
-      .status(statusCode.BAD_REQUEST)
-      .send(
-        `Bad request: ID should not be provided, since it is determined automatically by the database.`
-      );
+  if (!req.body.id) {
+    throw new errors.FcError(errors.MISSING_USER_ID);
   } else {
-    await models.User.update(req.body, {
+    models.User.update(req.body, {
       where: { id: id },
     })
       .then((rowsUpdate) => {
         if (rowsUpdate[0] == 0) {
-          res.status(statusCode.NOT_FOUND).send("User not found");
+          throw new errors.FcError(errors.USER_NOT_FOUND);
         } else {
           models.User.findByPk(id).then((user) => {
-            res.status(statusCode.SUCCESS).json(buildUserJson(user));
+            res.status(statusCode.SUCCESS).json({
+              code: 0,
+              msg: "",
+              data: { user: buildUserJson(user) },
+            });
           });
         }
       })
@@ -234,9 +216,9 @@ async function remove(req, res) {
 }
 
 module.exports = {
+  buildUserJson,
   getAll,
   getById,
-  create,
   createVerifyToken,
   verifyAccount,
   update,

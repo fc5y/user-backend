@@ -4,6 +4,9 @@ const userController = require("../controller/user");
 const authController = require("../controller/auth");
 const cors = require("cors");
 const isLoggedIn = require("../middlewares/isLoggedIn");
+const isNotUser = require("../middlewares/isNotUser");
+const { FcError, SYSTEM_ERROR } = require("../utils/error");
+const { statusCode } = require("../utils");
 require("dotenv").config({ silent: true });
 
 const router = express.Router();
@@ -22,7 +25,21 @@ function makeHandlerAwareOfAsyncErrors(handler) {
     try {
       await handler(req, res, next);
     } catch (error) {
-      next(error);
+      if (error instanceof FcError) {
+        res.status(statusCode.BAD_REQUEST).send({
+          code: error.code,
+          msg: error.msg,
+          data: error.data || {},
+        });
+      } else {
+        console.log(error);
+        const fcError = new FcError(SYSTEM_ERROR);
+        res.status(statusCode.BAD_REQUEST).send({
+          code: fcError.code,
+          msg: error.msg,
+          data: fcError.data || {},
+        });
+      }
     }
   };
 }
@@ -38,16 +55,12 @@ router.get(
   makeHandlerAwareOfAsyncErrors(userController.getAll)
 );
 router.get(
-  "/api/v1/users/:id",
+  "/api/v1/user/:id?",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getById)
 );
-router.post(
-  "/api/v1/users",
-  makeHandlerAwareOfAsyncErrors(userController.create)
-);
 router.put(
-  "/api/v1/users/:id",
+  "/api/v1/user/:id",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.update)
 );
@@ -78,6 +91,7 @@ router.post(
 );
 router.post(
   "/api/v1/signup",
+  makeHandlerAwareOfAsyncErrors(isNotUser),
   makeHandlerAwareOfAsyncErrors(authController.signup)
 );
 
