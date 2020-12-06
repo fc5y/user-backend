@@ -81,16 +81,15 @@ async function login(req, res) {
 }
 
 async function signup(req, res) {
-  if (req.body.id) {
-    throw new errors.FcError(errors.ID_IS_NOT_EXPECTED);
-  } else {
-    const user = await models.User.create(sanitizeUserDetails(req.body));
-    res.status(statusCode.SUCCESS).json({
-      code: 0,
-      msg: "Create user successful",
-      data: buildUserJson(user),
-    });
-  }
+  const user = await models.User.create(sanitizeUserDetails(req.body));
+  if (user == undefined)
+    throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
+
+  res.status(statusCode.SUCCESS).json({
+    code: 0,
+    msg: "Create user successful",
+    data: buildUserJson(user),
+  });
 }
 
 module.exports = {
