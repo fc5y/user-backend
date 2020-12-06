@@ -65,8 +65,8 @@ async function getAll(req, res) {
 }
 
 async function getById(req, res) {
-  const id = getIdParam(req);
-  const user = await models.User.findByPk(id);
+  const user_id = !req.params.id ? req.user.id : getIdParam(req);
+  const user = await models.User.findByPk(user_id);
   if (user) {
     res.status(statusCode.SUCCESS).json({
       code: 0,

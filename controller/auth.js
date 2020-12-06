@@ -36,7 +36,10 @@ async function login(req, res) {
       msg: "Already logged in",
       data: {
         access_token: jwt.sign(
-          { email: req.user.email },
+          {
+            email: req.user.email,
+            id: user.id,
+          },
           process.env.JWT_SECRET
         ),
       },
@@ -68,12 +71,17 @@ async function login(req, res) {
   }
 
   if (bcrypt.compareSync(password, user.password)) {
-    const email = user.email;
     return res.status(statusCode.SUCCESS).json({
       code: 0,
       msg: "Login successful",
       data: {
-        access_token: jwt.sign({ email }, process.env.JWT_SECRET),
+        access_token: jwt.sign(
+          {
+            email: user.email,
+            id: user.id,
+          },
+          process.env.JWT_SECRET
+        ),
       },
     });
   }
