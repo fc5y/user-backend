@@ -96,7 +96,7 @@ async function signup(req, res) {
   } else {
     const user = await models.User.create(sanitizeUserDetails(req.body));
     res.status(statusCode.SUCCESS).json({
-      code: statusCode.SUCCESS,
+      code: 0,
       msg: "Create user successful",
       data: buildUserJson(user),
     });
