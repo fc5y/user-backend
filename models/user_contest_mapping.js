@@ -1,9 +1,9 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, DataTypes } = require("sequelize");
 const User = require("./user");
 const Contest = require("./contest");
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize) => {
   class UserContestMapping extends Model {
     /**
      * Helper method for defining associations.
