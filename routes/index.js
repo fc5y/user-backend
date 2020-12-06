@@ -4,6 +4,7 @@ const userController = require("../controller/user");
 const authController = require("../controller/auth");
 const cors = require("cors");
 const isLoggedIn = require("../middlewares/isLoggedIn");
+const isNotUser = require("../middlewares/isNotUser");
 const { FcError, SYSTEM_ERROR } = require("../utils/error");
 const { statusCode } = require("../utils");
 require("dotenv").config({ silent: true });
@@ -57,12 +58,8 @@ router.get(
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getById)
 );
-router.post(
-  "/api/v1/users",
-  makeHandlerAwareOfAsyncErrors(userController.create)
-);
 router.put(
-  "/api/v1/users/:id",
+  "/api/v1/user/:id",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.update)
 );
@@ -86,6 +83,11 @@ router.post(
 router.post(
   "/api/v1/login",
   makeHandlerAwareOfAsyncErrors(authController.login)
+);
+router.post(
+  "/api/v1/signup",
+  makeHandlerAwareOfAsyncErrors(isNotUser),
+  makeHandlerAwareOfAsyncErrors(authController.signup)
 );
 
 module.exports = router;
