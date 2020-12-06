@@ -37,12 +37,32 @@ assertDatabaseConnectionOk().then(() => {
     console.log(`[User Backend] Listen on port ${PORT}`);
   });
 
+  // Handle invalid endpoint error
   app.use(function (req, res) {
-    // Handle uncaught error
     res.status(400).json({
-      code: 1001,
-      msg: "Bad request",
+      code: 1006,
+      msg: "Invalid endpoint/method",
       data: null,
     });
+  });
+
+  // Handle caught error
+  app.use(function (err, req, res, next) {
+
+    switch (err.name) {
+    case "UnauthorizedError":
+      res.status(400).json({
+        code: 3005,
+        msg: err.code,
+        data: null,
+      });
+      break;
+    default:
+      res.status(400).json({
+        code: 1001,
+        msg: "Bad request",
+        data: null,
+      });
+    }
   });
 });
