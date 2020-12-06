@@ -8,8 +8,9 @@ const isLoggedIn = (req, res, next) => {
       msg: error.msg,
       data: error.data || {},
     });
+  } else {
+    next();
   }
-  next();
 };
 
 module.exports = isLoggedIn;

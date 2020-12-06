@@ -14,10 +14,8 @@ module.exports = {
   },
   plugins: ["prettier"],
   rules: {
-    indent: ["error", 2],
     "linebreak-style": ["error", "unix"],
     semi: ["error", "always"],
-    "prettier/prettier": ["error", { singleQuote: false }],
-    "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+    "no-unused-vars": 0,
   },
 };
