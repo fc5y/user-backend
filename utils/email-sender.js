@@ -17,15 +17,10 @@ const transporter = nodemailer.createTransport({
 
 function createMessage(recipients, subject, textBody, htmlBody) {
   const message = {
-    // sender info
     from: `Free Contest ${process.env.GMAIL_ADDRESS}`,
-    // Comma separated list of recipients
     to: recipients,
-    // Subject of the message
     subject: subject,
-    // plaintext body
     text: textBody,
-    // HTML body
     html: htmlBody,
   };
   return message;
