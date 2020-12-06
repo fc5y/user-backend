@@ -59,7 +59,7 @@ router.get(
   makeHandlerAwareOfAsyncErrors(userController.getById)
 );
 router.put(
-  "/api/v1/users/:id",
+  "/api/v1/user/:id",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.update)
 );

@@ -2,7 +2,6 @@ const MISSING_REQUIRED_FIELDS = 1000;
 const MISSING_EMAIL = 1002;
 const MISSING_FULLNAME = 1003;
 const MISSING_USER_ID = 1004;
-const ID_IS_NOT_EXPECTED = 1005;
 
 const USER_NOT_FOUND = 2001;
 
@@ -17,8 +16,6 @@ errorMap[MISSING_REQUIRED_FIELDS] = "Missing required field(s)";
 errorMap[MISSING_EMAIL] = "Missing email";
 errorMap[MISSING_FULLNAME] = "Missing fullname";
 errorMap[MISSING_USER_ID] = "Missing user ID";
-errorMap[ID_IS_NOT_EXPECTED] =
-  "ID should not be provided, since it is determined automatically by the database";
 errorMap[USER_NOT_FOUND] = "User not found";
 errorMap[EMAIL_USERNAME_PASSWORD_INVALID] =
   "Email/Username or password is invalid";
@@ -41,7 +38,6 @@ module.exports = {
   MISSING_EMAIL,
   MISSING_FULLNAME,
   MISSING_USER_ID,
-  ID_IS_NOT_EXPECTED,
   USER_NOT_FOUND,
   EMAIL_USERNAME_PASSWORD_INVALID,
   LOGOUT_REQUIRED,
