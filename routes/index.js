@@ -32,7 +32,6 @@ function makeHandlerAwareOfAsyncErrors(handler) {
           data: error.data || {},
         });
       } else {
-        console.log(error);
         const fcError = new FcError(SYSTEM_ERROR);
         res.status(statusCode.BAD_REQUEST).send({
           code: fcError.code,
