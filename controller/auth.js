@@ -148,11 +148,9 @@ async function checkOtp(req) {
   return true;
 }
 
-async function releaseOtp(otp) {
+async function releaseOtp(email) {
   await models.EmailVerification.destroy({
-    where: {
-      otp: otp,
-    },
+    where: { "email": email },
   });
 }
 
@@ -172,7 +170,7 @@ async function signup(req, res) {
   // check OTP
   await checkOtp(req);
 
-  await releaseOtp(req.body.otp);
+  await releaseOtp(email);
 
   const user = await models.User.create(sanitizeUserDetails(req.body));
 
