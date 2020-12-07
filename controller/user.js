@@ -21,7 +21,7 @@ function buildUserJson(user) {
 async function getAll(req, res) {
   let filter = {};
   let hasProperty = false;
-  const attrs = ["full_name", "school_name", "email"];
+  const attrs = ["full_name", "school_name", "email", "username"];
   attrs.forEach((param) => {
     if (Object.prototype.hasOwnProperty.call(req.query, param)) {
       filter[param] = req.query[param];
