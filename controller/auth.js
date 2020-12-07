@@ -9,6 +9,9 @@ const { buildUserJson } = require("./user");
 
 const SALT_ROUNDS = 10;
 const bcrypt = require("bcryptjs");
+const otpGenerator = require("otp-generator");
+const { updateOrCreate } = require("../utils/models.js");
+const { createMessage, sendMail } = require("../utils/email-sender");
 
 function isEmail(email_or_username) {
   return emailRegex.test(email_or_username);
@@ -88,15 +91,88 @@ async function login(req, res) {
   throw new errors.FcError(errors.EMAIL_USERNAME_PASSWORD_INVALID);
 }
 
-async function signup(req, res) {
-  const { email, username, full_name, school_name, password } = req.body;
+async function sendOtp(req, res) {
+  if (!req.body.email) {
+    throw new errors.FcError(errors.MISSING_EMAIL);
+  }
 
-  if (!email || !username || !full_name || !school_name || !password)
-    throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
-  if (await models.User.findOne({ username }))
-    throw new errors.FcError(errors.USERNAME_EXISTS);
-  if (await models.User.findOne({ email }))
+  if (await models.User.findOne({where: { email: req.body.email }}) ) {
     throw new errors.FcError(errors.EMAIL_EXISTS);
+  }
+
+
+  const otp = otpGenerator.generate(6, {
+    digits: true,
+    alphabets: false,
+    upperCase: false,
+    specialChars: false,
+  });
+  const now = new Date();
+  const expired_time = new Date(now.getTime() + 10 * 60000); // 10 minutes later
+  await updateOrCreate(
+    models.EmailVerification,
+    { email: req.body.email },
+    {
+      email: req.body.email,
+      otp: otp,
+      expired_time: expired_time,
+    }
+  );
+  const message = createMessage(
+    req.body.email,
+    "Email verification",
+    "OTP: " + otp
+  );
+  await sendMail(message);
+  return res.status(statusCode.SUCCESS).send({
+    code: 0,
+    msg: "Sent OTP successfully",
+    data: {},
+  });
+}
+
+async function checkOtp(req) {
+  if (!req.body.email || !req.body.otp) {
+    throw new errors.FcError(errors.OTP_INVALID);
+  }
+  const emailVerification = await models.EmailVerification.findOne({
+    where: {
+      email: req.body.email,
+    },
+  });
+  if (!emailVerification || emailVerification.otp != req.body.otp) {
+    throw new errors.FcError(errors.OTP_INVALID);
+  }
+  const now = new Date();
+  if (emailVerification.expired_time < now) {
+    throw new errors.FcError(errors.OTP_EXPIRED);
+  }
+  return true;
+}
+
+async function releaseOtp(email) {
+  await models.EmailVerification.destroy({
+    where: { "email": email },
+  });
+}
+
+async function signup(req, res) {
+  const { email, username, full_name, password, otp } = req.body;
+  if (!email || !username || !full_name || !otp || !password) {
+    throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
+  }
+  if (await models.User.findOne({ where: { username } })) {
+    throw new errors.FcError(errors.USERNAME_EXISTS);
+  }
+
+  if (await models.User.findOne({ where: { email } })) {
+    throw new errors.FcError(errors.EMAIL_EXISTS);
+  }
+
+  // check OTP
+  await checkOtp(req);
+
+  await releaseOtp(email);
 
   const user = await models.User.create(sanitizeUserDetails(req.body));
 
@@ -110,4 +186,5 @@ async function signup(req, res) {
 module.exports = {
   login,
   signup,
+  sendOtp,
 };

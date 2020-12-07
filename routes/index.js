@@ -32,11 +32,11 @@ function makeHandlerAwareOfAsyncErrors(handler) {
           data: error.data || {},
         });
       } else {
-        const error = new FcError(SYSTEM_ERROR);
+        const fcError = new FcError(SYSTEM_ERROR);
         res.status(statusCode.BAD_REQUEST).send({
-          code: error.code,
+          code: fcError.code,
           msg: error.msg,
-          data: error.data || {},
+          data: fcError.data || {},
         });
       }
     }
@@ -83,6 +83,10 @@ router.post(
 router.post(
   "/api/v1/login",
   makeHandlerAwareOfAsyncErrors(authController.login)
+);
+router.post(
+  "/api/v1/send_otp",
+  makeHandlerAwareOfAsyncErrors(authController.sendOtp)
 );
 router.post(
   "/api/v1/signup",
