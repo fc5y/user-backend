@@ -2,6 +2,8 @@ const MISSING_REQUIRED_FIELDS = 1000;
 const MISSING_EMAIL = 1002;
 const MISSING_FULLNAME = 1003;
 const MISSING_USER_ID = 1004;
+const USERNAME_EXISTS = 1007;
+const EMAIL_EXISTS = 1008;
 
 const USER_NOT_FOUND = 2001;
 
@@ -16,6 +18,8 @@ errorMap[MISSING_REQUIRED_FIELDS] = "Missing required field(s)";
 errorMap[MISSING_EMAIL] = "Missing email";
 errorMap[MISSING_FULLNAME] = "Missing fullname";
 errorMap[MISSING_USER_ID] = "Missing user ID";
+errorMap[USERNAME_EXISTS] = "Username already exists";
+errorMap[EMAIL_EXISTS] = "Email already exists";
 errorMap[USER_NOT_FOUND] = "User not found";
 errorMap[EMAIL_USERNAME_PASSWORD_INVALID] =
   "Email/Username or password is invalid";

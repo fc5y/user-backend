@@ -89,8 +89,16 @@ async function login(req, res) {
 }
 
 async function signup(req, res) {
+  const { email, username, full_name, school_name, password } = req.body;
+
+  if (!email || !username || !full_name || !school_name || !password)
+    throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
+  if (await models.User.findOne({ username }))
+    throw new errors.FcError(errors.USERNAME_EXISTS);
+  if (await models.User.findOne({ email }))
+    throw new errors.FcError(errors.EMAIL_EXISTS);
+
   const user = await models.User.create(sanitizeUserDetails(req.body));
-  if (!user) throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
 
   res.status(statusCode.SUCCESS).json({
     code: 0,
