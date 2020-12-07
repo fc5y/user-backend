@@ -94,12 +94,12 @@ async function sendOtp(req, res) {
   if (!req.body.email) {
     throw new errors.FcError(errors.MISSING_EMAIL);
   }
-  const existing_email = await models.User.findOne({
-    where: { email: req.body.email },
-  });
-  if (existing_email) {
-    throw new errors.FcError(errors.EMAIL_EXISTED);
+
+  if (await models.User.findOne({where: { email: req.body.email }}) ) {
+    throw new errors.FcError(errors.EMAIL_EXISTS);
   }
+
+
   const otp = otpGenerator.generate(6, {
     digits: true,
     alphabets: false,
@@ -157,29 +157,16 @@ async function releaseOtp(otp) {
 }
 
 async function signup(req, res) {
-  const required_params = ["email", "otp", "full_name", "username"];
-  required_params.forEach((param) => {
-    if (!Object.prototype.hasOwnProperty.call(req.body, param)) {
-      throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
-    }
-  });
-  // check existing email
-  const existing_email = await models.User.findOne({
-    where: {
-      email: req.body.email,
-    },
-  });
-  if (existing_email) {
-    throw new errors.FcError(errors.EMAIL_EXISTED);
+  const { email, username, full_name, password, otp } = req.body;
+  if (!email || !username || !full_name || !otp || !password) {
+    throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
   }
-  // check existing username
-  const existing_username = await models.User.findOne({
-    where: {
-      username: req.body.username,
-    },
-  });
-  if (existing_username) {
-    throw new errors.FcError(errors.USERNAME_EXISTED);
+  if (await models.User.findOne({ where: { username } })) {
+    throw new errors.FcError(errors.USERNAME_EXISTS);
+  }
+
+  if (await models.User.findOne({ where: { email } })) {
+    throw new errors.FcError(errors.EMAIL_EXISTS);
   }
 
   // check OTP
@@ -188,7 +175,6 @@ async function signup(req, res) {
   await releaseOtp(req.body.otp);
 
   const user = await models.User.create(sanitizeUserDetails(req.body));
-  if (!user) throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
 
   res.status(statusCode.SUCCESS).json({
     code: 0,
