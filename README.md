@@ -4,9 +4,12 @@ User Backend for fc5y project
 
 # DB Set up
 
+**This section is deprecated. Please check [/docs/SETTING_UP.md](docs/SETTING_UP.md) and [/docs/RUNNING.md](docs/RUNNING.md) for more updated version.**
+
 DB information: ./config/config.json
 
 To run db migration:
+
 ```
 npx sequelize-cli db:migrate # run migration
 npx sequelize-cli db:migrate:undo # undo the last migration
@@ -40,11 +43,11 @@ For example:
 
 # REST example
 
-* Open your browser in `localhost:4000` and try the example REST endpoints:
-	* `localhost:4000/api/users` (GET)
-	* `localhost:4000/api/users/1` (GET)
-	* `localhost:4000/api/users` (POST)
-		* Body format: `{ username: 'john' }`
-	* `localhost:4000/api/users/1` (PUT)
-		* Body format: `{ username: 'john' }`
-	* `localhost:4000/api/users/1` (DELETE)
+- Open your browser in `localhost:4000` and try the example REST endpoints:
+  - `localhost:4000/api/users` (GET)
+  - `localhost:4000/api/users/1` (GET)
+  - `localhost:4000/api/users` (POST)
+    - Body format: `{ username: 'john' }`
+  - `localhost:4000/api/users/1` (PUT)
+    - Body format: `{ username: 'john' }`
+  - `localhost:4000/api/users/1` (DELETE)
