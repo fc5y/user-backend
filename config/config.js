@@ -29,5 +29,3 @@ module.exports = {
     dialect: process.env.DB_DIALECT || "mysql",
   },
 };
-
-console.log(module.exports);
