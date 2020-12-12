@@ -86,7 +86,7 @@ router.post(
   makeHandlerAwareOfAsyncErrors(authController.login),
 );
 router.post(
-  "/api/v1/send_otp",
+  "/api/v1/send-otp",
   makeHandlerAwareOfAsyncErrors(authController.sendOtp),
 );
 router.post(
