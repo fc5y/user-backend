@@ -172,7 +172,7 @@ async function verifyAccount(req, res) {
 }
 
 async function update(req, res) {
-  const user_id = !req.params.id ? req.user.id : getIdParam(req);
+  const user_id = req.user.id;
   const user = await models.User.findByPk(user_id);
   if (!user) {
     throw new errors.FcError(errors.USER_NOT_FOUND);
@@ -186,7 +186,7 @@ async function update(req, res) {
   });
 
   if (!rowsChange[0]) {
-    throw new errors.FcError(errors.BAD_REQUEST);
+    throw new errors.FcError(errors.SYSTEM_ERROR);
   }
 
   const updatedUser = await models.User.findByPk(user_id);
