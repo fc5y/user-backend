@@ -63,11 +63,6 @@ router.get(
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getAll),
 );
-router.get(
-  "/api/v1/users",
-  makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.getAll),
-);
 
 router.post(
   "/api/v1/me",
