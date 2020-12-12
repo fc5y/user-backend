@@ -37,9 +37,25 @@ async function getAll(req, res) {
   });
 }
 
-async function getUserByUsername(req, res) {
+async function getByUsername(req, res) {
   const username = req.params;
   const user = await models.User.findOne({ where: username });
+  if (!user) {
+    throw new errors.FcError(errors.USER_NOT_FOUND);
+  } else {
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "",
+      data: {
+        user: buildUserJson(user)
+      },
+    });
+  }
+}
+
+async function getById(req, res) {
+  const user_id = !req.params.id ? req.user.id : getIdParam(req);
+  const user = await models.User.findByPk(user_id);
   if (!user) {
     throw new errors.FcError(errors.USER_NOT_FOUND);
   } else {
@@ -194,7 +210,8 @@ module.exports = {
   // Users
   buildUserJson,
   getAll,
-  getUserByUsername,
+  getByUsername,
+  getById,
   // Auth
   createVerifyToken,
   verifyAccount,
