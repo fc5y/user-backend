@@ -18,6 +18,7 @@ const modelDefiners = [
   require("./user"),
   require("./email_verification"),
   require("./contest"),
+  require("./participation"),
   // Add more models here...
   // require('./models/item'),
 ];
