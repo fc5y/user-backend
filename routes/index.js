@@ -33,6 +33,7 @@ function makeHandlerAwareOfAsyncErrors(handler) {
           data: error.data || {},
         });
       } else {
+        console.log(error);
         const fcError = new FcError(SYSTEM_ERROR);
         res.status(statusCode.BAD_REQUEST).send({
           code: fcError.code,
@@ -48,22 +49,34 @@ function makeHandlerAwareOfAsyncErrors(handler) {
 router.use(cors());
 
 // User
-
+router.get(
+  "/api/v1/me",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(userController.getById),
+);
+router.get(
+  "/api/v1/users/:username",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(userController.getByUsername),
+);
 router.get(
   "/api/v1/users",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getAll),
 );
-router.get(
-  "/api/v1/user/:id?",
-  makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.getById),
-);
+
 router.post(
   "/api/v1/me",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.update),
 );
+
+router.post(
+  "/api/v1/me/change-password",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(userController.changePassword)
+);
+
 router.delete(
   "/api/v1/users/:id",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),

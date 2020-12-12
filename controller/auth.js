@@ -17,9 +17,14 @@ function isEmail(email_or_username) {
   return emailRegex.test(email_or_username);
 }
 
-function sanitizeUserDetails(data) {
+function getHashPassword(password) {
   const salt = bcrypt.genSaltSync(SALT_ROUNDS);
-  const hashedPassword = bcrypt.hashSync(data.password, salt);
+  const hashedPassword = bcrypt.hashSync(password, salt);
+  return hashedPassword;
+}
+
+function sanitizeUserDetails(data) {
+  const hashedPassword = getHashPassword(data.password);
   let userDetails = {
     username: data.username,
     full_name: data.full_name,
@@ -186,4 +191,5 @@ module.exports = {
   login,
   signup,
   sendOtp,
+  getHashPassword,
 };
