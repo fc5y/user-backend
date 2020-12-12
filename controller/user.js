@@ -179,29 +179,30 @@ async function verifyAccount(req, res) {
   });
 }
 
-async function update(req, res, next) {
-  const id = getIdParam(req);
-  if (!req.body.id) {
-    throw new errors.FcError(errors.MISSING_USER_ID);
-  } else {
-    models.User.update(req.body, {
-      where: { id: id },
-    })
-      .then((rowsUpdate) => {
-        if (rowsUpdate[0] == 0) {
-          throw new errors.FcError(errors.USER_NOT_FOUND);
-        } else {
-          models.User.findByPk(id).then((user) => {
-            res.status(statusCode.SUCCESS).json({
-              code: 0,
-              msg: "",
-              data: { user: buildUserJson(user) },
-            });
-          });
-        }
-      })
-      .catch(next);
+async function update(req, res) {
+  const user_id = getIdParam(req);
+  if (!user_id) {
+    throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
   }
+  
+  const rowsChange = await models.User.update({
+    full_name: req.body.full_name,
+    school_name: req.body.school_name
+  }, {
+    where: { id: user_id },
+  });
+  
+  if (!rowsChange[0]) {
+    throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
+  }
+
+  const updatedUser = await models.User.findByPk(user_id);
+
+  res.status(statusCode.SUCCESS).json({
+    code: 0,
+    msg: "User updated",
+    data: { user: buildUserJson(updatedUser) },
+  });
 }
 
 async function remove(req, res) {
