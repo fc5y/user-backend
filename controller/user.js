@@ -181,8 +181,9 @@ async function verifyAccount(req, res) {
 
 async function update(req, res) {
   const user_id = !req.params.id ? req.user.id : getIdParam(req);
-  if (!user_id) {
-    throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
+  const user = await models.User.findByPk(user_id);
+  if (!user) {
+    throw new errors.FcError(errors.USER_NOT_FOUND);
   }
   
   const rowsChange = await models.User.update({
@@ -193,7 +194,7 @@ async function update(req, res) {
   });
 
   if (!rowsChange[0]) {
-    throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
+    throw new errors.FcError(errors.BAD_REQUEST);
   }
 
   const updatedUser = await models.User.findByPk(user_id);
