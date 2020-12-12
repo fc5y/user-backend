@@ -48,16 +48,20 @@ function makeHandlerAwareOfAsyncErrors(handler) {
 router.use(cors());
 
 // User
-
+router.get(
+  "/api/v1/me",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(userController.getById),
+);
+router.get(
+  "/api/v1/users/:username",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(userController.getByUsername),
+);
 router.get(
   "/api/v1/users",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getAll),
-);
-router.get(
-  "/api/v1/user/:id?",
-  makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.getById),
 );
 router.post(
   "/api/v1/me",
