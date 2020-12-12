@@ -23,6 +23,7 @@ router.get("/hi", defaultController.getHiThere);
 // We create a wrapper to workaround async errors not being transmitted correctly.
 function makeHandlerAwareOfAsyncErrors(handler) {
   return async function (req, res, next) {
+    console.log(handler);
     try {
       await handler(req, res, next);
     } catch (error) {
@@ -33,10 +34,11 @@ function makeHandlerAwareOfAsyncErrors(handler) {
           data: error.data || {},
         });
       } else {
+        console.log(error);
         const fcError = new FcError(SYSTEM_ERROR);
         res.status(statusCode.BAD_REQUEST).send({
           code: fcError.code,
-          msg: error.msg,
+          msg: error,
           data: fcError.data || {},
         });
       }
@@ -50,15 +52,21 @@ router.use(cors());
 // User
 
 router.get(
+  "/api/v1/users/:username",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(userController.getUserByUsername),
+);
+router.get(
+  "/api/v1/users/:id",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(userController.getById),
+);
+router.get(
   "/api/v1/users",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getAll),
 );
-router.get(
-  "/api/v1/user/:id?",
-  makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.getById),
-);
+
 router.put(
   "/api/v1/user/:id",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
