@@ -2,6 +2,8 @@ const express = require("express");
 const routes = require("./routes");
 const bodyParser = require("body-parser");
 const jwt = require("express-jwt");
+const apiV1 = require("./routes/api-v1");
+
 const app = express();
 
 const db = require("./models/index.js");
@@ -17,6 +19,7 @@ app.use(
   }),
 );
 app.use("/", routes);
+app.use("/api/v1", apiV1);
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
