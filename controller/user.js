@@ -12,53 +12,43 @@ function buildUserJson(user) {
     username: user.username,
     full_name: user.full_name,
     school_name: user.school_name,
-    email: user.email,
-    is_email_verified: user.is_email_verified,
+    rank_in_global: 0,
+    rating: 0
   };
 }
 
 async function getAll(req, res) {
   let filter = {};
-  let hasProperty = false;
-  const attrs = ["full_name", "school_name", "email", "username"];
+  const attrs = ["full_name", "school_name"];
   attrs.forEach((param) => {
     if (Object.prototype.hasOwnProperty.call(req.query, param)) {
       filter[param] = req.query[param];
-      hasProperty = true;
     }
   });
-  if (hasProperty) {
-    const users = await models.User.findAll({
-      attributes: [
-        "id",
-        "username",
-        "full_name",
-        "school_name",
-        "email",
-        "is_email_verified",
-      ],
-      where: filter,
-    });
-    res.status(statusCode.SUCCESS).json({
-      code: 0,
-      msg: "",
-      data: { users: users },
-    });
+  const users = await models.User.findAll({
+    where: filter,
+  });
+  res.status(statusCode.SUCCESS).json({
+    code: 0,
+    msg: "",
+    data: {
+      users: users.map(user => buildUserJson(user))
+    },
+  });
+}
+
+async function getByUsername(req, res) {
+  const username = req.params;
+  const user = await models.User.findOne({ where: username });
+  if (!user) {
+    throw new errors.FcError(errors.USER_NOT_FOUND);
   } else {
-    const users = await models.User.findAll({
-      attributes: [
-        "id",
-        "username",
-        "full_name",
-        "school_name",
-        "email",
-        "is_email_verified",
-      ],
-    });
     res.status(statusCode.SUCCESS).json({
       code: 0,
       msg: "",
-      data: { users: users },
+      data: {
+        user: buildUserJson(user)
+      },
     });
   }
 }
@@ -66,14 +56,16 @@ async function getAll(req, res) {
 async function getById(req, res) {
   const user_id = !req.params.id ? req.user.id : getIdParam(req);
   const user = await models.User.findByPk(user_id);
-  if (user) {
+  if (!user) {
+    throw new errors.FcError(errors.USER_NOT_FOUND);
+  } else {
     res.status(statusCode.SUCCESS).json({
       code: 0,
       msg: "",
-      data: { user: buildUserJson(user) },
+      data: {
+        user: buildUserJson(user)
+      },
     });
-  } else {
-    throw new errors.FcError(errors.USER_NOT_FOUND);
   }
 }
 
@@ -217,9 +209,12 @@ async function remove(req, res) {
 }
 
 module.exports = {
+  // Users
   buildUserJson,
   getAll,
+  getByUsername,
   getById,
+  // Auth
   createVerifyToken,
   verifyAccount,
   update,
