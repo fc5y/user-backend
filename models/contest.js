@@ -5,7 +5,7 @@ module.exports = (sequelize) => {
   class Contest extends Model {}
   Contest.init(
     {
-      contest_name: {
+      name: {
         allowNull: false,
         unique: true,
         type: DataTypes.STRING,
@@ -14,21 +14,13 @@ module.exports = (sequelize) => {
         allowNull: false,
         type: DataTypes.DATE,
       },
-      duration: {
+      length_in_second: {
         allowNull: false,
         type: DataTypes.INTEGER,
       },
-      contest_title: {
+      description: {
         allowNull: true,
         type: DataTypes.STRING,
-      },
-      can_enter: {
-        allowNull: false,
-        type: DataTypes.BOOLEAN,
-      },
-      materials: {
-        allowNull: false,
-        type: DataTypes.JSON,
       },
     },
     {
@@ -36,7 +28,7 @@ module.exports = (sequelize) => {
       createdAt: "created_at",
       sequelize,
       modelName: "Contest",
-    },
+    }
   );
   return Contest;
 };
