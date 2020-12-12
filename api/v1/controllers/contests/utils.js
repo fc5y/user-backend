@@ -1,3 +1,7 @@
+const { validationResult } = require("express-validator");
+const constants = require("./constants");
+const { ContestRuntimeError } = require("./errors");
+
 function dateToTimestamp(date) {
   return date.getTime() / 1000;
 }
@@ -26,4 +30,22 @@ function formatContest(contest) {
   };
 }
 
-module.exports = { dateToTimestamp, timestampToDate, formatContest };
+// throw errors if validation error found
+function validationMiddleware(req, res, next) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ContestRuntimeError({
+      ...constants.ERRORS.BAD_REQUEST,
+      data: errors,
+    });
+  } else {
+    return next();
+  }
+}
+
+module.exports = {
+  dateToTimestamp,
+  timestampToDate,
+  formatContest,
+  validationMiddleware,
+};

@@ -21,6 +21,7 @@ const ERRORS = {
 
 const DEFAULT_MESSAGE = {
   GET_ALL_CONTESTS: "Contests",
+  CREATE_CONTEST: "Contest created",
 };
 
 module.exports = {

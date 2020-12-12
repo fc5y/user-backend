@@ -1,5 +1,6 @@
 const express = require("express");
 const contestController = require("./controllers/contests");
+const { ContestRuntimeError } = require("./controllers/contests/logic");
 
 const router = express.Router();
 
@@ -22,5 +23,13 @@ router.post(
   contestController.createContest.validator,
   contestController.createContest,
 );
+
+router.use((error, req, res, next) => {
+  if (error instanceof ContestRuntimeError) {
+    res.status(400).json(error);
+  } else {
+    next(error);
+  }
+});
 
 module.exports = router;

@@ -1,15 +1,8 @@
 const db = require("../../../../models");
 const { ERRORS } = require("./constants");
-const models = db.sequelize.models;
+const { ContestRuntimeError } = require("./errors");
 
-class ContestLogicError extends Error {
-  constructor({ code, msg, data }, ...params) {
-    super(...params);
-    this.code = code;
-    this.msg = msg;
-    this.data = data;
-  }
-}
+const models = db.sequelize.models;
 
 async function getAllContests(offset, limit) {
   try {
@@ -20,7 +13,7 @@ async function getAllContests(offset, limit) {
     });
     return contests;
   } catch (error) {
-    throw new ContestLogicError({
+    throw new ContestRuntimeError({
       ...ERRORS.GET_CONTESTS_ERROR,
       data: { message: error.message },
     });
@@ -40,7 +33,7 @@ async function createContest({
   can_enter,
 }) {
   if (await contestExists(contest_name))
-    throw new ContestLogicError({
+    throw new ContestRuntimeError({
       ...ERRORS.CONTEST_EXISTS,
       data: { contest_name },
     });
@@ -56,7 +49,7 @@ async function createContest({
     });
     return contest;
   } catch (error) {
-    throw new ContestLogicError({
+    throw new ContestRuntimeError({
       ...ERRORS.CREATE_CONTEST_ERROR,
       data: { message: error.message },
     });
@@ -64,7 +57,7 @@ async function createContest({
 }
 
 module.exports = {
-  ContestLogicError,
+  ContestRuntimeError,
   getAllContests,
   contestExists,
   createContest,
