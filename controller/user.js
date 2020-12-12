@@ -180,7 +180,7 @@ async function verifyAccount(req, res) {
 }
 
 async function update(req, res) {
-  const user_id = getIdParam(req);
+  const user_id = !req.params.id ? req.user.id : getIdParam(req);
   if (!user_id) {
     throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
   }
@@ -191,7 +191,7 @@ async function update(req, res) {
   }, {
     where: { id: user_id },
   });
-  
+
   if (!rowsChange[0]) {
     throw new errors.FcError(errors.MISSING_REQUIRED_FIELDS);
   }
