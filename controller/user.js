@@ -6,7 +6,7 @@ const models = db.sequelize.models;
 const jsonwebtoken = require("jsonwebtoken");
 const errors = require("../utils/error");
 const bcrypt = require("bcryptjs");
-const { getHashPassword } = require("./auth.js");
+const { getHashedPassword } = require("./auth.js");
 
 function buildUserJson(user) {
   return {
@@ -212,7 +212,7 @@ async function changePassword(req, res) {
     throw new errors.FcError(errors.EMAIL_USERNAME_PASSWORD_INVALID);
   }
 
-  const hashedPassword = getHashPassword(req.body.new_password);
+  const hashedPassword = getHashedPassword(req.body.new_password);
 
   const rowsChange = await models.User.update({
     password: hashedPassword
@@ -229,7 +229,7 @@ async function changePassword(req, res) {
   res.status(statusCode.SUCCESS).json({
     code: 0,
     msg: "Password updated",
-    data: { },
+    data: {},
   });
 }
 
