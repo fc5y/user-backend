@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
-require("dotenv").config({ slient: true });
+require("dotenv").config();
 
+const jwt = require("jsonwebtoken");
 const db = require("../models/index.js");
 const models = db.sequelize.models;
 const { statusCode, emailRegex } = require("../utils");
@@ -43,7 +43,7 @@ async function login(req, res) {
             email: req.user.email,
             id: user.id,
           },
-          process.env.JWT_SECRET
+          process.env.JWT_SECRET,
         ),
       },
     });
@@ -83,7 +83,7 @@ async function login(req, res) {
             email: user.email,
             id: user.id,
           },
-          process.env.JWT_SECRET
+          process.env.JWT_SECRET,
         ),
       },
     });
@@ -96,10 +96,9 @@ async function sendOtp(req, res) {
     throw new errors.FcError(errors.MISSING_EMAIL);
   }
 
-  if (await models.User.findOne({where: { email: req.body.email }}) ) {
+  if (await models.User.findOne({ where: { email: req.body.email } })) {
     throw new errors.FcError(errors.EMAIL_EXISTS);
   }
-
 
   const otp = otpGenerator.generate(6, {
     digits: true,
@@ -116,12 +115,12 @@ async function sendOtp(req, res) {
       email: req.body.email,
       otp: otp,
       expired_time: expired_time,
-    }
+    },
   );
   const message = createMessage(
     req.body.email,
     "Email verification",
-    "OTP: " + otp
+    "OTP: " + otp,
   );
   await sendMail(message);
   return res.status(statusCode.SUCCESS).send({
@@ -152,7 +151,7 @@ async function checkOtp(req) {
 
 async function releaseOtp(email) {
   await models.EmailVerification.destroy({
-    where: { "email": email },
+    where: { email: email },
   });
 }
 

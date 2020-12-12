@@ -2,7 +2,10 @@ const express = require("express");
 const routes = require("./routes");
 const bodyParser = require("body-parser");
 const jwt = require("express-jwt");
+const apiV1 = require("./api/v1");
+
 const app = express();
+app.set("json spaces", 2); // optional, format json responses with 2 spaces
 
 const db = require("./models/index.js");
 
@@ -16,6 +19,8 @@ app.use(
     credentialsRequired: false,
   }),
 );
+
+app.use("/api/v1", apiV1);
 app.use("/", routes);
 
 async function assertDatabaseConnectionOk() {

@@ -1,11 +1,10 @@
+require("dotenv").config();
+
 const { getIdParam, statusCode, expiredAfter } = require("../utils");
 const db = require("../models/index.js");
 const models = db.sequelize.models;
-
 const jsonwebtoken = require("jsonwebtoken");
 const errors = require("../utils/error");
-
-require("dotenv").config({ silent: true });
 
 function buildUserJson(user) {
   return {
@@ -99,7 +98,7 @@ async function createVerifyToken(req, res) {
             { verify_token: token },
             {
               where: { id: id },
-            }
+            },
           ).then((rowsUpdate) => {
             if (rowsUpdate[0] === 0) {
               res.status(statusCode.BAD_REQUEST).send({
@@ -116,7 +115,7 @@ async function createVerifyToken(req, res) {
             }
           });
         }
-      }
+      },
     );
   });
 }
@@ -155,7 +154,7 @@ async function verifyAccount(req, res) {
             } else {
               models.User.update(
                 { is_email_verified: true },
-                { where: { id: id } }
+                { where: { id: id } },
               ).then((rowsUpdate) => {
                 if (rowsUpdate[0] === 0) {
                   res.status(statusCode.BAD_REQUEST).send({
