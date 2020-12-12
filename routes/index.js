@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const defaultController = require("../controller/index");
 const userController = require("../controller/user");
@@ -7,7 +9,6 @@ const isLoggedIn = require("../middlewares/isLoggedIn");
 const isNotUser = require("../middlewares/isNotUser");
 const { FcError, SYSTEM_ERROR } = require("../utils/error");
 const { statusCode } = require("../utils");
-require("dotenv").config({ silent: true });
 
 const router = express.Router();
 
@@ -51,47 +52,47 @@ router.use(cors());
 router.get(
   "/api/v1/users",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.getAll)
+  makeHandlerAwareOfAsyncErrors(userController.getAll),
 );
 router.get(
   "/api/v1/user/:id?",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.getById)
+  makeHandlerAwareOfAsyncErrors(userController.getById),
 );
 router.put(
   "/api/v1/user/:id",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.update)
+  makeHandlerAwareOfAsyncErrors(userController.update),
 );
 router.delete(
   "/api/v1/users/:id",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.remove)
+  makeHandlerAwareOfAsyncErrors(userController.remove),
 );
 
 router.get(
   "/api/v1/verify/:id",
-  makeHandlerAwareOfAsyncErrors(userController.createVerifyToken)
+  makeHandlerAwareOfAsyncErrors(userController.createVerifyToken),
 );
 
 router.post(
   "/api/v1/verify/:id",
-  makeHandlerAwareOfAsyncErrors(userController.verifyAccount)
+  makeHandlerAwareOfAsyncErrors(userController.verifyAccount),
 );
 
 // Auth
 router.post(
   "/api/v1/login",
-  makeHandlerAwareOfAsyncErrors(authController.login)
+  makeHandlerAwareOfAsyncErrors(authController.login),
 );
 router.post(
   "/api/v1/send_otp",
-  makeHandlerAwareOfAsyncErrors(authController.sendOtp)
+  makeHandlerAwareOfAsyncErrors(authController.sendOtp),
 );
 router.post(
   "/api/v1/signup",
   makeHandlerAwareOfAsyncErrors(isNotUser),
-  makeHandlerAwareOfAsyncErrors(authController.signup)
+  makeHandlerAwareOfAsyncErrors(authController.signup),
 );
 
 module.exports = router;
