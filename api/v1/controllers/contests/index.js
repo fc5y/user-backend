@@ -2,7 +2,6 @@ const { query, param, body } = require("express-validator");
 const utils = require("./utils");
 const logic = require("./logic");
 const constants = require("./constants");
-const { formatContest } = require("./utils");
 
 // GET /api/v1/contests?offset={offset}&limit={limit}
 function getAllContests(req, res, next) {
@@ -122,7 +121,7 @@ function updateContest(req, res, next) {
       res.json({
         code: 0,
         msg: constants.DEFAULT_MESSAGE.UPDATE_CONTEST,
-        data: { contest: formatContest(contest) },
+        data: { contest: utils.formatContest(contest) },
       }),
     )
     .catch(next);
