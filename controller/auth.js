@@ -24,7 +24,7 @@ function getHashedPassword(password) {
 
 function sanitizeUserDetails(data) {
   const hashedPassword = getHashedPassword(data.password);
-  let userDetails = {
+  const userDetails = {
     username: data.username,
     full_name: data.full_name,
     email: data.email,
@@ -181,7 +181,7 @@ async function signup(req, res) {
 
   res.status(statusCode.SUCCESS).json({
     code: 0,
-    msg: "Create user successful",
+    msg: "User created",
     data: formatUser(user),
   });
 }

@@ -20,27 +20,7 @@ function formatUser(user) {
   };
 }
 
-async function getAll(req, res) {
-  let filter = {};
-  const attrs = ["full_name", "school_name"];
-  attrs.forEach((param) => {
-    if (Object.prototype.hasOwnProperty.call(req.query, param)) {
-      filter[param] = req.query[param];
-    }
-  });
-  const users = await models.User.findAll({
-    where: filter,
-  });
-  res.status(statusCode.SUCCESS).json({
-    code: 0,
-    msg: "",
-    data: {
-      users: users.map(user => formatUser(user))
-    },
-  });
-}
-
-async function getByUsername(req, res) {
+async function getUserByUsername(req, res) {
   const username = req.params;
   const user = await models.User.findOne({ where: username });
   if (!user) {
@@ -48,130 +28,12 @@ async function getByUsername(req, res) {
   } else {
     res.status(statusCode.SUCCESS).json({
       code: 0,
-      msg: "",
+      msg: "User",
       data: {
         user: formatUser(user)
       },
     });
   }
-}
-
-async function getById(req, res) {
-  const user_id = !req.params.id ? req.user.id : getIdParam(req);
-  const user = await models.User.findByPk(user_id);
-  if (!user) {
-    throw new errors.FcError(errors.USER_NOT_FOUND);
-  } else {
-    res.status(statusCode.SUCCESS).json({
-      code: 0,
-      msg: "",
-      data: {
-        user: formatUser(user)
-      },
-    });
-  }
-}
-
-async function createVerifyToken(req, res) {
-  const id = getIdParam(req);
-  models.User.findByPk(id).then((user) => {
-    jsonwebtoken.sign(
-      { email: user.email },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: expiredAfter,
-      },
-      (err, token) => {
-        if (err) {
-          res.status(statusCode.BAD_REQUEST).send({
-            code: 3005,
-            msg: err.name,
-            data: {},
-          });
-        } else {
-          models.User.update(
-            { verify_token: token },
-            {
-              where: { id: id },
-            },
-          ).then((rowsUpdate) => {
-            if (rowsUpdate[0] === 0) {
-              res.status(statusCode.BAD_REQUEST).send({
-                code: 2001,
-                msg: "User not found",
-                data: {},
-              });
-            } else {
-              res.status(statusCode.SUCCESS).send({
-                code: 0,
-                msg: "Success",
-                data: { id: id, verify_token: token },
-              });
-            }
-          });
-        }
-      },
-    );
-  });
-}
-
-async function verifyAccount(req, res) {
-  const id = getIdParam(req);
-  const token = req.query.token;
-  models.User.findByPk(id).then((user) => {
-    if (user.is_email_verified) {
-      res.status(statusCode.BAD_REQUEST).json({
-        code: 3001,
-        msg: "Account had been verified!",
-        data: {},
-      });
-    } else {
-      if (user.verify_token !== token) {
-        res.status(statusCode.BAD_REQUEST).send({
-          code: 3005,
-          msg: "Invalid token",
-          data: {},
-        });
-      } else {
-        jsonwebtoken.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-          if (err) {
-            res.status(statusCode.BAD_REQUEST).send({
-              code: 3001,
-              msg: "Token has expired",
-            });
-          } else {
-            if (decoded.email !== user.email) {
-              res.status(statusCode.BAD_REQUEST).send({
-                code: 3005,
-                msg: "Invalid token",
-                data: {},
-              });
-            } else {
-              models.User.update(
-                { is_email_verified: true },
-                { where: { id: id } },
-              ).then((rowsUpdate) => {
-                if (rowsUpdate[0] === 0) {
-                  res.status(statusCode.BAD_REQUEST).send({
-                    code: 2001,
-                    msg: "User not found",
-                  });
-                } else {
-                  models.User.findByPk(id).then((updatedUser) => {
-                    res.status(statusCode.SUCCESS).send({
-                      code: 0,
-                      msg: "Success",
-                      data: formatUser(updatedUser),
-                    });
-                  });
-                }
-              });
-            }
-          }
-        });
-      }
-    }
-  });
 }
 
 async function update(req, res, next) {
@@ -214,12 +76,9 @@ async function changePassword(req, res, next) {
 
   const hashedPassword = getHashedPassword(req.body.new_password);	
 
-  models.User.update({
-    password: hashedPassword
-  }, {
-    where: { id: user_id },
-  }).then((rowsUpdate) => {
-    if (rowsUpdate == 0) {
+  user.password = hashedPassword;
+  user.save().then((updatedUser) => {
+    if (!updatedUser) {
       throw new errors.FcError(errors.SYSTEM_ERROR);
     }
     res.status(statusCode.SUCCESS).json({	
@@ -227,30 +86,12 @@ async function changePassword(req, res, next) {
       msg: "Password updated",	
       data: {},	
     });
-  })
-  .catch(next);	
-}
-
-async function remove(req, res) {
-  const id = getIdParam(req);
-  await models.user.destroy({
-    where: {
-      id: id,
-    },
-  });
-  res.status(statusCode.SUCCESS).end();
+  }).catch(next);
 }
 
 module.exports = {
-  // Users
   formatUser,
-  getAll,
-  getByUsername,
-  getById,
+  getUserByUsername,
   changePassword,
-  // Auth
-  createVerifyToken,
-  verifyAccount,
   update,
-  remove,
 };
