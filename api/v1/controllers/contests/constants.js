@@ -13,15 +13,21 @@ const ERRORS = {
     code: 3102,
     msg: "Cannot create contest",
   },
-  GET_CONTESTS_ERROR: {
-    code: 3103,
-    msg: "Cannot get contests",
+  CONTEST_NOT_FOUND: {
+    code: 2101,
+    msg: "Contest not found",
+  },
+  SERVER_ERROR: {
+    code: 4000,
+    msg: "Server error",
   },
 };
 
 const DEFAULT_MESSAGE = {
   GET_ALL_CONTESTS: "Contests",
   CREATE_CONTEST: "Contest created",
+  GET_CONTEST: "Contest",
+  UPDATE_CONTEST: "Contest updated",
 };
 
 module.exports = {

@@ -14,7 +14,7 @@ async function getAllContests(offset, limit) {
     return contests;
   } catch (error) {
     throw new ContestRuntimeError({
-      ...ERRORS.GET_CONTESTS_ERROR,
+      ...ERRORS.SERVER_ERROR,
       data: { message: error.message },
     });
   }
@@ -56,9 +56,39 @@ async function createContest({
   }
 }
 
+async function getContest({ contest_name }) {
+  try {
+    return await models.Contest.findOne({ where: { contest_name } });
+  } catch (error) {
+    throw new ContestRuntimeError({
+      ...ERRORS.SERVER_ERROR,
+      data: { message: error.message },
+    });
+  }
+}
+
+async function updateContest({ contest_name }, newValue) {
+  const contest = await getContest({ contest_name });
+  if (contest === null) {
+    throw new ContestRuntimeError({
+      ...ERRORS.CONTEST_NOT_FOUND,
+      data: { contest_name },
+    });
+  }
+
+  for (const key in newValue) {
+    if (newValue[key] !== undefined) {
+      contest[key] = newValue[key];
+    }
+  }
+  return await contest.save();
+}
+
 module.exports = {
   ContestRuntimeError,
   getAllContests,
   contestExists,
   createContest,
+  getContest,
+  updateContest,
 };
