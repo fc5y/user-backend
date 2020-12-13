@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ENV=dev nodemon index.js",
-    "start": "ENV=prod node index.js",
+    "start": "npm run migrate && node index.js",
     "test": "jest",
     "lint": "./node_modules/.bin/eslint \"./**/*.js\" --fix",
     "migrate": "npx sequelize-cli db:migrate",
@@ -37,10 +37,11 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-validator": "^6.8.0",
     "mysql2": "^2.2.5",
+    "nodemailer": "^6.4.16",
     "otp-generator": "^2.0.0",
-    "sequelize": "^6.3.5",
-    "nodemailer": "^6.4.16"
+    "sequelize": "^6.3.5"
   },
   "devDependencies": {
     "bcryptjs": "^2.4.3",
