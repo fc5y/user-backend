@@ -45,9 +45,6 @@ async function update(req, res, next) {
   if (req.body.full_name !== undefined) user.full_name = req.body.full_name;
   if (req.body.school_name !== undefined) user.school_name = req.body.school_name;
   user.save().then(updatedUser => {
-    if (!updatedUser) {
-      throw new errors.FcError(errors.SYSTEM_ERROR);
-    }
     res.status(statusCode.SUCCESS).json({
       code: 0,
       msg: "User updated",
