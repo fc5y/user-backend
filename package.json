@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ENV=dev nodemon index.js",
-    "start": "ENV=prod node index.js",
+    "start": "npm run migrate && node index.js",
     "test": "jest",
     "lint": "./node_modules/.bin/eslint \"./**/*.js\" --fix",
     "migrate": "npx sequelize-cli db:migrate",
