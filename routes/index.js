@@ -44,9 +44,6 @@ function makeHandlerAwareOfAsyncErrors(handler) {
   };
 }
 
-// CORs
-router.use(cors());
-
 // User
 router.get(
   "/api/v1/me",
