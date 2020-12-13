@@ -194,11 +194,41 @@ async function update(req, res, next) {
       res.status(statusCode.SUCCESS).json({
         code: 0,
         msg: "User updated",
-        data: { user: buildUserJson(updatedUser) },
+        data: { user: formatUser(updatedUser) },
       });
     });
   })
   .catch(next);
+}
+
+async function changePassword(req, res, next) {	
+  const user_id = req.user.id;	
+  const user = await models.User.findByPk(user_id);	
+  if (!user) {	
+    throw new errors.FcError(errors.USER_NOT_FOUND);	
+  }	
+
+  if (!bcrypt.compareSync(req.body.old_password, user.password)) {	
+    throw new errors.FcError(errors.EMAIL_USERNAME_PASSWORD_INVALID);	
+  }	
+
+  const hashedPassword = getHashedPassword(req.body.new_password);	
+
+  models.User.update({
+    password: hashedPassword
+  }, {
+    where: { id: user_id },
+  }).then((rowsUpdate) => {
+    if (rowsUpdate == 0) {
+      throw new errors.FcError(errors.SYSTEM_ERROR);
+    }
+    res.status(statusCode.SUCCESS).json({	
+      code: 0,	
+      msg: "Password updated",	
+      data: {},	
+    });
+  })
+  .catch(next);	
 }
 
 async function remove(req, res) {
