@@ -1,11 +1,9 @@
-const db = require("../../../../models");
+const { sequelize } = require("../../../../models");
 const { ERRORS } = require("../../constants");
 const { LogicError } = require("../../utils/error-classes");
 
-const models = db.sequelize.models;
-
 async function getAllContests(offset, limit) {
-  const contests = await models.Contest.findAll({
+  const contests = await sequelize.models.Contest.findAll({
     offset,
     limit,
     order: [["start_time", "DESC"]],
@@ -14,7 +12,9 @@ async function getAllContests(offset, limit) {
 }
 
 async function contestExists(contest_name) {
-  const contest = await models.Contest.findOne({ where: { contest_name } });
+  const contest = await sequelize.models.Contest.findOne({
+    where: { contest_name },
+  });
   return contest !== null;
 }
 
@@ -31,7 +31,7 @@ async function createContest({
       data: { contest_name },
     });
 
-  const contest = await models.Contest.create({
+  const contest = await sequelize.models.Contest.create({
     contest_name,
     contest_title,
     start_time,
@@ -43,7 +43,7 @@ async function createContest({
 }
 
 async function getContest({ contest_name }) {
-  return await models.Contest.findOne({ where: { contest_name } });
+  return await sequelize.models.Contest.findOne({ where: { contest_name } });
 }
 
 async function updateContest({ contest_name }, newValue) {
@@ -64,7 +64,6 @@ async function updateContest({ contest_name }, newValue) {
 }
 
 module.exports = {
-  LogicError,
   getAllContests,
   contestExists,
   createContest,
