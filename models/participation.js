@@ -60,15 +60,15 @@ module.exports = (sequelize) => {
     sequelize,
     modelName: 'Participation',
   });
-  // Participation.associate = function (models) {
-    // Participation.belongsTo(models.User, {
-    //   foreignKey: "user_id",
-    //   as: "User",
-    // });
-    // Participation.belongsTo(models.Contest, {
-    //   foreignKey: "contest_id",
-    //   as: "Contest",
-    // });
-  // };
+  Participation.associate = function (models) {
+    Participation.belongsTo(models.User, {
+      foreignKey: "user_id",
+      as: "user",
+    });
+    Participation.belongsTo(models.Contest, {
+      foreignKey: "contest_id",
+      as: "contest",
+    });
+  };
   return Participation;
 };

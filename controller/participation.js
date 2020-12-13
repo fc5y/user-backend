@@ -4,10 +4,10 @@ const errors = require("../utils/error");
 const { updateOrCreate } = require("../utils/models.js");
 const { statusCode } = require("../utils");
 
-async function buildParticipationJson(participation) {
+function formatParticipation(participation) {
 	return {
-		"contest_name": participation.Contest.contest_name,
-		"contest_title": participation.Contest.contest_title,
+		"contest_name": participation.contest.contest_name,
+		"contest_title": participation.contest.contest_title,
 		// "contest_total_participations": 234,
 		"is_hidden": participation.is_hidden,
 		"rating": participation.rating,
@@ -50,14 +50,6 @@ async function getParticipationByUsername(req, res, next) {
 	if (!user) {
     throw new errors.FcError(errors.USER_NOT_FOUND);
   }
-	models.Contest.hasMany(models.Participation, {
-		foreignKey: 'contest_id',
-		sourceKey: 'id',
-	});
-	models.Participation.belongsTo(models.Contest, {
-		foreignKey: "contest_id",
-		as: "contest",
-	});
 	const participations = await models.Participation.findAll({
 		where: { user_id: user.id } ,
 		include: [
@@ -72,8 +64,8 @@ async function getParticipationByUsername(req, res, next) {
     code: 0,
     msg: "Registered successfully",
     data: {
-			// total: participations.length,
-			// participations: participations.map(participation => buildParticipationJson(participation)),
+			total: participations.length,
+			participations: participations.map(participation => formatParticipation(participation)),
 		},
   });
 }
