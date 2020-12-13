@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
-const constants = require("./constants");
-const { ContestRuntimeError } = require("./errors");
+
+const { ERRORS } = require("../../constants");
+const { LogicError } = require("../../utils/error-classes");
 
 function dateToTimestamp(date) {
   return date.getTime() / 1000;
@@ -34,10 +35,7 @@ function formatContest(contest) {
 function validationMiddleware(req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    throw new ContestRuntimeError({
-      ...constants.ERRORS.BAD_REQUEST,
-      data: errors,
-    });
+    throw new LogicError({ ...ERRORS.VALIDATION_FAILED, data: errors });
   } else {
     return next();
   }

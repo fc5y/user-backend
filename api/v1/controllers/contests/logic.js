@@ -1,23 +1,16 @@
 const db = require("../../../../models");
-const { ERRORS } = require("./constants");
-const { ContestRuntimeError } = require("./errors");
+const { ERRORS } = require("../../constants");
+const { LogicError } = require("../../utils/error-classes");
 
 const models = db.sequelize.models;
 
 async function getAllContests(offset, limit) {
-  try {
-    const contests = await models.Contest.findAll({
-      offset,
-      limit,
-      order: [["start_time", "DESC"]],
-    });
-    return contests;
-  } catch (error) {
-    throw new ContestRuntimeError({
-      ...ERRORS.SERVER_ERROR,
-      data: { message: error.message },
-    });
-  }
+  const contests = await models.Contest.findAll({
+    offset,
+    limit,
+    order: [["start_time", "DESC"]],
+  });
+  return contests;
 }
 
 async function contestExists(contest_name) {
@@ -33,44 +26,30 @@ async function createContest({
   can_enter,
 }) {
   if (await contestExists(contest_name))
-    throw new ContestRuntimeError({
+    throw new LogicError({
       ...ERRORS.CONTEST_EXISTS,
       data: { contest_name },
     });
 
-  try {
-    const contest = await models.Contest.create({
-      contest_name,
-      contest_title,
-      start_time,
-      duration,
-      can_enter,
-      materials: {},
-    });
-    return contest;
-  } catch (error) {
-    throw new ContestRuntimeError({
-      ...ERRORS.CREATE_CONTEST_ERROR,
-      data: { message: error.message },
-    });
-  }
+  const contest = await models.Contest.create({
+    contest_name,
+    contest_title,
+    start_time,
+    duration,
+    can_enter,
+    materials: {},
+  });
+  return contest;
 }
 
 async function getContest({ contest_name }) {
-  try {
-    return await models.Contest.findOne({ where: { contest_name } });
-  } catch (error) {
-    throw new ContestRuntimeError({
-      ...ERRORS.SERVER_ERROR,
-      data: { message: error.message },
-    });
-  }
+  return await models.Contest.findOne({ where: { contest_name } });
 }
 
 async function updateContest({ contest_name }, newValue) {
   const contest = await getContest({ contest_name });
   if (contest === null) {
-    throw new ContestRuntimeError({
+    throw new LogicError({
       ...ERRORS.CONTEST_NOT_FOUND,
       data: { contest_name },
     });
@@ -85,7 +64,7 @@ async function updateContest({ contest_name }, newValue) {
 }
 
 module.exports = {
-  ContestRuntimeError,
+  LogicError,
   getAllContests,
   contestExists,
   createContest,
