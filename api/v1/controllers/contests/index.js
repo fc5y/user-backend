@@ -3,6 +3,7 @@ const utils = require("./utils");
 const logic = require("./logic");
 const constants = require("./constants");
 const { ERRORS } = require("../../constants");
+const { validationMiddleware } = require("./utils");
 
 // GET /api/v1/contests?offset={offset}&limit={limit}
 function getAllContests(req, res, next) {
@@ -71,16 +72,11 @@ function getContest(req, res, next) {
   logic
     .getContest({ contest_name: req.params.contest_name })
     .then((contest) =>
-      contest
-        ? res.json({
-            code: 0,
-            msg: constants.SUCCESS_MESSAGE.GET_CONTEST,
-            data: { contest: utils.formatContest(contest) },
-          })
-        : res.json({
-            ...ERRORS.CONTEST_NOT_FOUND,
-            data: { contest_name: req.params.contest_name },
-          }),
+      res.json({
+        code: 0,
+        msg: constants.SUCCESS_MESSAGE.GET_CONTEST,
+        data: { contest: utils.formatContest(contest) },
+      }),
     )
     .catch(next);
 }
@@ -187,9 +183,34 @@ updateContest.validator = [
   utils.validationMiddleware,
 ];
 
+// POST /api/v1/contests/{contest_name}/delete
+function deleteContest(req, res, next) {
+  logic
+    .deleteContest({ contest_name: req.params.contest_name })
+    .then(() =>
+      res.json({
+        code: 0,
+        msg: constants.SUCCESS_MESSAGE.DELETE_CONTEST,
+        data: { contest_name: req.params.contest_name },
+      }),
+    )
+    .catch(next);
+}
+
+// optional, for validation only
+deleteContest.validator = [
+  param("contest_name")
+    .matches(/^[a-zA-Z0-9_.-]+$/)
+    .withMessage("value must only contain allowed characters")
+    .isLength({ min: 1, max: 255 })
+    .withMessage("value's length must be in range 1 to 255"),
+  validationMiddleware,
+];
+
 module.exports = {
   getAllContests,
   createContest,
   getContest,
   updateContest,
+  deleteContest,
 };
