@@ -1,15 +1,18 @@
-const express = require("express");
-const routes = require("./routes");
-const bodyParser = require("body-parser");
+const cors = require("cors");
 const jwt = require("express-jwt");
+const express = require("express");
+const bodyParser = require("body-parser");
+
+const routes = require("./routes");
 const apiV1 = require("./api/v1");
 
 const app = express();
+
 app.set("json spaces", 2); // optional, format json responses with 2 spaces
 
 const db = require("./models/index.js");
 
-// Routes
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
