@@ -171,31 +171,31 @@ async function verifyAccount(req, res) {
   });
 }
 
-async function update(req, res) {
+async function update(req, res, next) {
   const user_id = req.user.id;
   const user = await models.User.findByPk(user_id);
   if (!user) {
     throw new errors.FcError(errors.USER_NOT_FOUND);
   }
   
-  const rowsChange = await models.User.update({
+  models.User.update({
     full_name: req.body.full_name,
     school_name: req.body.school_name
   }, {
     where: { id: user_id },
-  });
-
-  if (!rowsChange[0]) {
-    throw new errors.FcError(errors.SYSTEM_ERROR);
-  }
-
-  const updatedUser = await models.User.findByPk(user_id);
-
-  res.status(statusCode.SUCCESS).json({
-    code: 0,
-    msg: "User updated",
-    data: { user: buildUserJson(updatedUser) },
-  });
+  }).then((rowsUpdate) => {
+    if (rowsUpdate == 0) {
+      throw new errors.FcError(errors.SYSTEM_ERROR);
+    }
+    models.User.findByPk(user_id).then(updatedUser => {
+      res.status(statusCode.SUCCESS).json({
+        code: 0,
+        msg: "User updated",
+        data: { user: buildUserJson(updatedUser) },
+      });
+    });
+  })
+  .catch(next);
 }
 
 async function remove(req, res) {
