@@ -5,7 +5,7 @@ const db = require("../models/index.js");
 const models = db.sequelize.models;
 const { statusCode, emailRegex } = require("../utils");
 const errors = require("../utils/error");
-const { buildUserJson } = require("./user");
+const { formatUser } = require("./user");
 
 const SALT_ROUNDS = 10;
 const bcrypt = require("bcryptjs");
@@ -182,7 +182,7 @@ async function signup(req, res) {
   res.status(statusCode.SUCCESS).json({
     code: 0,
     msg: "Create user successful",
-    data: buildUserJson(user),
+    data: formatUser(user),
   });
 }
 

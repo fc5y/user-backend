@@ -8,7 +8,7 @@ const errors = require("../utils/error");
 const bcrypt = require("bcryptjs");
 const { getHashedPassword } = require("./auth.js");
 
-function buildUserJson(user) {
+function formatUser(user) {
   return {
     id: user.id,
     username: user.username,
@@ -35,7 +35,7 @@ async function getAll(req, res) {
     code: 0,
     msg: "",
     data: {
-      users: users.map(user => buildUserJson(user))
+      users: users.map(user => formatUser(user))
     },
   });
 }
@@ -50,7 +50,7 @@ async function getByUsername(req, res) {
       code: 0,
       msg: "",
       data: {
-        user: buildUserJson(user)
+        user: formatUser(user)
       },
     });
   }
@@ -66,7 +66,7 @@ async function getById(req, res) {
       code: 0,
       msg: "",
       data: {
-        user: buildUserJson(user)
+        user: formatUser(user)
       },
     });
   }
@@ -161,7 +161,7 @@ async function verifyAccount(req, res) {
                     res.status(statusCode.SUCCESS).send({
                       code: 0,
                       msg: "Success",
-                      data: buildUserJson(updatedUser),
+                      data: formatUser(updatedUser),
                     });
                   });
                 }
@@ -197,7 +197,7 @@ async function update(req, res) {
   res.status(statusCode.SUCCESS).json({
     code: 0,
     msg: "User updated",
-    data: { user: buildUserJson(updatedUser) },
+    data: { user: formatUser(updatedUser) },
   });
 }
 
@@ -245,7 +245,7 @@ async function remove(req, res) {
 
 module.exports = {
   // Users
-  buildUserJson,
+  formatUser,
   getAll,
   getByUsername,
   getById,
