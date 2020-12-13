@@ -4,6 +4,7 @@ const express = require("express");
 const defaultController = require("../controller/index");
 const userController = require("../controller/user");
 const authController = require("../controller/auth");
+const participationController = require("../controller/participation");
 const cors = require("cors");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const isNotUser = require("../middlewares/isNotUser");
@@ -34,6 +35,7 @@ function makeHandlerAwareOfAsyncErrors(handler) {
         });
       } else {
         const fcError = new FcError(SYSTEM_ERROR);
+        console.log(error);
         res.status(statusCode.BAD_REQUEST).send({
           code: fcError.code,
           msg: error.msg,
@@ -95,6 +97,21 @@ router.post(
   "/api/v1/signup",
   makeHandlerAwareOfAsyncErrors(isNotUser),
   makeHandlerAwareOfAsyncErrors(authController.signup),
+);
+
+// POST /api/v1/participation
+// Register a contest
+router.post(
+  "/api/v1/participations",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(participationController.register),
+);
+
+// GET /api/v1/participation/{username}
+// Get participations by username
+router.get(
+  "/api/v1/participations/:username",
+  makeHandlerAwareOfAsyncErrors(participationController.getParticipationByUsername),
 );
 
 module.exports = router;

@@ -32,18 +32,22 @@ module.exports = (sequelize) => {
     rank_in_contest: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
     rating: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
     rating_change: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
     score: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
     is_hidden: {
       type: DataTypes.BOOLEAN,
@@ -56,17 +60,15 @@ module.exports = (sequelize) => {
     sequelize,
     modelName: 'Participation',
   });
-  Participation.associate = function (_models) {
-    Participation.belongsTo(User, {
-      foreignKey: {
-        name: "user_id",
-      },
-    });
-    Participation.belongsTo(Contest, {
-      foreignKey: {
-        name: "contest_id",
-      },
-    });
-  };
+  // Participation.associate = function (models) {
+    // Participation.belongsTo(models.User, {
+    //   foreignKey: "user_id",
+    //   as: "User",
+    // });
+    // Participation.belongsTo(models.Contest, {
+    //   foreignKey: "contest_id",
+    //   as: "Contest",
+    // });
+  // };
   return Participation;
 };

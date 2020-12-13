@@ -1,10 +1,17 @@
 "use strict";
 const { Model, DataTypes } = require("sequelize");
+const Participation = require("./participation");
 
 module.exports = (sequelize) => {
   class Contest extends Model {}
   Contest.init(
     {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
       contest_name: {
         allowNull: false,
         unique: true,
@@ -38,5 +45,8 @@ module.exports = (sequelize) => {
       modelName: "Contest",
     },
   );
+  // Contest.associate = function(models) {
+    // Contest.hasMany(Participation, {foreignKey: 'id', sourceKey: 'contest_id'});
+  // }
   return Contest;
 };
