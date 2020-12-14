@@ -1,43 +1,26 @@
 require("dotenv").config();
 
-const { getIdParam, statusCode, expiredAfter } = require("../utils");
+const { statusCode, expiredAfter } = require("../utils");
 const db = require("../models/index.js");
 const models = db.sequelize.models;
 const jsonwebtoken = require("jsonwebtoken");
 const errors = require("../utils/error");
+const bcrypt = require("bcryptjs");
+const { getHashedPassword } = require("./auth.js");
 
-function buildUserJson(user) {
+function formatUser(user, publicFieldOnly=false) {
   return {
     id: user.id,
     username: user.username,
     full_name: user.full_name,
     school_name: user.school_name,
+    ...(publicFieldOnly ? {email: user.email} : {}),
     rank_in_global: 0,
     rating: 0
   };
 }
 
-async function getAll(req, res) {
-  let filter = {};
-  const attrs = ["full_name", "school_name"];
-  attrs.forEach((param) => {
-    if (Object.prototype.hasOwnProperty.call(req.query, param)) {
-      filter[param] = req.query[param];
-    }
-  });
-  const users = await models.User.findAll({
-    where: filter,
-  });
-  res.status(statusCode.SUCCESS).json({
-    code: 0,
-    msg: "",
-    data: {
-      users: users.map(user => buildUserJson(user))
-    },
-  });
-}
-
-async function getByUsername(req, res) {
+async function getUserByUsername(req, res) {
   const username = req.params;
   const user = await models.User.findOne({ where: username });
   if (!user) {
@@ -45,176 +28,73 @@ async function getByUsername(req, res) {
   } else {
     res.status(statusCode.SUCCESS).json({
       code: 0,
-      msg: "",
+      msg: "User",
       data: {
-        user: buildUserJson(user)
+        user: formatUser(user)
       },
     });
   }
 }
 
-async function getById(req, res) {
-  const user_id = !req.params.id ? req.user.id : getIdParam(req);
+async function getUserById(req, res) {
+  const user_id = req.user.id;
   const user = await models.User.findByPk(user_id);
   if (!user) {
     throw new errors.FcError(errors.USER_NOT_FOUND);
-  } else {
-    res.status(statusCode.SUCCESS).json({
-      code: 0,
-      msg: "",
-      data: {
-        user: buildUserJson(user)
-      },
-    });
   }
-}
-
-async function createVerifyToken(req, res) {
-  const id = getIdParam(req);
-  models.User.findByPk(id).then((user) => {
-    jsonwebtoken.sign(
-      { email: user.email },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: expiredAfter,
-      },
-      (err, token) => {
-        if (err) {
-          res.status(statusCode.BAD_REQUEST).send({
-            code: 3005,
-            msg: err.name,
-            data: {},
-          });
-        } else {
-          models.User.update(
-            { verify_token: token },
-            {
-              where: { id: id },
-            },
-          ).then((rowsUpdate) => {
-            if (rowsUpdate[0] === 0) {
-              res.status(statusCode.BAD_REQUEST).send({
-                code: 2001,
-                msg: "User not found",
-                data: {},
-              });
-            } else {
-              res.status(statusCode.SUCCESS).send({
-                code: 0,
-                msg: "Success",
-                data: { id: id, verify_token: token },
-              });
-            }
-          });
-        }
-      },
-    );
-  });
-}
-
-async function verifyAccount(req, res) {
-  const id = getIdParam(req);
-  const token = req.query.token;
-  models.User.findByPk(id).then((user) => {
-    if (user.is_email_verified) {
-      res.status(statusCode.BAD_REQUEST).json({
-        code: 3001,
-        msg: "Account had been verified!",
-        data: {},
-      });
-    } else {
-      if (user.verify_token !== token) {
-        res.status(statusCode.BAD_REQUEST).send({
-          code: 3005,
-          msg: "Invalid token",
-          data: {},
-        });
-      } else {
-        jsonwebtoken.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-          if (err) {
-            res.status(statusCode.BAD_REQUEST).send({
-              code: 3001,
-              msg: "Token has expired",
-            });
-          } else {
-            if (decoded.email !== user.email) {
-              res.status(statusCode.BAD_REQUEST).send({
-                code: 3005,
-                msg: "Invalid token",
-                data: {},
-              });
-            } else {
-              models.User.update(
-                { is_email_verified: true },
-                { where: { id: id } },
-              ).then((rowsUpdate) => {
-                if (rowsUpdate[0] === 0) {
-                  res.status(statusCode.BAD_REQUEST).send({
-                    code: 2001,
-                    msg: "User not found",
-                  });
-                } else {
-                  models.User.findByPk(id).then((updatedUser) => {
-                    res.status(statusCode.SUCCESS).send({
-                      code: 0,
-                      msg: "Success",
-                      data: buildUserJson(updatedUser),
-                    });
-                  });
-                }
-              });
-            }
-          }
-        });
-      }
-    }
+  res.status(statusCode.SUCCESS).json({
+    code: 0,
+    msg: "User",
+    data: {
+      user: formatUser(user, true)
+    },
   });
 }
 
 async function update(req, res, next) {
-  const id = getIdParam(req);
-  if (!req.body.id) {
-    throw new errors.FcError(errors.MISSING_USER_ID);
-  } else {
-    models.User.update(req.body, {
-      where: { id: id },
-    })
-      .then((rowsUpdate) => {
-        if (rowsUpdate[0] == 0) {
-          throw new errors.FcError(errors.USER_NOT_FOUND);
-        } else {
-          models.User.findByPk(id).then((user) => {
-            res.status(statusCode.SUCCESS).json({
-              code: 0,
-              msg: "",
-              data: { user: buildUserJson(user) },
-            });
-          });
-        }
-      })
-      .catch(next);
+  const user_id = req.user.id;
+  const user = await models.User.findByPk(user_id);
+  if (!user) {
+    throw new errors.FcError(errors.USER_NOT_FOUND);
   }
+
+  if (req.body.full_name !== undefined) user.full_name = req.body.full_name;
+  if (req.body.school_name !== undefined) user.school_name = req.body.school_name;
+  user.save().then(updatedUser => {
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "User updated",
+      data: { user: formatUser(updatedUser, true) },
+    });
+  });
 }
 
-async function remove(req, res) {
-  const id = getIdParam(req);
-  await models.user.destroy({
-    where: {
-      id: id,
-    },
-  });
-  res.status(statusCode.SUCCESS).end();
+async function changePassword(req, res, next) {	
+  const user_id = req.user.id;	
+  const user = await models.User.findByPk(user_id);	
+  if (!user) {	
+    throw new errors.FcError(errors.USER_NOT_FOUND);	
+  }	
+
+  if (!bcrypt.compareSync(req.body.old_password, user.password)) {	
+    throw new errors.FcError(errors.EMAIL_USERNAME_PASSWORD_INVALID);	
+  }	
+
+  const hashedPassword = getHashedPassword(req.body.new_password);	
+  user.password = hashedPassword;
+  user.save().then((updatedUser) => {
+    res.status(statusCode.SUCCESS).json({	
+      code: 0,	
+      msg: "Password updated",	
+      data: {},	
+    });
+  }).catch(next);
 }
 
 module.exports = {
-  // Users
-  buildUserJson,
-  getAll,
-  getByUsername,
-  getById,
-  // Auth
-  createVerifyToken,
-  verifyAccount,
+  formatUser,
+  getUserByUsername,
+  getUserById,
+  changePassword,
   update,
-  remove,
 };
