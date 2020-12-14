@@ -74,7 +74,9 @@ async function getParticipationByUsername(req, res) {
     msg: "Registered successfully",
     data: {
 			total: participations.length,
-			participations: participations.map(participation => formatParticipation(participation)),
+			participations: participations.map(
+				participation => formatParticipation(participation)
+			),
 		},
   });
 }
