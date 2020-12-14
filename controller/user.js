@@ -8,13 +8,13 @@ const errors = require("../utils/error");
 const bcrypt = require("bcryptjs");
 const { getHashedPassword } = require("./auth.js");
 
-function formatUser(user) {
+function formatUser(user, publicFieldOnly=false) {
   return {
     id: user.id,
     username: user.username,
     full_name: user.full_name,
     school_name: user.school_name,
-    email: user.email,
+    ...(publicFieldOnly ? {email: user.email} : {}),
     rank_in_global: 0,
     rating: 0
   };
@@ -34,6 +34,21 @@ async function getUserByUsername(req, res) {
       },
     });
   }
+}
+
+async function getUserById(req, res) {
+  const user_id = req.user.id;
+  const user = await models.User.findByPk(user_id);
+  if (!user) {
+    throw new errors.FcError(errors.USER_NOT_FOUND);
+  }
+  res.status(statusCode.SUCCESS).json({
+    code: 0,
+    msg: "User",
+    data: {
+      user: formatUser(user, true)
+    },
+  });
 }
 
 async function update(req, res, next) {
@@ -92,6 +107,7 @@ async function changePassword(req, res, next) {
 module.exports = {
   formatUser,
   getUserByUsername,
+  getUserById,
   changePassword,
   update,
 };

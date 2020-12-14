@@ -48,7 +48,7 @@ function makeHandlerAwareOfAsyncErrors(handler) {
 router.get(
   "/api/v1/me",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.getById),
+  makeHandlerAwareOfAsyncErrors(userController.getUserById),
 );
 router.get(
   "/api/v1/users/:username",

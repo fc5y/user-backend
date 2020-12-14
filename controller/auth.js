@@ -182,7 +182,7 @@ async function signup(req, res) {
   res.status(statusCode.SUCCESS).json({
     code: 0,
     msg: "User created",
-    data: formatUser(user),
+    data: formatUser(user, true),
   });
 }
 
