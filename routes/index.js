@@ -53,18 +53,32 @@ router.get(
 router.get(
   "/api/v1/users/:username",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.getUserByUsername),
+  makeHandlerAwareOfAsyncErrors(userController.getByUsername),
+);
+router.get(
+  "/api/v1/users",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(userController.getAll),
 );
 router.post(
   "/api/v1/me",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.update),
 );
+router.delete(
+  "/api/v1/users/:id",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(userController.remove),
+);
+
+router.get(
+  "/api/v1/verify/:id",
+  makeHandlerAwareOfAsyncErrors(userController.createVerifyToken),
+);
 
 router.post(
-  "/api/v1/me/change-password",
-  makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.changePassword)
+  "/api/v1/verify/:id",
+  makeHandlerAwareOfAsyncErrors(userController.verifyAccount),
 );
 
 // Auth
