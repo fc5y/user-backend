@@ -57,25 +57,16 @@ async function update(req, res, next) {
   if (!user) {
     throw new errors.FcError(errors.USER_NOT_FOUND);
   }
-  
-  models.User.update({
-    full_name: req.body.full_name,
-    school_name: req.body.school_name
-  }, {
-    where: { id: user_id },
-  }).then((rowsUpdate) => {
-    if (rowsUpdate == 0) {
-      throw new errors.FcError(errors.SYSTEM_ERROR);
-    }
-    models.User.findByPk(user_id).then(updatedUser => {
-      res.status(statusCode.SUCCESS).json({
-        code: 0,
-        msg: "User updated",
-        data: { user: formatUser(updatedUser) },
-      });
+
+  if (req.body.full_name !== undefined) user.full_name = req.body.full_name;
+  if (req.body.school_name !== undefined) user.school_name = req.body.school_name;
+  user.save().then(updatedUser => {
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "User updated",
+      data: { user: formatUser(updatedUser, true) },
     });
-  })
-  .catch(next);
+  });
 }
 
 async function changePassword(req, res, next) {	
@@ -90,7 +81,6 @@ async function changePassword(req, res, next) {
   }	
 
   const hashedPassword = getHashedPassword(req.body.new_password);	
-
   user.password = hashedPassword;
   user.save().then((updatedUser) => {
     if (!updatedUser) {
