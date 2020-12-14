@@ -69,7 +69,7 @@ async function getParticipationByUsername(req, res) {
 
   res.status(statusCode.SUCCESS).json({
     code: 0,
-    msg: "Registered successfully",
+    msg: "",
     data: {
       total: participations.length,
       participations: participations.map(
