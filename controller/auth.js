@@ -5,7 +5,7 @@ const db = require("../models/index.js");
 const models = db.sequelize.models;
 const { statusCode, emailRegex } = require("../utils");
 const errors = require("../utils/error");
-const { buildUserJson } = require("./user");
+const { formatUser } = require("./user");
 
 const SALT_ROUNDS = 10;
 const bcrypt = require("bcryptjs");
@@ -17,10 +17,14 @@ function isEmail(email_or_username) {
   return emailRegex.test(email_or_username);
 }
 
-function sanitizeUserDetails(data) {
+function getHashedPassword(password) {
   const salt = bcrypt.genSaltSync(SALT_ROUNDS);
-  const hashedPassword = bcrypt.hashSync(data.password, salt);
-  let userDetails = {
+  return bcrypt.hashSync(password, salt);
+}
+
+function sanitizeUserDetails(data) {
+  const hashedPassword = getHashedPassword(data.password);
+  const userDetails = {
     username: data.username,
     full_name: data.full_name,
     email: data.email,
@@ -177,8 +181,8 @@ async function signup(req, res) {
 
   res.status(statusCode.SUCCESS).json({
     code: 0,
-    msg: "Create user successful",
-    data: buildUserJson(user),
+    msg: "User created",
+    data: formatUser(user),
   });
 }
 
@@ -186,4 +190,5 @@ module.exports = {
   login,
   signup,
   sendOtp,
+  getHashedPassword,
 };
