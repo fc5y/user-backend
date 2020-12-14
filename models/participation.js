@@ -1,7 +1,5 @@
 'use strict';
 const { Model, DataTypes } = require("sequelize");
-const User = require("./user");
-const Contest = require("./contest");
 
 module.exports = (sequelize) => {
   class Participation extends Model {
@@ -12,6 +10,10 @@ module.exports = (sequelize) => {
      */
     static associate(models) {
       // define association here
+      Participation.belongsTo(models.Contest, {
+        foreignKey: "contest_id",
+        as: "contest",
+      });
     }
   }
   Participation.init({
@@ -31,23 +33,19 @@ module.exports = (sequelize) => {
     },
     rank_in_contest: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
+      allowNull: true,
     },
     rating: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
+      allowNull: true,
     },
     rating_change: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
+      allowNull: true,
     },
     score: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
+      allowNull: true,
     },
     is_hidden: {
       type: DataTypes.BOOLEAN,
@@ -60,15 +58,5 @@ module.exports = (sequelize) => {
     sequelize,
     modelName: 'Participation',
   });
-  Participation.associate = function (models) {
-    Participation.belongsTo(models.User, {
-      foreignKey: "user_id",
-      as: "user",
-    });
-    Participation.belongsTo(models.Contest, {
-      foreignKey: "contest_id",
-      as: "contest",
-    });
-  };
   return Participation;
 };

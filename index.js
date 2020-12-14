@@ -5,7 +5,6 @@ const express = require("express");
 const routes = require("./routes");
 const apiV1 = require("./api/v1");
 const { sequelize } = require("./models");
-const models = sequelize.models;
 
 const PORT = process.env.PORT || 4000;
 
@@ -62,14 +61,7 @@ sequelize
     app.listen(PORT, () => {
       console.log(`Listen on port ${PORT}.`);
     });
-    models.Contest.hasMany(models.Participation, {
-      foreignKey: 'contest_id',
-      sourceKey: 'id',
-    });
-    models.Participation.belongsTo(models.Contest, {
-      foreignKey: "contest_id",
-      as: "contest",
-    });
+
   })
   .catch((error) => {
     console.error("Failed to connect to database.");

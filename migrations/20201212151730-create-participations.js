@@ -26,19 +26,19 @@ module.exports = {
       },
       rank_in_contest: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       rating: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       rating_change: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       score: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       is_hidden: {
         type: Sequelize.BOOLEAN,
@@ -55,7 +55,7 @@ module.exports = {
       },
     });
   },
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface, _Sequelize) => {
     await queryInterface.dropTable('Participations');
   }
 };

@@ -5,7 +5,6 @@ const defaultController = require("../controller/index");
 const userController = require("../controller/user");
 const authController = require("../controller/auth");
 const participationController = require("../controller/participation");
-const cors = require("cors");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const isNotUser = require("../middlewares/isNotUser");
 const { FcError, SYSTEM_ERROR } = require("../utils/error");

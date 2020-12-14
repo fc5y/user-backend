@@ -1,7 +1,6 @@
 const db = require("../models/index.js");
 const models = db.sequelize.models;
 const errors = require("../utils/error");
-const { updateOrCreate } = require("../utils/models.js");
 const { statusCode } = require("../utils");
 
 function formatParticipation(participation) {
@@ -17,26 +16,36 @@ function formatParticipation(participation) {
 	};
 }
 
+async function isRegistered(user_id, contest_id) {
+	const participation = await models.Participation.findOne({
+		where: {
+			contest_id: contest_id,
+			user_id: user_id,
+		}
+	});
+	return participation !== null;
+}
+
 // POST /api/v1/participations
-async function register(req, res, next) {
+async function register(req, res) {
 	const user_id = req.user.id;
 	const { contest_name, is_hidden } = req.body;
 	const contest = await models.Contest.findOne({ where: {contest_name} });
 	if (!contest) {
 		throw new errors.FcError(errors.CONTEST_NOT_FOUND);
 	}
-	await updateOrCreate(
-    models.Participation,
-    {
-			user_id: user_id,
-			contest_id: contest.id
-		},
-    {
-      user_id: user_id,
-			contest_id: contest.id,
-			is_hidden
-    },
-  );
+	if (await isRegistered(user_id, contest.id)) {
+		return res.status(statusCode.SUCCESS).json({
+			code: 0,
+			msg: "Already registered",
+			data: {},
+		});
+	}
+	await models.Participation.create({
+		user_id: user_id,
+		contest_id: contest.id,
+		is_hidden
+	});
   res.status(statusCode.SUCCESS).json({
     code: 0,
     msg: "Registered successfully",
@@ -44,7 +53,7 @@ async function register(req, res, next) {
   });
 }
 
-async function getParticipationByUsername(req, res, next) {
+async function getParticipationByUsername(req, res) {
 	const username = req.params;
   const user = await models.User.findOne({ where: username });
 	if (!user) {

@@ -1,9 +1,21 @@
 "use strict";
 const { Model, DataTypes } = require("sequelize");
-const Participation = require("./participation");
 
 module.exports = (sequelize) => {
-  class Contest extends Model {}
+  class Contest extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      models.Contest.hasMany(models.Participation, {
+        foreignKey: 'contest_id',
+        sourceKey: 'id',
+      });
+    }
+  }
   Contest.init(
     {
       id: {
@@ -45,8 +57,5 @@ module.exports = (sequelize) => {
       modelName: "Contest",
     },
   );
-  // Contest.associate = function(models) {
-    // Contest.hasMany(Participation, {foreignKey: 'id', sourceKey: 'contest_id'});
-  // }
   return Contest;
 };
