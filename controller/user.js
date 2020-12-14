@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const { getIdParam, statusCode, expiredAfter } = require("../utils");
+const { statusCode, expiredAfter } = require("../utils");
 const db = require("../models/index.js");
 const models = db.sequelize.models;
 const jsonwebtoken = require("jsonwebtoken");
@@ -83,9 +83,6 @@ async function changePassword(req, res, next) {
   const hashedPassword = getHashedPassword(req.body.new_password);	
   user.password = hashedPassword;
   user.save().then((updatedUser) => {
-    if (!updatedUser) {
-      throw new errors.FcError(errors.SYSTEM_ERROR);
-    }
     res.status(statusCode.SUCCESS).json({	
       code: 0,	
       msg: "Password updated",	
