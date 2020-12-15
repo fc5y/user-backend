@@ -44,40 +44,27 @@ function makeHandlerAwareOfAsyncErrors(handler) {
   };
 }
 
-// CORs
-router.use(cors());
-
 // User
-
 router.get(
-  "/api/v1/users",
+  "/api/v1/me",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.getAll),
+  makeHandlerAwareOfAsyncErrors(userController.getUserById),
 );
 router.get(
-  "/api/v1/user/:id?",
+  "/api/v1/users/:username",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.getById),
+  makeHandlerAwareOfAsyncErrors(userController.getUserByUsername),
 );
-router.put(
-  "/api/v1/user/:id",
+router.post(
+  "/api/v1/me",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.update),
 );
-router.delete(
-  "/api/v1/users/:id",
-  makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.remove),
-);
-
-router.get(
-  "/api/v1/verify/:id",
-  makeHandlerAwareOfAsyncErrors(userController.createVerifyToken),
-);
 
 router.post(
-  "/api/v1/verify/:id",
-  makeHandlerAwareOfAsyncErrors(userController.verifyAccount),
+  "/api/v1/me/change-password",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(userController.changePassword)
 );
 
 // Auth
@@ -86,7 +73,7 @@ router.post(
   makeHandlerAwareOfAsyncErrors(authController.login),
 );
 router.post(
-  "/api/v1/send_otp",
+  "/api/v1/send-otp",
   makeHandlerAwareOfAsyncErrors(authController.sendOtp),
 );
 router.post(

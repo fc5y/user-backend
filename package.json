@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "ENV=dev nodemon index.js",
-    "start": "ENV=prod node index.js",
+    "start": "npm run migrate && node index.js",
     "test": "jest",
     "lint": "./node_modules/.bin/eslint \"./**/*.js\" --fix",
     "migrate": "npx sequelize-cli db:migrate",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo",
     "seed": "npx sequelize-cli db:seed:all"
   },
   "husky": {
@@ -32,14 +33,14 @@
   },
   "homepage": "https://github.com/fc5y/user-backend#readme",
   "dependencies": {
-    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-validator": "^6.8.0",
     "mysql2": "^2.2.5",
+    "nodemailer": "^6.4.16",
     "otp-generator": "^2.0.0",
-    "sequelize": "^6.3.5",
-    "nodemailer": "^6.4.16"
+    "sequelize": "^6.3.5"
   },
   "devDependencies": {
     "bcryptjs": "^2.4.3",
@@ -51,6 +52,7 @@
     "jest": "^26.6.0",
     "lint-staged": "^10.5.1",
     "nodemon": "^2.0.4",
-    "prettier": "^2.1.2"
+    "prettier": "^2.1.2",
+    "sequelize-cli": "^6.2.0"
   }
 }
