@@ -1,11 +1,7 @@
 const express = require("express");
 const contestController = require("./controllers/contests");
-const { ContestRuntimeError } = require("./controllers/contests/logic");
-
-const SERVER_ERROR = {
-  code: 4000,
-  msg: "Server error",
-};
+const { LogicError } = require("./utils/error-classes");
+const { ERRORS } = require("./constants");
 
 const router = express.Router();
 
@@ -45,11 +41,11 @@ router.post(
 
 router.use((error, req, res, next) => {
   console.error(error);
-  if (error instanceof ContestRuntimeError) {
+  if (error instanceof LogicError) {
     res.status(400).json(error);
   } else {
     res.status(500).json({
-      ...SERVER_ERROR,
+      ...ERRORS.SERVER_ERROR,
       data: { message: error.message },
     });
   }

@@ -1,9 +1,8 @@
 require("dotenv").config();
 
 const Sequelize = require("sequelize");
-const db = {};
 
-let sequelize = new Sequelize({
+const sequelize = new Sequelize({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   dialect: process.env.DB_DIALECT,
@@ -20,7 +19,6 @@ const modelDefiners = [
   require("./contest"),
   require("./participation"),
   // Add more models here...
-  // require('./models/item'),
 ];
 
 // We define all models according to their files.
@@ -28,6 +26,6 @@ for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
 }
 
-// We export the sequelize connection instance to be used around our app.
-db.sequelize = sequelize;
-module.exports = db;
+module.exports = {
+  sequelize,
+};
