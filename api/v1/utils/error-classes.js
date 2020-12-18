@@ -1,4 +1,4 @@
-class ContestRuntimeError extends Error {
+class LogicError extends Error {
   constructor({ code, msg, data }, ...params) {
     super(...params);
     this.code = code;
@@ -8,5 +8,5 @@ class ContestRuntimeError extends Error {
 }
 
 module.exports = {
-  ContestRuntimeError,
+  LogicError,
 };

@@ -2,6 +2,7 @@ const { query, param, body } = require("express-validator");
 const utils = require("./utils");
 const logic = require("./logic");
 const constants = require("./constants");
+const { ERRORS } = require("../../constants");
 
 // GET /api/v1/contests?offset={offset}&limit={limit}
 function getAllContests(req, res, next) {
@@ -16,7 +17,7 @@ function getAllContests(req, res, next) {
     .then((contests) => {
       res.json({
         code: 0,
-        msg: constants.DEFAULT_MESSAGE.GET_ALL_CONTESTS,
+        msg: constants.SUCCESS_MESSAGE.GET_ALL_CONTESTS,
         data: { contests: contests.map(utils.formatContest) },
       });
     })
@@ -43,7 +44,7 @@ async function createContest(req, res, next) {
     .then((contest) => {
       res.json({
         code: 0,
-        msg: constants.DEFAULT_MESSAGE.CREATE_CONTEST,
+        msg: constants.SUCCESS_MESSAGE.CREATE_CONTEST,
         data: { contest: utils.formatContest(contest) },
       });
     })
@@ -73,11 +74,11 @@ function getContest(req, res, next) {
       contest
         ? res.json({
             code: 0,
-            msg: constants.DEFAULT_MESSAGE.GET_CONTEST,
+            msg: constants.SUCCESS_MESSAGE.GET_CONTEST,
             data: { contest: utils.formatContest(contest) },
           })
         : res.json({
-            ...constants.ERRORS.CONTEST_NOT_FOUND,
+            ...ERRORS.CONTEST_NOT_FOUND,
             data: { contest_name: req.params.contest_name },
           }),
     )
@@ -120,7 +121,7 @@ function updateContest(req, res, next) {
     .then((contest) =>
       res.json({
         code: 0,
-        msg: constants.DEFAULT_MESSAGE.UPDATE_CONTEST,
+        msg: constants.SUCCESS_MESSAGE.UPDATE_CONTEST,
         data: { contest: utils.formatContest(contest) },
       }),
     )
