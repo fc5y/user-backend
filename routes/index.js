@@ -52,7 +52,6 @@ router.get(
 );
 router.get(
   "/api/v1/users/:username",
-  makeHandlerAwareOfAsyncErrors(isLoggedIn),
   makeHandlerAwareOfAsyncErrors(userController.getUserByUsername),
 );
 router.post(
