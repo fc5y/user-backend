@@ -39,6 +39,13 @@ router.post(
   contestController.updateContest,
 );
 
+// POST /api/v1/contests/{contest_name}/delete
+router.post(
+  "/contests/:contest_name/delete",
+  contestController.deleteContest.validator,
+  contestController.deleteContest,
+);
+
 router.use((error, req, res, next) => {
   console.error(error);
   if (error instanceof LogicError) {
