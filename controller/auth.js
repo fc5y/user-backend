@@ -5,13 +5,13 @@ const db = require("../models/index.js");
 const models = db.sequelize.models;
 const { statusCode, emailRegex } = require("../utils");
 const errors = require("../utils/error");
-const { formatUser } = require("./user");
 
 const SALT_ROUNDS = 10;
 const bcrypt = require("bcryptjs");
 const otpGenerator = require("otp-generator");
 const { updateOrCreate } = require("../utils/models.js");
 const { createMessage, sendMail } = require("../utils/email-sender");
+const userController = require("./user");
 
 function isEmail(email_or_username) {
   return emailRegex.test(email_or_username);
@@ -182,7 +182,7 @@ async function signup(req, res) {
   res.status(statusCode.SUCCESS).json({
     code: 0,
     msg: "User created",
-    data: formatUser(user, true),
+    data: userController.formatUser(user, true),
   });
 }
 
