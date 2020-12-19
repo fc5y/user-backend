@@ -16,6 +16,9 @@ npx sequelize-cli db:migrate:undo # undo the last migration
 npx sequelize-cli db:migrate:status # migration log
 ```
 
+# Email certification:
+[Details](https://docs.google.com/document/d/1XGxTuUXc9CaU1Pljkc7kRp_ZuaLniHSi0iVI82Kx2eY/edit?usp=sharing)
+
 # How to run
 
 Development:

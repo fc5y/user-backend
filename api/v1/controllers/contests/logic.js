@@ -43,17 +43,20 @@ async function createContest({
 }
 
 async function getContest({ contest_name }) {
-  return await sequelize.models.Contest.findOne({ where: { contest_name } });
-}
-
-async function updateContest({ contest_name }, newValue) {
-  const contest = await getContest({ contest_name });
+  const contest = await sequelize.models.Contest.findOne({
+    where: { contest_name },
+  });
   if (contest === null) {
     throw new LogicError({
       ...ERRORS.CONTEST_NOT_FOUND,
       data: { contest_name },
     });
   }
+  return contest;
+}
+
+async function updateContest({ contest_name }, newValue) {
+  const contest = await getContest({ contest_name });
 
   for (const key in newValue) {
     if (newValue[key] !== undefined) {
@@ -63,10 +66,16 @@ async function updateContest({ contest_name }, newValue) {
   return await contest.save();
 }
 
+async function deleteContest({ contest_name }) {
+  const contest = await getContest({ contest_name });
+  return await contest.destroy();
+}
+
 module.exports = {
   getAllContests,
   contestExists,
   createContest,
   getContest,
   updateContest,
+  deleteContest,
 };

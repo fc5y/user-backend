@@ -5,6 +5,7 @@ const SUCCESS_MESSAGE = {
   CREATE_CONTEST: "Contest created",
   GET_CONTEST: "Contest",
   UPDATE_CONTEST: "Contest updated",
+  DELETE_CONTEST: "Contest deleted",
 };
 
 module.exports = {
