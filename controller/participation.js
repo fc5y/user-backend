@@ -27,6 +27,13 @@ async function isRegistered(user_id, contest_id) {
   return participation !== null;
 }
 
+function generateCmsPassword() {
+  // fc-xxxxxx
+  return "fc-" + otpGenerator.generate(6, {
+    specialChars: false,
+  });
+}
+
 // POST /api/v1/participations
 async function register(req, res) {
   const user_id = req.user.id;
@@ -42,12 +49,7 @@ async function register(req, res) {
       data: {},
     });
   }
-  const cms_password = "fc" + otpGenerator.generate(6, {
-    digits: true,
-    alphabets: false,
-    upperCase: false,
-    specialChars: false,
-  });
+  const cms_password = generateCmsPassword();
   await models.Participation.create({
     user_id: user_id,
     contest_id: contest.id,

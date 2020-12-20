@@ -12,14 +12,6 @@ const { statusCode } = require("../utils");
 
 const router = express.Router();
 
-//  @METHOD   GET
-//  @PATH     /hi
-router.get("/hi", defaultController.getHiThere);
-
-//  @METHOD   GET
-//  @PATH     /*
-// router.get("*", defaultController.getHelloWorld);
-
 // We create a wrapper to workaround async errors not being transmitted correctly.
 function makeHandlerAwareOfAsyncErrors(handler) {
   return async function (req, res, next) {
