@@ -52,7 +52,7 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: false,
     },
-    cms_password: {
+    contest_password: {
       type: DataTypes.STRING,
       allowNull: false,
     },

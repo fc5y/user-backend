@@ -88,7 +88,7 @@ router.get(
   makeHandlerAwareOfAsyncErrors(participationController.getParticipationByUsername),
 );
 
-// GET api/v1/contests/{contest_name}/get-credentials
+// GET api/v1/contests/{contest_name}/cred
 // Get contest credentials
 router.get(
   "/api/v1/participations/:contest_name/cred",
