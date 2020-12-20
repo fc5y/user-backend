@@ -30,6 +30,9 @@ async function isRegistered(user_id, contest_id) {
 function generateCmsPassword() {
   // fc-xxxxxx
   return "fc-" + otpGenerator.generate(6, {
+    digits: true,
+    alphabets: false,
+    upperCase: false,
     specialChars: false,
   });
 }
