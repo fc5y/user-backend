@@ -2,12 +2,13 @@ const db = require("../models/index.js");
 const models = db.sequelize.models;
 const errors = require("../utils/error");
 const { statusCode } = require("../utils");
+const otpGenerator = require("otp-generator");
 
 function formatParticipation(participation) {
   return {
     "contest_name": participation.contest.contest_name,
     "contest_title": participation.contest.contest_title,
-    // "contest_total_participations": 234,
+    "contest_total_participations": 0, // TODO: Get number of participations in a contest
     "is_hidden": participation.is_hidden,
     "rating": participation.rating,
     "rating_change": participation.rating_change,
@@ -41,10 +42,17 @@ async function register(req, res) {
       data: {},
     });
   }
+  const cms_password = "fc" + otpGenerator.generate(6, {
+    digits: true,
+    alphabets: false,
+    upperCase: false,
+    specialChars: false,
+  });
   await models.Participation.create({
     user_id: user_id,
     contest_id: contest.id,
-    is_hidden
+    is_hidden,
+    cms_password: cms_password,
   });
   res.status(statusCode.SUCCESS).json({
     code: 0,
@@ -79,7 +87,33 @@ async function getParticipationByUsername(req, res) {
   });
 }
 
+async function getCredential(req, res) {
+  const contest_name = req.params;
+  const contest = await models.Contest.findOne({ where: contest_name });
+  if (!contest) {
+    throw new errors.FcError(errors.CONTEST_NOT_FOUND);
+  }
+  const participation = await models.Participation.findOne({
+    where: {
+      user_id: req.user.id,
+      contest_id: contest.id
+    }
+  });
+  if (!participation) {
+    throw new errors.FcError(errors.NOT_REGISTERED_YET);
+  }
+  res.status(statusCode.SUCCESS).json({
+    code: 0,
+    msg: "",
+    data: {
+      contest_username: req.user.username,
+      contest_password: participation.cms_password,
+    },
+  });
+}
+
 module.exports = {
   register,
-  getParticipationByUsername
+  getParticipationByUsername,
+  getCredential,
 };

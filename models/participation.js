@@ -52,6 +52,10 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: false,
     },
+    cms_password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   }, {
     updatedAt: "updated_at",
     createdAt: "created_at",

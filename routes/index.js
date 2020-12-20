@@ -96,4 +96,11 @@ router.get(
   makeHandlerAwareOfAsyncErrors(participationController.getParticipationByUsername),
 );
 
+// GET api/v1/contests/{contest_name}/get-credentials
+// Get contest credentials
+router.get(
+  "/api/v1/participations/:contest_name/cred",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(participationController.getCredential),
+);
 module.exports = router;
