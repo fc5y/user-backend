@@ -18,7 +18,7 @@ function getAllContests(req, res, next) {
         msg: SUCCESS_MESSAGE,
         data: {
           contests: contests.map(utils.formatContest),
-          server_time: utils.dateToTimestamp(Date()),
+          server_time: utils.dateToTimestamp(new Date()),
         },
       });
     })
