@@ -11,7 +11,6 @@ const bcrypt = require("bcryptjs");
 const otpGenerator = require("otp-generator");
 const { updateOrCreate } = require("../utils/models.js");
 const { createMessage, sendMail } = require("../utils/email-sender");
-const userController = require("./user");
 
 function isEmail(email_or_username) {
   return emailRegex.test(email_or_username);
@@ -159,6 +158,17 @@ async function releaseOtp(email) {
   });
 }
 
+function formatUser(user) {
+  return {
+    username: user.username,
+    full_name: user.full_name,
+    school_name: user.school_name,
+    email: user.email,
+    rank_in_global: 0,
+    rating: 0,
+  };
+}
+
 async function signup(req, res) {
   const { email, username, full_name, password, otp } = req.body;
   if (!email || !username || !full_name || !otp || !password) {
@@ -182,7 +192,7 @@ async function signup(req, res) {
   res.status(statusCode.SUCCESS).json({
     code: 0,
     msg: "User created",
-    data: userController.formatUser(user, true),
+    data: formatUser(user),
   });
 }
 
