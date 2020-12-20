@@ -14,7 +14,7 @@ function deleteContest(req, res, next) {
         msg: SUCCESS_MESSAGE,
         data: {
           contest_name: req.params.contest_name,
-          server_time: utils.dateToTimestamp(Date()),
+          server_time: utils.dateToTimestamp(new Date()),
         },
       }),
     )
