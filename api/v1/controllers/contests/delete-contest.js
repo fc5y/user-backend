@@ -12,7 +12,10 @@ function deleteContest(req, res, next) {
       res.json({
         code: 0,
         msg: SUCCESS_MESSAGE,
-        data: { contest_name: req.params.contest_name },
+        data: {
+          contest_name: req.params.contest_name,
+          server_time: utils.dateToTimestamp(Date()),
+        },
       }),
     )
     .catch(next);

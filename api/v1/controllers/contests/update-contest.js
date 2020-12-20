@@ -33,7 +33,10 @@ function updateContest(req, res, next) {
       res.json({
         code: 0,
         msg: SUCCESS_MESSAGE,
-        data: { contest: utils.formatContest(contest) },
+        data: {
+          contest: utils.formatContest(contest),
+          server_time: utils.dateToTimestamp(Date()),
+        },
       }),
     )
     .catch(next);

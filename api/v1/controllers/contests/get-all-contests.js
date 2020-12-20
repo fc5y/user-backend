@@ -16,7 +16,10 @@ function getAllContests(req, res, next) {
       res.json({
         code: 0,
         msg: SUCCESS_MESSAGE,
-        data: { contests: contests.map(utils.formatContest) },
+        data: {
+          contests: contests.map(utils.formatContest),
+          server_time: utils.dateToTimestamp(Date()),
+        },
       });
     })
     .catch(next);
