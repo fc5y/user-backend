@@ -1,4 +1,4 @@
-const utils = require("./index");
+const utils = require("./common");
 
 function formatContest(contest) {
   const materials = contest.materials || {};

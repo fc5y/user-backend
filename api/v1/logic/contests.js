@@ -1,4 +1,5 @@
-const { sequelize } = require("../models");
+var settings = require("settings");
+const { sequelize } = require(settings.PROJECT_DIR + "/models");
 const { ERRORS } = require("../constants");
 const { LogicError } = require("../utils/error-classes");
 

@@ -1,4 +1,4 @@
-const utils = require("../utils");
+const utils = require("../utils/common");
 const { formatContest } = require("../utils/contests");
 const contestLogic = require("../logic/contests");
 const { param, body, query } = require("express-validator");
