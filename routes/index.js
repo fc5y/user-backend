@@ -12,14 +12,6 @@ const { statusCode } = require("../utils");
 
 const router = express.Router();
 
-//  @METHOD   GET
-//  @PATH     /hi
-router.get("/hi", defaultController.getHiThere);
-
-//  @METHOD   GET
-//  @PATH     /*
-// router.get("*", defaultController.getHelloWorld);
-
 // We create a wrapper to workaround async errors not being transmitted correctly.
 function makeHandlerAwareOfAsyncErrors(handler) {
   return async function (req, res, next) {
@@ -96,4 +88,11 @@ router.get(
   makeHandlerAwareOfAsyncErrors(participationController.getParticipationByUsername),
 );
 
+// GET api/v1/contests/{contest_name}/cred
+// Get contest credentials
+router.get(
+  "/api/v1/participations/:contest_name/cred",
+  makeHandlerAwareOfAsyncErrors(isLoggedIn),
+  makeHandlerAwareOfAsyncErrors(participationController.getCredential),
+);
 module.exports = router;

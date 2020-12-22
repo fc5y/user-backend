@@ -14,6 +14,8 @@ const OTP_INVALID = 3008;
 const OTP_EXPIRED = 3009;
 const CONTEST_NOT_FOUND = 3103;
 
+const NOT_REGISTERED_YET = 3201;
+
 const SYSTEM_ERROR = 4002;
 const SEND_EMAIL_ERROR = 4003;
 
@@ -34,6 +36,7 @@ errorMap[OTP_INVALID] = "OTP is invalid";
 errorMap[OTP_EXPIRED] = "OTP is expired";
 errorMap[SEND_EMAIL_ERROR] = "Send email Error";
 errorMap[CONTEST_NOT_FOUND] = "Contest not found";
+errorMap[NOT_REGISTERED_YET] = "Not registered yet";
 
 class FcError extends Error {
   constructor(errCode, data = null) {
@@ -61,4 +64,5 @@ module.exports = {
   OTP_EXPIRED,
   SEND_EMAIL_ERROR,
   CONTEST_NOT_FOUND,
+  NOT_REGISTERED_YET,
 };

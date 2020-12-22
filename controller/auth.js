@@ -45,6 +45,7 @@ async function login(req, res) {
           {
             email: req.user.email,
             id: user.id,
+            username: user.username,
           },
           process.env.JWT_SECRET,
         ),
@@ -85,6 +86,7 @@ async function login(req, res) {
           {
             email: user.email,
             id: user.id,
+            username: user.username,
           },
           process.env.JWT_SECRET,
         ),
