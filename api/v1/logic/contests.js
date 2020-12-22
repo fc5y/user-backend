@@ -1,6 +1,6 @@
-const { sequelize } = require("../../../../models");
-const { ERRORS } = require("../../constants");
-const { LogicError } = require("../../utils/error-classes");
+const { sequelize } = require("../models");
+const { ERRORS } = require("../constants");
+const { LogicError } = require("../utils/error-classes");
 
 async function getAllContests(offset, limit) {
   const contests = await sequelize.models.Contest.findAll({

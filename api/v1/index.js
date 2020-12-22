@@ -46,8 +46,7 @@ router.post(
   contestController.deleteContest,
 );
 
-router.use((error, req, res, next) => {
-  console.error(error);
+router.use((error, req, res, _next) => {
   if (error instanceof LogicError) {
     res.status(400).json(error);
   } else {
