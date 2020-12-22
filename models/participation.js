@@ -52,6 +52,10 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: false,
     },
+    contest_password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   }, {
     updatedAt: "updated_at",
     createdAt: "created_at",
