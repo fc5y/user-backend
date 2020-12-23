@@ -1,3 +1,10 @@
+|            |                      URL                       |                                                  Status                                                  |
+| :--------: | :--------------------------------------------: | :------------------------------------------------------------------------------------------------------: |
+|     CI     |                    Private                     |       [![Build Status](https://dev.azure.com/fc5y/fc5y/_apis/build/status/main/fc5y.user-be?branchName=master)](https://dev.azure.com/fc5y/fc5y/_build/latest?definitionId=7&branchName=master)        |
+|  Staging   |                    Private                     | ![](https://vsrm.dev.azure.com/fc5y/_apis/public/Release/badge/5733aefa-7440-4173-9990-437724df1c84/7/13) |
+| Production |                    Private                     | ![](https://vsrm.dev.azure.com/fc5y/_apis/public/Release/badge/5733aefa-7440-4173-9990-437724df1c84/7/24) |
+
+
 # Description
 
 User Backend for fc5y project
