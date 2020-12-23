@@ -1,6 +1,6 @@
 const { validationResult } = require("express-validator");
 const { ERRORS } = require("../constants");
-const { LogicError } = require("./error-classes");
+const { LogicError } = require("./errors");
 
 // throw errors if validation error found
 function validationMiddleware(req, res, next) {

@@ -1,7 +1,7 @@
-var settings = require("settings");
+const settings = require("settings");
 const { sequelize } = require(settings.PROJECT_DIR + "/models");
 const { ERRORS } = require("../constants");
-const { LogicError } = require("../utils/error-classes");
+const { LogicError } = require("../utils/errors");
 
 async function getAllContests(offset, limit) {
   const contests = await sequelize.models.Contest.findAll({

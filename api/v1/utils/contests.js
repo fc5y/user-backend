@@ -1,11 +1,11 @@
-const utils = require("./common");
+const commonUtils = require("./common");
 
 function formatContest(contest) {
   const materials = contest.materials || {};
   return {
     contest_name: contest.contest_name,
     contest_title: contest.contest_title,
-    start_time: utils.dateToTimestamp(contest.start_time),
+    start_time: commonUtils.dateToTimestamp(contest.start_time),
     duration: contest.duration,
     total_participation: 0, // TODO: fix this after Participations table is done
     can_enter: contest.can_enter,

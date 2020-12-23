@@ -1,19 +1,18 @@
 const express = require("express");
-const contestController = require("./controllers/contests");
-const { LogicError } = require("./utils/error-classes");
-const { ERRORS } = require("./constants");
-
 const router = express.Router();
 
-// GET /api/v1/hello
-router.get("/hello", (req, res) => {
-  res.json({ msg: "Hello" });
-});
+const contestController = require("./controllers/contests");
 
+const contestValidator = require("./validators/contests");
+
+const { LogicError } = require("./utils/errors");
+const { ERRORS } = require("./constants");
+
+// Contest APIs
 // GET /api/v1/contests
 router.get(
   "/contests",
-  contestController.getAllContests.validator,
+  contestValidator.getAllContests,
   contestController.getAllContests,
 );
 
@@ -21,28 +20,28 @@ router.get(
 router.post(
   "/contests",
   // add admin account check here
-  contestController.createContest.validator,
+  contestValidator.createContest,
   contestController.createContest,
 );
 
 // GET /api/v1/contests/{contest_name}
 router.get(
   "/contests/:contest_name",
-  contestController.getContest.validator,
+  contestValidator.getContest,
   contestController.getContest,
 );
 
 // POST /api/v1/contests/{contest_name}
 router.post(
   "/contests/:contest_name",
-  contestController.updateContest.validator,
+  contestValidator.updateContest,
   contestController.updateContest,
 );
 
 // POST /api/v1/contests/{contest_name}/delete
 router.post(
   "/contests/:contest_name/delete",
-  contestController.deleteContest.validator,
+  contestValidator.deleteContest,
   contestController.deleteContest,
 );
 
