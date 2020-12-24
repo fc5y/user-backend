@@ -1,9 +1,9 @@
 const commonUtils = require("../utils/common");
-const { body, param, query } = require('express-validator');
+const { body, param, query } = require("express-validator");
 
 const contestLogic = require("../logic/contests");
 
-const { formatContest } = require("../utils/contests");
+const { formatContest, formatParticipation } = require("../utils/contests");
 
 // POST /api/v1/contests
 async function createContest(req, res, next) {
@@ -170,19 +170,28 @@ const MAX_LIMIT_GET_ALL_CONTESTS = 50;
 
 // GET /api/v1/contests?offset={offset}&limit={limit}
 function getAllContests(req, res, next) {
-  contestLogic
-    .getAllContests(
-      parseInt(req.query.offset, 10),
-      Math.min(parseInt(req.query.limit, 10), MAX_LIMIT_GET_ALL_CONTESTS),
-    )
-    .then((contests) => {
+  const offset = parseInt(req.query.offset, 10);
+  const limit = Math.min(
+    parseInt(req.query.limit, 10),
+    MAX_LIMIT_GET_ALL_CONTESTS,
+  );
+  const username = (req.user && req.user.username) || null;
+
+  Promise.all([
+    contestLogic.getAllContests(offset, limit),
+    contestLogic.getAllMyParticipations({ username }),
+  ])
+    .then(([contests, myParticipations]) => {
       res.send({
         code: 0,
         msg: "Contest",
         data: {
           contests: contests.map(formatContest),
-          server_time: commonUtils.dateToTimestamp(new Date()),
-        }
+          my_participations: myParticipations
+            .filter((p) => contests.some((c) => c.id === p.contest_id))
+            .map(formatParticipation),
+          server_time: commonUtils.getTimestampNow(),
+        },
       });
     })
     .catch(next);
