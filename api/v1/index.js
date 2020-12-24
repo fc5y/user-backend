@@ -3,14 +3,15 @@ const express = require("express");
 const { ERRORS } = require("./constants");
 const { LogicError } = require("./utils/errors");
 const contestController = require("./controllers/contests");
-const { requireAdminRole } = require("./utils/common");
+const contestValidator = require("./validators/contests");
+const { requireAdminRole } = require("./validators/common");
 
 const router = express.Router();
 
 // GET /api/v1/contests
 router.get(
   "/contests",
-  contestController.getAllContests.validator,
+  contestValidator.getAllContests,
   contestController.getAllContests,
 );
 
@@ -18,14 +19,14 @@ router.get(
 router.post(
   "/contests",
   requireAdminRole,
-  contestController.createContest.validator,
+  contestValidator.createContest,
   contestController.createContest,
 );
 
 // GET /api/v1/contests/{contest_name}
 router.get(
   "/contests/:contest_name",
-  contestController.getContest.validator,
+  contestValidator.getContest,
   contestController.getContest,
 );
 
@@ -33,7 +34,7 @@ router.get(
 router.post(
   "/contests/:contest_name",
   requireAdminRole,
-  contestController.updateContest.validator,
+  contestValidator.updateContest,
   contestController.updateContest,
 );
 
@@ -41,7 +42,7 @@ router.post(
 router.post(
   "/contests/:contest_name/delete",
   requireAdminRole,
-  contestController.deleteContest.validator,
+  contestValidator.deleteContest,
   contestController.deleteContest,
 );
 
