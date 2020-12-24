@@ -69,24 +69,24 @@ async function update(req, res, next) {
   });
 }
 
-async function changePassword(req, res, next) {	
-  const user_id = req.user.id;	
-  const user = await models.User.findByPk(user_id);	
-  if (!user) {	
-    throw new errors.FcError(errors.USER_NOT_FOUND);	
-  }	
+async function changePassword(req, res, next) {
+  const user_id = req.user.id;
+  const user = await models.User.findByPk(user_id);
+  if (!user) {
+    throw new errors.FcError(errors.USER_NOT_FOUND);
+  }
 
-  if (!bcrypt.compareSync(req.body.old_password, user.password)) {	
-    throw new errors.FcError(errors.EMAIL_USERNAME_PASSWORD_INVALID);	
-  }	
+  if (!bcrypt.compareSync(req.body.old_password, user.password)) {
+    throw new errors.FcError(errors.EMAIL_USERNAME_PASSWORD_INVALID);
+  }
 
-  const hashedPassword = getHashedPassword(req.body.new_password);	
+  const hashedPassword = getHashedPassword(req.body.new_password);
   user.password = hashedPassword;
   user.save().then((updatedUser) => {
-    res.status(statusCode.SUCCESS).json({	
-      code: 0,	
-      msg: "Password updated",	
-      data: {},	
+    res.status(statusCode.SUCCESS).json({
+      code: 0,
+      msg: "Password updated",
+      data: {},
     });
   }).catch(next);
 }

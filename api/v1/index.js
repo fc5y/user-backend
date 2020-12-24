@@ -1,14 +1,10 @@
 const express = require("express");
 const contestController = require("./controllers/contests");
-const { LogicError } = require("./utils/error-classes");
+
+const { LogicError } = require("./utils/errors");
 const { ERRORS } = require("./constants");
 
 const router = express.Router();
-
-// GET /api/v1/hello
-router.get("/hello", (req, res) => {
-  res.json({ msg: "Hello" });
-});
 
 // GET /api/v1/contests
 router.get(
@@ -46,8 +42,7 @@ router.post(
   contestController.deleteContest,
 );
 
-router.use((error, req, res, next) => {
-  console.error(error);
+router.use((error, req, res, _next) => {
   if (error instanceof LogicError) {
     res.status(400).json(error);
   } else {
