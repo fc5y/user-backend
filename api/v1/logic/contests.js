@@ -1,5 +1,4 @@
-const settings = require("settings");
-const { sequelize } = require(settings.PROJECT_DIR + "/models");
+const { sequelize } = require("./../../../models");
 const { ERRORS } = require("../constants");
 const { LogicError } = require("../utils/errors");
 
