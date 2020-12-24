@@ -1,8 +1,9 @@
 const express = require("express");
-const contestController = require("./controllers/contests");
 
-const { LogicError } = require("./utils/errors");
 const { ERRORS } = require("./constants");
+const { LogicError } = require("./utils/errors");
+const contestController = require("./controllers/contests");
+const { requireAdminRole } = require("./utils/common");
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.get(
 // POST /api/v1/contests
 router.post(
   "/contests",
-  // add admin account check here
+  requireAdminRole,
   contestController.createContest.validator,
   contestController.createContest,
 );
@@ -31,6 +32,7 @@ router.get(
 // POST /api/v1/contests/{contest_name}
 router.post(
   "/contests/:contest_name",
+  requireAdminRole,
   contestController.updateContest.validator,
   contestController.updateContest,
 );
@@ -38,6 +40,7 @@ router.post(
 // POST /api/v1/contests/{contest_name}/delete
 router.post(
   "/contests/:contest_name/delete",
+  requireAdminRole,
   contestController.deleteContest.validator,
   contestController.deleteContest,
 );

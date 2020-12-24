@@ -23,6 +23,10 @@ const ERRORS = {
     code: 2101,
     msg: "Contest not found",
   },
+  ADMIN_ROLE_REQUIRED: {
+    code: 3300,
+    msg: "Admin role required",
+  },
   SERVER_ERROR: {
     code: 4000,
     msg: "Server error",
