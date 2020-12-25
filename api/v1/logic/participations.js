@@ -47,11 +47,29 @@ async function getAllByUsername(username) {
       data: { username },
     });
   }
+  return await participationData.getAllByUserId(user.id);
+}
 
-  return await participationData.getAllByUsername(username);
+async function getCredential(user_id, contest_name) {
+  const contest = await contestLogic.getContest({ contest_name: contest_name });
+  if (!contest) {
+    throw new LogicError({
+      ...ERRORS.CONTEST_NOT_FOUND,
+      data: { contest_name },
+    });
+  }
+  const participation = await participationData.findOne(user_id, contest.id);
+  if (!participation) {
+    throw new LogicError({
+      ...ERRORS.NOT_REGISTERED_YET,
+      data: { contest_name },
+    });
+  }
+  return participation;
 }
 
 module.exports = {
   register,
   getAllByUsername,
+  getCredential,
 };

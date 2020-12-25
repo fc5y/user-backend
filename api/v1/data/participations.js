@@ -1,11 +1,8 @@
 const { sequelize } = require("./../../../models");
 
-async function getAllByUsername({ username }) {
-  const user = await sequelize.models.User.findOne({
-    where: {username: username}
-  });
+async function getAllByUserId({ user_id }) {
   const participations = await sequelize.models.Participation.findAll({
-    where: { user_id: user.id },
+    where: { user_id: user_id },
     include: [
       { model: sequelize.models.Contest, as: "contest" },
       { model: sequelize.models.User, as: "user" },
@@ -43,7 +40,7 @@ async function create(
 }
 
 module.exports = {
-  getAllByUsername,
+  getAllByUserId,
   findOne,
   create,
 };

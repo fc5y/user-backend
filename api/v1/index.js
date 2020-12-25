@@ -64,6 +64,14 @@ router.get(
   participationController.getAllByUsername,
 );
 
+// GET api/v1/contests/{contest_name}/cred
+// Get contest credentials
+router.get(
+  "/participations/:contest_name/cred",
+  requireLogin,
+  participationController.getCredential,
+);
+
 router.use((error, req, res, _next) => {
   if (error instanceof LogicError) {
     res.status(400).json(error);

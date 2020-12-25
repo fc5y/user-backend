@@ -73,11 +73,4 @@ router.post(
   makeHandlerAwareOfAsyncErrors(authController.signup),
 );
 
-// GET api/v1/contests/{contest_name}/cred
-// Get contest credentials
-router.get(
-  "/api/v1/participations/:contest_name/cred",
-  makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(participationController.getCredential),
-);
 module.exports = router;
