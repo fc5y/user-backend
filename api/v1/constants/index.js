@@ -15,9 +15,17 @@ const ERRORS = {
     code: 3102,
     msg: "Cannot create contest",
   },
+  USER_NOT_FOUND: {
+    code: 2001,
+    msg: "User not found",
+  },
   CONTEST_NOT_FOUND: {
     code: 2101,
     msg: "Contest not found",
+  },
+  ADMIN_ROLE_REQUIRED: {
+    code: 3300,
+    msg: "Admin role required",
   },
   SERVER_ERROR: {
     code: 4000,
