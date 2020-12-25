@@ -1,12 +1,9 @@
 require("dotenv").config();
 
 const express = require("express");
-const defaultController = require("../controller/index");
 const userController = require("../controller/user");
-const authController = require("../controller/auth");
 const participationController = require("../controller/participation");
 const isLoggedIn = require("../middlewares/isLoggedIn");
-const isNotUser = require("../middlewares/isNotUser");
 const { FcError, SYSTEM_ERROR } = require("../utils/error");
 const { statusCode } = require("../utils");
 
@@ -55,22 +52,7 @@ router.post(
 router.post(
   "/api/v1/me/change-password",
   makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(userController.changePassword)
-);
-
-// Auth
-router.post(
-  "/api/v1/login",
-  makeHandlerAwareOfAsyncErrors(authController.login),
-);
-router.post(
-  "/api/v1/send-otp",
-  makeHandlerAwareOfAsyncErrors(authController.sendOtp),
-);
-router.post(
-  "/api/v1/signup",
-  makeHandlerAwareOfAsyncErrors(isNotUser),
-  makeHandlerAwareOfAsyncErrors(authController.signup),
+  makeHandlerAwareOfAsyncErrors(userController.changePassword),
 );
 
 // POST /api/v1/participation
@@ -85,7 +67,9 @@ router.post(
 // Get participations by username
 router.get(
   "/api/v1/participations/:username",
-  makeHandlerAwareOfAsyncErrors(participationController.getParticipationByUsername),
+  makeHandlerAwareOfAsyncErrors(
+    participationController.getParticipationByUsername,
+  ),
 );
 
 // GET api/v1/contests/{contest_name}/cred

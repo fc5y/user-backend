@@ -23,6 +23,26 @@ const ERRORS = {
     code: 2101,
     msg: "Contest not found",
   },
+  USERNAME_EXISTS: {
+    code: 3002,
+    msg: "Username already exists",
+  },
+  EMAIL_EXISTS: {
+    code: 3003,
+    msg: "Email already exists",
+  },
+  EMAIL_USERNAME_PASSWORD_INVALID: {
+    code: 3006,
+    msg: "Email/Username or password is invalid",
+  },
+  OTP_INVALID: {
+    code: 3008,
+    msg: "OTP invalid",
+  },
+  OTP_EXPIRED: {
+    code: 3009,
+    msg: "OTP expired",
+  },
   ADMIN_ROLE_REQUIRED: {
     code: 3300,
     msg: "Admin role required",
