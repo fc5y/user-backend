@@ -3,8 +3,9 @@ const express = require("express");
 const { ERRORS } = require("./constants");
 const { LogicError } = require("./utils/errors");
 const contestController = require("./controllers/contests");
+const participationController = require("./controllers/participations");
 const contestValidator = require("./validators/contests");
-const { requireAdminRole } = require("./validators/common");
+const { requireAdminRole, requireLogin } = require("./validators/common");
 
 const router = express.Router();
 
@@ -45,6 +46,18 @@ router.post(
   contestValidator.deleteContest,
   contestController.deleteContest,
 );
+
+// -------- Participations -------------------------------------------
+// POST /api/v1/participation
+// Register a contest
+router.post(
+  "/participations",
+  requireLogin,
+  participationController.register,
+);
+// // router.post("/send-otp");
+// router.post("/signup", authValidator.signup, authController.signup);
+
 
 router.use((error, req, res, _next) => {
   if (error instanceof LogicError) {

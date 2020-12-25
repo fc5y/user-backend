@@ -73,13 +73,13 @@ router.post(
   makeHandlerAwareOfAsyncErrors(authController.signup),
 );
 
-// POST /api/v1/participation
-// Register a contest
-router.post(
-  "/api/v1/participations",
-  makeHandlerAwareOfAsyncErrors(isLoggedIn),
-  makeHandlerAwareOfAsyncErrors(participationController.register),
-);
+// // POST /api/v1/participation
+// // Register a contest
+// router.post(
+//   "/api/v1/participations",
+//   makeHandlerAwareOfAsyncErrors(isLoggedIn),
+//   makeHandlerAwareOfAsyncErrors(participationController.register),
+// );
 
 // GET /api/v1/participation/{username}
 // Get participations by username
