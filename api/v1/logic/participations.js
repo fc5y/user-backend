@@ -5,6 +5,7 @@ const { LogicError } = require("../utils/errors");
 
 const contestLogic = require("./contests");
 const participationData = require("../data/participations");
+const userData = require("../data/users");
 
 function generateContestPassword() {
   // fc-xxxxxx
@@ -38,6 +39,19 @@ async function register(user_id, contest_name, is_hidden) {
   );
 }
 
+async function getAllByUsername(username) {
+  const user = await userData.findOneByUsername(username);
+  if (!user) {
+    throw new LogicError({
+      ...ERRORS.USER_NOT_FOUND,
+      data: { username },
+    });
+  }
+
+  return await participationData.getAllByUsername(username);
+}
+
 module.exports = {
   register,
+  getAllByUsername,
 };

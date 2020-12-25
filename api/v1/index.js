@@ -55,9 +55,14 @@ router.post(
   requireLogin,
   participationController.register,
 );
-// // router.post("/send-otp");
-// router.post("/signup", authValidator.signup, authController.signup);
 
+// GET /api/v1/participation/{username}
+// Get participations by username
+router.get(
+  "/participations/:username",
+  requireLogin,
+  participationController.getAllByUsername,
+);
 
 router.use((error, req, res, _next) => {
   if (error instanceof LogicError) {

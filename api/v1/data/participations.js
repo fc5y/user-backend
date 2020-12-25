@@ -1,7 +1,7 @@
 const { sequelize } = require("./../../../models");
 
 async function getAllByUsername({ username }) {
-  const user = await sequelize.models.Users.findOne({
+  const user = await sequelize.models.User.findOne({
     where: {username: username}
   });
   const participations = await sequelize.models.Participation.findAll({
