@@ -21,10 +21,7 @@ async function getUser({ username }) {
     where: { username },
   });
   if (user === null) {
-    throw LogicError({
-      ...ERRORS.USER_NOT_FOUND,
-      data: { username },
-    });
+    throw new LogicError(ERRORS.USER_NOT_FOUND);
   }
   return user;
 }
