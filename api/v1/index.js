@@ -64,7 +64,7 @@ router.get(
   participationController.getAllByUsername,
 );
 
-// GET api/v1/contests/{contest_name}/cred
+// GET api/v1/participations/{contest_name}/cred
 // Get contest credentials
 router.get(
   "/participations/:contest_name/cred",

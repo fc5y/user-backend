@@ -40,7 +40,8 @@
     "mysql2": "^2.2.5",
     "nodemailer": "^6.4.16",
     "otp-generator": "^2.0.0",
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "whatwg-fetch": "3.5.0"
   },
   "devDependencies": {
     "bcryptjs": "^2.4.3",

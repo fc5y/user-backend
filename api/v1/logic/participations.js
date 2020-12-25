@@ -7,6 +7,8 @@ const contestLogic = require("./contests");
 const participationData = require("../data/participations");
 const userData = require("../data/users");
 
+const { generateToken } = require("./cms/auth");
+
 function generateContestPassword() {
   // fc-xxxxxx
   return "fc-" + otpGenerator.generate(6, {
@@ -26,6 +28,8 @@ async function register(user_id, contest_name, is_hidden) {
     });
   }
   const participation = await participationData.findOne(user_id, contest.id);
+
+  await generateToken();
   if (participation) {
     return participation;
   }
