@@ -7,7 +7,6 @@ async function findOneByEmail(email) {
 }
 
 async function findOneByUsername(username) {
-    console.log(username);
   return await sequelize.models.User.findOne({
     where: { username },
   });

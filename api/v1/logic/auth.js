@@ -15,7 +15,6 @@ async function sendOtp({ email }) {
 }
 
 async function login({ email_or_username, password }) {
-  console.log(email_or_username);
   const user = email_or_username.includes("@")
     ? await userData.findOneByEmail(email_or_username)
     : await userData.findOneByUsername(email_or_username);
