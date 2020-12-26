@@ -47,6 +47,18 @@ const ERRORS = {
     code: 3009,
     msg: "OTP expired",
   },
+  OTP_SEND_LIMIT_PER_EMAIL_EXCEEDED: {
+    code: 3010,
+    msg: "OTP send limit exceeded (per email)",
+  },
+  OTP_SEND_LIMIT_OVERALL_EXCEEDED: {
+    code: 3011,
+    msg: "OTP send limit exceeded (system)",
+  },
+  OTP_VERIFY_LIMIT_PER_EMAIL_EXCEEDED: {
+    code: 3012,
+    msg: "OTP verify limit exceeded (per email)",
+  },
   NOT_REGISTERED_YET: {
     code: 3201,
     msg: "Not registered yet",

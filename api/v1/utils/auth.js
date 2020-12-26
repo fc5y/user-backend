@@ -1,6 +1,8 @@
 const otpGenerator = require("otp-generator");
 const nodemailer = require("nodemailer");
 
+const commonUtils = require("../utils/common");
+
 const SEND_OTP_EMAIL_CONFIG = {
   displayed_name: "Free Contest",
   subject: "Mã xác minh (OTP)",
@@ -47,7 +49,44 @@ async function sendOtpEmail({ email, otp }) {
   return info;
 }
 
+class RateLimiter {
+  constructor({ limit, interval }) {
+    this.limit = limit;
+    this.interval = interval;
+    this.queue = [];
+  }
+
+  _clean() {
+    const currentTimestamp = commonUtils.getTimestampNow();
+    while (
+      this.queue.length > 0 &&
+      currentTimestamp - this.queue[0].createdAt > this.interval
+    ) {
+      this.queue.shift();
+    }
+  }
+
+  isFull(key) {
+    this._clean();
+    const numQueued = this.queue.filter((item) => item.key === key).length;
+    return numQueued >= this.limit;
+  }
+
+  push(key) {
+    this._clean();
+    const currentTimestamp = commonUtils.getTimestampNow();
+    this.queue.push({ createdAt: currentTimestamp, key });
+  }
+}
+
+const rateLimiters = {
+  sendOtpPerEmail: new RateLimiter({ limit: 5, interval: 300 }), // 5 OTPs in 5 minutes
+  sendOtpOverall: new RateLimiter({ limit: 500, interval: 60 }), // 500 OTPs in 1 minute
+  verifyOtpPerEmail: new RateLimiter({ limit: 10, interval: 300 }), // 10 OTPs in 5 minutes
+};
+
 module.exports = {
   generateOtp,
   sendOtpEmail,
+  rateLimiters,
 };
