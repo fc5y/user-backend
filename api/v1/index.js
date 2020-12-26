@@ -46,7 +46,7 @@ router.get(
 // POST /api/v1/contests/{contest_name}
 router.post(
   "/contests/:contest_name",
-  // requireAdminRole,
+  requireAdminRole,
   contestValidator.updateContest,
   contestController.updateContest,
 );

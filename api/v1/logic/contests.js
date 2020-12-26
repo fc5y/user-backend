@@ -48,19 +48,18 @@ async function updateContest({ contest_name }, newContest) {
   if (contest === null) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
-  if (newContest.can_enter) {
+  if (!contest.can_enter && newContest.can_enter) {
     const notInCmsParticipations = await participationData.getAllNotInCmsParticipations(contest.id);
-    console.log(notInCmsParticipations);
     const cmsUsers = notInCmsParticipations.map(cmsUserImportFormat);
-
     const cmsContest = await cmsContestLogic.getContest(contest_name);
+
     await cmsUserLogic.importUsers({
       users: cmsUsers,
       contest_id: cmsContest.id,
     });
+
     // update in_cms = true
     const parIds = notInCmsParticipations.map(x => x.id);
-    console.log(parIds);
     await participationData.bulkUpdateInCms(parIds);
   }
   return await contestData.updateOneByContestName(contest_name, {
