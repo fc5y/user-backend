@@ -5,7 +5,7 @@ const participationLogic = require("../logic/participations");
 const MAX_LIMIT_GET_ALL_PARTICIPATIONS = 50;
 
 // POST /api/v1/participation
-async function register(req, res, next) {
+function register(req, res, next) {
   participationLogic.register(req.user.id, req.body.contest_name, req.body.is_hidden)
   .then(() => {
     res.json({
@@ -19,7 +19,7 @@ async function register(req, res, next) {
   .catch(next);
 }
 
-async function getAllByUsername(req, res, next) {
+function getAllByUsername(req, res, next) {
   const offset = parseInt(req.query.offset, 10);
   const limit = Math.min(
     parseInt(req.query.limit, 10),
@@ -32,12 +32,12 @@ async function getAllByUsername(req, res, next) {
     offset,
     limit,
   })
-  .then((participations) => {
+  .then(({count, participations}) => {
     res.json({
       code: 0,
       msg: "Participations",
       data: {
-        total: participations.length,
+        total: count,
         participations: participations.map(formatParticipation),
         server_time: commonUtils.getTimestampNow(),
       },
@@ -46,7 +46,7 @@ async function getAllByUsername(req, res, next) {
   .catch(next);
 }
 
-async function getCredential(req, res, next) {
+function getCredential(req, res, next) {
   participationLogic.getCredential(req.user.id, req.params.contest_name)
   .then((credential) => {
     res.json({

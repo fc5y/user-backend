@@ -30,6 +30,7 @@ async function getAllByUsername({ username, offset, limit }) {
   if (!user) {
     throw new LogicError(ERRORS.USER_NOT_FOUND);
   }
+  // return {count, participations}
   return await participationData.getAllByUserId({
     user_id: user.id,
     offset,
