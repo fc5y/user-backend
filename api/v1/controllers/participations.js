@@ -26,7 +26,7 @@ async function getAllByUsername(req, res, next) {
     MAX_LIMIT_GET_ALL_PARTICIPATIONS,
   );
 
-  const username = req.params;
+  const username = req.params.username;
   participationLogic.getAllByUsername({
     username,
     offset,

@@ -1,12 +1,13 @@
 const { sequelize } = require("../../../models");
 
-async function findOneByEmail({ email }) {
+async function findOneByEmail(email) {
   return await sequelize.models.User.findOne({
     where: { email },
   });
 }
 
-async function findOneByUsername({ username }) {
+async function findOneByUsername(username) {
+    console.log(username);
   return await sequelize.models.User.findOne({
     where: { username },
   });
