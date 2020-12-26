@@ -23,6 +23,10 @@ const ERRORS = {
     code: 2101,
     msg: "Contest not found",
   },
+  LOGIN_REQUIRED: {
+    code: 3001,
+    msg: "Login required",
+  },
   USERNAME_EXISTS: {
     code: 3002,
     msg: "Username already exists",
@@ -42,6 +46,10 @@ const ERRORS = {
   OTP_EXPIRED: {
     code: 3009,
     msg: "OTP expired",
+  },
+  NOT_REGISTERED_YET: {
+    code: 3201,
+    msg: "Not registered yet",
   },
   ADMIN_ROLE_REQUIRED: {
     code: 3300,

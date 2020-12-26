@@ -12,6 +12,14 @@ function requireAdminRole(req, res, next) {
   }
 }
 
+function requireLogin(req, res, next) {
+  if (!req.user) {
+    throw new LogicError(ERRORS.LOGIN_REQUIRED);
+  } else {
+    next();
+  }
+}
+
 // throw errors if validation error found
 function validationMiddleware(req, res, next) {
   const errors = validationResult(req);
@@ -24,5 +32,6 @@ function validationMiddleware(req, res, next) {
 
 module.exports = {
   requireAdminRole,
+  requireLogin,
   validationMiddleware,
 };

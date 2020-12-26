@@ -1,3 +1,5 @@
+const otpGenerator = require("otp-generator");
+
 function formatParticipation(participation) {
   return {
     username: participation.user.username,
@@ -12,6 +14,17 @@ function formatParticipation(participation) {
   };
 }
 
+function generateContestPassword() {
+  // fc-xxxxxx
+  return "fc-" + otpGenerator.generate(6, {
+    digits: true,
+    alphabets: false,
+    upperCase: false,
+    specialChars: false,
+  });
+}
+
 module.exports = {
   formatParticipation,
+  generateContestPassword,
 };

@@ -6,7 +6,9 @@ const contestController = require("./controllers/contests");
 const contestValidator = require("./validators/contests");
 const authController = require("./controllers/auth");
 const authValidator = require("./validators/auth");
-const { requireAdminRole } = require("./validators/common");
+const participationController = require("./controllers/participations");
+const participationValidator = require("./validators/participations");
+const { requireAdminRole, requireLogin } = require("./validators/common");
 
 const router = express.Router();
 
@@ -55,6 +57,34 @@ router.post(
   requireAdminRole,
   contestValidator.deleteContest,
   contestController.deleteContest,
+);
+
+// -------- Participations -------------------------------------------
+// POST /api/v1/participations
+// Register a contest
+router.post(
+  "/participations",
+  requireLogin,
+  participationValidator.register,
+  participationController.register,
+);
+
+// GET /api/v1/participations/{username}
+// Get participations by username
+router.get(
+  "/participations/:username",
+  requireLogin,
+  participationValidator.getAllByUsername,
+  participationController.getAllByUsername,
+);
+
+// GET api/v1/participations/{contest_name}/cred
+// Get contest credentials
+router.get(
+  "/participations/:contest_name/cred",
+  requireLogin,
+  participationValidator.getCredential,
+  participationController.getCredential,
 );
 
 router.use((error, req, res, _next) => {
