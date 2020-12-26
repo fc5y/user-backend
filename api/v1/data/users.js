@@ -1,20 +1,14 @@
 const { sequelize } = require("../../../models");
 
-async function findOneByEmail({ email }) {
+async function findOneByEmail(email) {
   return await sequelize.models.User.findOne({
     where: { email },
   });
 }
 
-async function findOneByUsername({ username }) {
+async function findOneByUsername(username) {
   return await sequelize.models.User.findOne({
     where: { username },
-  });
-}
-
-async function findOneById(user_id) {
-  return await sequelize.models.User.findOne({
-    where: {id: user_id}
   });
 }
 
@@ -40,6 +34,5 @@ async function createOne({
 module.exports = {
   findOneByEmail,
   findOneByUsername,
-  findOneById,
   createOne,
 };

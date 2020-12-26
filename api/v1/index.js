@@ -60,7 +60,7 @@ router.post(
 );
 
 // -------- Participations -------------------------------------------
-// POST /api/v1/participation
+// POST /api/v1/participations
 // Register a contest
 router.post(
   "/participations",
@@ -88,6 +88,7 @@ router.get(
 );
 
 router.use((error, req, res, _next) => {
+  console.error(error);
   if (error instanceof LogicError) {
     res.status(400).json(error);
   } else {

@@ -1,7 +1,7 @@
 const { sequelize } = require("./../../../models");
 
 async function getAllByUserId({ user_id, offset, limit }) {
-  const participations = await sequelize.models.Participation.findAll({
+  const { count, rows: participations } = await sequelize.models.Participation.findAndCountAll({
     offset,
     limit,
     where: { user_id: user_id },
@@ -10,7 +10,7 @@ async function getAllByUserId({ user_id, offset, limit }) {
       { model: sequelize.models.User, as: "user" },
     ],
   });
-  return participations;
+  return { count, participations };
 }
 
 async function findOne({ user_id, contest_id }) {
