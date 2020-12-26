@@ -1,22 +1,20 @@
 require("dotenv").config();
 
-const { statusCode, expiredAfter } = require("../utils");
+const { statusCode } = require("../utils");
 const db = require("../models/index.js");
 const models = db.sequelize.models;
-const jsonwebtoken = require("jsonwebtoken");
 const errors = require("../utils/error");
 const bcrypt = require("bcryptjs");
-const { getHashedPassword } = require("./auth.js");
 
-function formatUser(user, publicFieldOnly=false) {
+function formatUser(user, publicFieldOnly = false) {
   return {
     id: user.id,
     username: user.username,
     full_name: user.full_name,
     school_name: user.school_name,
-    ...(publicFieldOnly ? {email: user.email} : {}),
+    ...(publicFieldOnly ? { email: user.email } : {}),
     rank_in_global: 0,
-    rating: 0
+    rating: 0,
   };
 }
 
@@ -30,7 +28,7 @@ async function getUserByUsername(req, res) {
       code: 0,
       msg: "User",
       data: {
-        user: formatUser(user)
+        user: formatUser(user),
       },
     });
   }
@@ -46,7 +44,7 @@ async function getUserById(req, res) {
     code: 0,
     msg: "User",
     data: {
-      user: formatUser(user, true)
+      user: formatUser(user, true),
     },
   });
 }
@@ -59,14 +57,20 @@ async function update(req, res, next) {
   }
 
   if (req.body.full_name !== undefined) user.full_name = req.body.full_name;
-  if (req.body.school_name !== undefined) user.school_name = req.body.school_name;
-  user.save().then(updatedUser => {
+  if (req.body.school_name !== undefined)
+    user.school_name = req.body.school_name;
+  user.save().then((updatedUser) => {
     res.status(statusCode.SUCCESS).json({
       code: 0,
       msg: "User updated",
       data: { user: formatUser(updatedUser, true) },
     });
   });
+}
+
+function getHashedPassword(password) {
+  const salt = bcrypt.genSaltSync();
+  return bcrypt.hashSync(password, salt);
 }
 
 async function changePassword(req, res, next) {
@@ -82,13 +86,16 @@ async function changePassword(req, res, next) {
 
   const hashedPassword = getHashedPassword(req.body.new_password);
   user.password = hashedPassword;
-  user.save().then((updatedUser) => {
-    res.status(statusCode.SUCCESS).json({
-      code: 0,
-      msg: "Password updated",
-      data: {},
-    });
-  }).catch(next);
+  user
+    .save()
+    .then((updatedUser) => {
+      res.status(statusCode.SUCCESS).json({
+        code: 0,
+        msg: "Password updated",
+        data: {},
+      });
+    })
+    .catch(next);
 }
 
 module.exports = {

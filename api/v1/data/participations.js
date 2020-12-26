@@ -1,6 +1,6 @@
 const { sequelize } = require("./../../../models");
 
-async function getAllByUserId({ user_id }) {
+async function getAllByUserId(user_id) {
   const participations = await sequelize.models.Participation.findAll({
     where: { user_id: user_id },
     include: [

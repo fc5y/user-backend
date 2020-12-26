@@ -47,6 +47,7 @@ async function getAllByUsername(username) {
       data: { username },
     });
   }
+  console.log(user.id);
   return await participationData.getAllByUserId(user.id);
 }
 
