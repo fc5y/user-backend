@@ -1,6 +1,5 @@
 "use strict";
 const { Model, DataTypes } = require("sequelize");
-const { emailRegex } = require("../utils/index");
 
 module.exports = (sequelize) => {
   class User extends Model {
@@ -25,29 +24,15 @@ module.exports = (sequelize) => {
         allowNull: false,
         type: DataTypes.STRING,
         unique: true,
-        validate: {
-          // We require usernames to have length of at least 3, and
-          // only use letters and whitespace.
-          is: /^[A-Za-z\s]{3,50}/,
-        },
       },
       full_name: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          // We require usernames to have length of at least 3, and
-          // only use letters and whitespace.
-          is: /^[A-Za-z\s]{3,50}/,
-        },
       },
       email: {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false,
-        validate: {
-          // email validation
-          is: emailRegex,
-        },
       },
       school_name: {
         type: DataTypes.STRING,
@@ -61,19 +46,6 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: true,
         unique: true,
-      },
-      is_email_verified: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
-      verify_token: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      verify_token_expired_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
       },
       created_at: {
         allowNull: false,
@@ -89,7 +61,7 @@ module.exports = (sequelize) => {
       createdAt: "created_at",
       sequelize,
       modelName: "User",
-    }
+    },
   );
   return User;
 };
