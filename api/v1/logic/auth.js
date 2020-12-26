@@ -8,6 +8,17 @@ const { ERRORS } = require("../constants");
 const { LogicError } = require("../utils/errors");
 
 async function sendOtp({ email }) {
+  // 1. Ensure OTP send rate
+  if (authUtils.rateLimiters.sendOtpOverall.isFull("")) {
+    throw new LogicError(ERRORS.OTP_SEND_LIMIT_OVERALL_EXCEEDED);
+  }
+  if (authUtils.rateLimiters.sendOtpPerEmail.isFull(email)) {
+    throw new LogicError(ERRORS.OTP_SEND_LIMIT_PER_EMAIL_EXCEEDED);
+  }
+  authUtils.rateLimiters.sendOtpOverall.push("");
+  authUtils.rateLimiters.sendOtpPerEmail.push(email);
+
+  // 2. Generate and send OTP
   const expired_time = new Date(new Date().getTime() + 10 * 60000); // 10 minutes later
   const otp = authUtils.generateOtp();
   await authData.upsertEmailVerification({ email, otp, expired_time });
@@ -53,7 +64,13 @@ async function signup({
     throw new LogicError(ERRORS.USERNAME_EXISTS);
   }
 
-  // 2. Make sure that otp is valid and not expired
+  // 2. Ensure OTP verify rate
+  if (authUtils.rateLimiters.verifyOtpPerEmail.isFull(email)) {
+    throw new LogicError(ERRORS.OTP_VERIFY_LIMIT_PER_EMAIL_EXCEEDED);
+  }
+  authUtils.rateLimiters.verifyOtpPerEmail.push(email);
+
+  // 3. Make sure that otp is valid and not expired
   const emailVerification = await authData.findEmailVerificationByEmail(email);
   if (emailVerification === null) {
     throw new LogicError(ERRORS.OTP_INVALID);
@@ -65,11 +82,11 @@ async function signup({
     throw new LogicError(ERRORS.OTP_INVALID);
   }
 
-  // 3. Generate hashed password
+  // 4. Generate hashed password
   const salt = await bcrypt.genSalt();
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  // 4. Create user
+  // 5. Create user
   const user = await userData.createOne({
     email,
     username,
@@ -79,7 +96,7 @@ async function signup({
     school_name,
   });
 
-  // 5. Invalidate OTP
+  // 6. Invalidate OTP
   await emailVerification.destroy();
 
   return { user };
