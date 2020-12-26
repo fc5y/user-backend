@@ -1,4 +1,4 @@
-const { fetch } = require("whatwg-fetch");
+const fetch = require("node-fetch");
 
 async function post(url = "", data = {}, headers = {}) {
   // Default options are marked with *
@@ -35,7 +35,6 @@ async function get(url = "", headers = {}) {
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
   });
-  console.log('huhu');
   return await response.json(); // parses JSON response into native JavaScript objects
 }
 

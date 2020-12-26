@@ -6,6 +6,13 @@ async function findOneByUsername({ username }) {
   });
 }
 
+async function findOneById(user_id) {
+  return await sequelize.models.User.findOne({
+    where: {id: user_id}
+  });
+}
+
 module.exports = {
     findOneByUsername,
+    findOneById,
 };

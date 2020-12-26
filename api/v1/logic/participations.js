@@ -6,8 +6,7 @@ const { LogicError } = require("../utils/errors");
 const contestLogic = require("./contests");
 const participationData = require("../data/participations");
 const userData = require("../data/users");
-
-const { generateToken } = require("./cms/auth");
+const cmsUserLogic = require("./cms/users");
 
 function generateContestPassword() {
   // fc-xxxxxx
@@ -27,20 +26,30 @@ async function register(user_id, contest_name, is_hidden) {
       data: { contest_name },
     });
   }
-  const participation = await participationData.findOne(user_id, contest.id);
+  const user = await userData.findOneById(user_id);
 
-  await generateToken();
-  if (participation) {
-    return participation;
-  }
+  // const participation = await participationData.findOne(user_id, contest.id);
+
+  // if (participation) {
+  //   return participation;
+  // }
 
   const contest_password = generateContestPassword();
-  return await participationData.create(
+  // send user to cms if contest is ready
+
+  const participation = await participationData.create(
     user_id,
     contest.id,
     is_hidden,
     contest_password,
   );
+
+  await cmsUserLogic.importUsers([{
+    "username": user.username,
+    "password": contest_password,
+    "last_name": user.full_name,
+    "first_name": user.school_name || "test",
+  }], 2);
 }
 
 async function getAllByUsername(username) {
