@@ -90,11 +90,11 @@ function getAllContests(req, res, next) {
     parseInt(req.query.limit, 10),
     MAX_LIMIT_GET_ALL_CONTESTS,
   );
-  const username = (req.user && req.user.username) || null;
+  const userId = (req.user && req.user.id) || null;
 
   Promise.all([
     contestLogic.getAllContests(offset, limit),
-    contestLogic.getAllMyParticipations({ username }),
+    userId !== null ? contestLogic.getAllParticipationsByUserId(userId) : [],
   ])
     .then(([contests, myParticipations]) => {
       res.send({

@@ -31,12 +31,12 @@ async function register(user_id, contest_name, is_hidden) {
   }
 
   const contest_password = generateContestPassword();
-  return await participationData.create(
-    user_id,
-    contest.id,
-    is_hidden,
-    contest_password,
-  );
+  return await participationData.create({
+    user_id: user_id,
+    contest_id: contest.id,
+    is_hidden: is_hidden,
+    contest_password: contest_password,
+  });
 }
 
 async function getAllByUsername(username) {
@@ -47,7 +47,6 @@ async function getAllByUsername(username) {
       data: { username },
     });
   }
-  console.log(user.id);
   return await participationData.getAllByUserId(user.id);
 }
 

@@ -25,17 +25,17 @@ async function findOne(user_id, contest_id) {
   return participation;
 }
 
-async function create(
+async function create({
   user_id,
   contest_id,
   is_hidden,
   contest_password,
-) {
+}) {
   return await sequelize.models.Participation.create({
-    user_id: user_id,
-    contest_id: contest_id,
-    is_hidden: is_hidden,
-    contest_password: contest_password,
+    user_id,
+    contest_id,
+    is_hidden,
+    contest_password,
   });
 }
 

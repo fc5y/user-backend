@@ -23,7 +23,7 @@ async function getAllByUsername(req, res, next) {
   .then((participations) => {
     res.json({
       code: 0,
-      msg: "",
+      msg: "Participations",
       data: {
         total: participations.length,
         participations: participations.map(formatParticipation),
@@ -39,7 +39,7 @@ async function getCredential(req, res, next) {
   .then((credential) => {
     res.json({
       code: 0,
-      msg: "",
+      "msg": "Contest credentials",
       data: {
         contest_username: req.user.username,
         contest_password: credential.contest_password,
