@@ -2,6 +2,8 @@ const commonUtils = require("../utils/common");
 const { formatParticipation } = require("../utils/participations");
 const participationLogic = require("../logic/participations");
 
+const MAX_LIMIT_GET_ALL_PARTICIPATIONS = 50;
+
 // POST /api/v1/participation
 async function register(req, res, next) {
   participationLogic.register(req.user.id, req.body.contest_name, req.body.is_hidden)
@@ -18,8 +20,18 @@ async function register(req, res, next) {
 }
 
 async function getAllByUsername(req, res, next) {
+  const offset = parseInt(req.query.offset, 10);
+  const limit = Math.min(
+    parseInt(req.query.limit, 10),
+    MAX_LIMIT_GET_ALL_PARTICIPATIONS,
+  );
+
   const username = req.params;
-  participationLogic.getAllByUsername(username)
+  participationLogic.getAllByUsername({
+    username,
+    offset,
+    limit,
+  })
   .then((participations) => {
     res.json({
       code: 0,

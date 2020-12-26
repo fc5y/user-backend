@@ -39,7 +39,7 @@ async function register(user_id, contest_name, is_hidden) {
   });
 }
 
-async function getAllByUsername(username) {
+async function getAllByUsername({ username, offset, limit }) {
   const user = await userData.findOneByUsername(username);
   if (!user) {
     throw new LogicError({
@@ -47,7 +47,11 @@ async function getAllByUsername(username) {
       data: { username },
     });
   }
-  return await participationData.getAllByUserId(user.id);
+  return await participationData.getAllByUserId({
+    user_id: user.id,
+    offset,
+    limit,
+  });
 }
 
 async function getCredential(user_id, contest_name) {

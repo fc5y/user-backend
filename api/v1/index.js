@@ -3,10 +3,11 @@ const express = require("express");
 const { ERRORS } = require("./constants");
 const { LogicError } = require("./utils/errors");
 const contestController = require("./controllers/contests");
-const participationController = require("./controllers/participations");
 const contestValidator = require("./validators/contests");
 const authController = require("./controllers/auth");
 const authValidator = require("./validators/auth");
+const participationController = require("./controllers/participations");
+const participationValidator = require("./validators/participations");
 const { requireAdminRole, requireLogin } = require("./validators/common");
 
 const router = express.Router();
@@ -64,27 +65,29 @@ router.post(
 router.post(
   "/participations",
   requireLogin,
+  participationValidator.register,
   participationController.register,
 );
 
-// GET /api/v1/participation/{username}
+// GET /api/v1/participations/{username}
 // Get participations by username
 router.get(
   "/participations/:username",
   requireLogin,
+  participationValidator.getAllByUsername,
   participationController.getAllByUsername,
 );
 
-// GET api/v1/contests/{contest_name}/cred
+// GET api/v1/participations/{contest_name}/cred
 // Get contest credentials
 router.get(
   "/participations/:contest_name/cred",
   requireLogin,
+  participationValidator.getCredential,
   participationController.getCredential,
 );
 
 router.use((error, req, res, _next) => {
-  console.error(error);
   if (error instanceof LogicError) {
     res.status(400).json(error);
   } else {
