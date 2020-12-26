@@ -10,7 +10,7 @@ function register(req, res, next) {
   .then(() => {
     res.json({
       code: 0,
-      msg: "Registered sucessfully",
+      msg: "Registered successfully",
       data: {
         server_time: commonUtils.getTimestampNow(),
       },

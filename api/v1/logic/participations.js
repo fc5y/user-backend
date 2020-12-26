@@ -32,12 +32,13 @@ async function register(user_id, contest_name, is_hidden) {
   }
 
   const contest_password = generateContestPassword();
-  const participation = await participationData.create({
+  await participationData.create({
     user_id: user_id,
     contest_id: contest.id,
     is_hidden: is_hidden,
     contest_password: contest_password,
   });
+  const participation = await participationData.findOne({user_id: user_id, contest_id: contest.id});
 
   if (contest.can_enter) {
     const cmsUser = cmsUserImportFormat(participation);

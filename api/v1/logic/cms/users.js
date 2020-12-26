@@ -3,6 +3,8 @@ const { post } = require('../../utils/fetch');
 const { generateToken } = require("./auth");
 const { ERRORS } = require("../../constants");
 const { LogicError } = require("../../utils/errors");
+const { CMS_ERRORS } = require("./errors");
+const { fetchWithToken } = require('./utils');
 
 async function importUsers({users, contest_id}) {
   const url = `${CMS_SERVER}/api/users/`;
@@ -10,18 +12,15 @@ async function importUsers({users, contest_id}) {
     contest_id,
     users,
   };
-  if (!global.cmsToken) {
-    global.cmsToken = await generateToken();
+  const body = await fetchWithToken({ method: post, url: url, data: data });
+  if (body.error === CMS_ERRORS.NOT_FOUND.code) {
+    throw new LogicError(ERRORS.CMS_CONTEST_NOT_FOUND);
   }
-  const header = {
-    "Authorization": global.cmsToken,
-  };
-  const body = await post(url, data, header);
-  if (body.error != 0 && body.error != 10003) {
-    throw new LogicError({
-      ...ERRORS.SERVER_ERROR,
-      data: { body },
-    });
+  if (body.error === CMS_ERRORS.EXISTS.code) {
+    return;
+  }
+  if (body.error != 0) {
+    throw new LogicError(ERRORS.ERROR_SYSTEM);
   }
 }
 

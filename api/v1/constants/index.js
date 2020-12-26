@@ -23,6 +23,10 @@ const ERRORS = {
     code: 2101,
     msg: "Contest not found",
   },
+  CMS_CONTEST_NOT_FOUND: {
+    code: 2501,
+    msg: "CMS contest not found",
+  },
   LOGIN_REQUIRED: {
     code: 3001,
     msg: "Login required",
@@ -58,6 +62,10 @@ const ERRORS = {
   SERVER_ERROR: {
     code: 4000,
     msg: "Server error",
+  },
+  CMS_SERVER_ERROR: {
+    code: 4001,
+    msg: "CMS Server error",
   },
 };
 

@@ -9,7 +9,7 @@ async function generateToken() {
   const data = { signature: CMS_SIGNATURE };
   const body = await post(url, data);
   if (body.error != 0) {
-    throw new LogicError(ERRORS.SERVER_ERROR);
+    throw new LogicError(ERRORS.CMS_SERVER_ERROR);
   }
   return body.data.token;
 }

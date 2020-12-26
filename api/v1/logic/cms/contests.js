@@ -1,32 +1,23 @@
 const CMS_SERVER = process.env.CMS_SERVER;
 const { get } = require('../../utils/fetch');
-const { generateToken } = require("./auth");
 const { ERRORS } = require("../../constants");
+const { CMS_ERRORS } = require("./errors");
 const { LogicError } = require("../../utils/errors");
+const { fetchWithToken } = require('./utils');
 
 async function getContest(contest_name) {
-  const url = `${CMS_SERVER}/api/contest/?name=${contest_name}`;
-  if (!global.cmsToken) {
-    global.cmsToken = await generateToken();
-  }
-  const header = {
-    "Authorization": global.cmsToken,
-  };
-  const body = await get(url, header);
+  const url = `${CMS_SERVER}/api/contests/?name=${contest_name}`;
+  const body = await fetchWithToken({ method: get, url: url });
   if (body.error != 0) {
-    throw new LogicError({
-      ...ERRORS.SERVER_ERROR,
-      data: { body },
-    });
+    if (body.error == CMS_ERRORS.NOT_FOUND.code) {
+      throw new LogicError(ERRORS.CMS_CONTEST_NOT_FOUND);
+    }
+    throw new LogicError(ERRORS.CMS_SERVER_ERROR);
   }
-  const contests = body.data;
+  const contests = body.data.contests;
   if (contests.length === 0) {
-    throw new LogicError({
-      ...ERRORS.SERVER_ERROR,
-      data: { msg:"Contest not found" },
-    });
+    throw new LogicError(ERRORS.CMS_CONTEST_NOT_FOUND);
   }
-
   return contests[0];
 }
 
