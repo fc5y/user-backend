@@ -1,9 +1,8 @@
 const CMS_SERVER = process.env.CMS_SERVER;
 const CMS_SIGNATURE = process.env.CMS_SIGNATURE;
-const { get, post } = require('../../utils/fetch');
-const fetch = require("node-fetch");
-const { ERRORS } = require("../constants");
-const { LogicError } = require("../utils/errors");
+const { post } = require('../../utils/fetch');
+const { ERRORS } = require("../../constants");
+const { LogicError } = require("../../utils/errors");
 
 async function generateToken() {
   const url = `${CMS_SERVER}/api/token/generate/`;

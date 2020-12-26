@@ -7,6 +7,7 @@ const contestLogic = require("./contests");
 const participationData = require("../data/participations");
 const userData = require("../data/users");
 const cmsUserLogic = require("./cms/users");
+const cmsContestLogic = require("./cms/contests");
 
 function generateContestPassword() {
   // fc-xxxxxx
@@ -18,6 +19,15 @@ function generateContestPassword() {
   });
 }
 
+function cmsUserImportFormat(participation) {
+  return {
+    contest_password: participation.contest_password,
+    username: participation.user.username,
+    "last_name": participation.user.full_name,
+    "first_name": participation.user.school_name,
+  };
+}
+
 async function register(user_id, contest_name, is_hidden) {
   const contest = await contestLogic.getContest({ contest_name: contest_name });
   if (!contest) {
@@ -26,33 +36,33 @@ async function register(user_id, contest_name, is_hidden) {
       data: { contest_name },
     });
   }
-  const user = await userData.findOneById(user_id);
 
-  // const participation = await participationData.findOne(user_id, contest.id);
-
-  // if (participation) {
-  //   return participation;
-  // }
+  if (await participationData.findOne({
+    user_id: user_id,
+    contest_id: contest.id
+  })) {
+    return;
+  }
 
   const contest_password = generateContestPassword();
-  // send user to cms if contest is ready
+  const participation = await participationData.create({
+    user_id: user_id,
+    contest_id: contest.id,
+    is_hidden: is_hidden,
+    contest_password: contest_password,
+  });
 
-  const participation = await participationData.create(
-    user_id,
-    contest.id,
-    is_hidden,
-    contest_password,
-  );
-
-  await cmsUserLogic.importUsers([{
-    "username": user.username,
-    "password": contest_password,
-    "last_name": user.full_name,
-    "first_name": user.school_name || "test",
-  }], 2);
+  if (contest.can_enter) {
+    const cmsUser = cmsUserImportFormat(participation);
+    const cmsContest = await cmsContestLogic.getContest(contest_name);
+    await cmsUserLogic.importUsers({
+      users: [cmsUser],
+      contest_id: cmsContest.id,
+    });
+  }
 }
 
-async function getAllByUsername(username) {
+async function getAllByUsername({ username, offset, limit }) {
   const user = await userData.findOneByUsername(username);
   if (!user) {
     throw new LogicError({
@@ -60,7 +70,11 @@ async function getAllByUsername(username) {
       data: { username },
     });
   }
-  return await participationData.getAllByUserId(user.id);
+  return await participationData.getAllByUserId({
+    user_id: user.id,
+    offset,
+    limit,
+  });
 }
 
 async function getCredential(user_id, contest_name) {
@@ -71,7 +85,10 @@ async function getCredential(user_id, contest_name) {
       data: { contest_name },
     });
   }
-  const participation = await participationData.findOne(user_id, contest.id);
+  const participation = await participationData.findOne({
+    user_id: user_id,
+    contest_id: contest.id
+  });
   if (!participation) {
     throw new LogicError({
       ...ERRORS.NOT_REGISTERED_YET,

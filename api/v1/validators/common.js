@@ -14,7 +14,7 @@ function requireAdminRole(req, res, next) {
 
 function requireLogin(req, res, next) {
   if (!req.user) {
-    throw new LogicError({ ...ERRORS.LOGIN_REQUIRED, data: {} });
+    throw new LogicError(ERRORS.LOGIN_REQUIRED);
   } else {
     next();
   }

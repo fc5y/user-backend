@@ -1,31 +1,35 @@
 const CMS_SERVER = process.env.CMS_SERVER;
-const { post } = require('../../utils/fetch');
+const { get } = require('../../utils/fetch');
 const { generateToken } = require("./auth");
 const { ERRORS } = require("../../constants");
 const { LogicError } = require("../../utils/errors");
 
-async function importUsers({users, contest_id}) {
-  const url = `${CMS_SERVER}/api/users/`;
-  const data = {
-    contest_id,
-    users,
-  };
+async function getContest(contest_name) {
+  const url = `${CMS_SERVER}/api/contest/?name=${contest_name}`;
   if (!global.cmsToken) {
     global.cmsToken = await generateToken();
   }
   const header = {
     "Authorization": global.cmsToken,
   };
-  const body = await post(url, data, header);
-  if (body.error != 0 && body.error != 10003) {
+  const body = await get(url, header);
+  if (body.error != 0) {
     throw new LogicError({
       ...ERRORS.SERVER_ERROR,
       data: { body },
     });
   }
+  const contests = body.data;
+  if (contests.length === 0) {
+    throw new LogicError({
+      ...ERRORS.SERVER_ERROR,
+      data: { msg:"Contest not found" },
+    });
+  }
+
+  return contests[0];
 }
 
 module.exports = {
-  generateToken,
-  importUsers,
+  getContest,
 };
