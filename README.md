@@ -1,13 +1,12 @@
-|            |                      URL                       |                                                  Status                                                  |
-| :--------: | :--------------------------------------------: | :------------------------------------------------------------------------------------------------------: |
-|     CI     |                    Private                     |       [![Build Status](https://dev.azure.com/fc5y/fc5y/_apis/build/status/main/fc5y.user-be?branchName=master)](https://dev.azure.com/fc5y/fc5y/_build/latest?definitionId=7&branchName=master)        |
-|  Staging   |                    Private                     | ![](https://vsrm.dev.azure.com/fc5y/_apis/public/Release/badge/5733aefa-7440-4173-9990-437724df1c84/7/13) |
-| Production |                    Private                     | ![](https://vsrm.dev.azure.com/fc5y/_apis/public/Release/badge/5733aefa-7440-4173-9990-437724df1c84/7/24) |
-
+|            |   URL   |                                                                                          Status                                                                                           |
+| :--------: | :-----: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|     CI     | Private | [![Build Status](https://dev.azure.com/fc5y/fc5y/_apis/build/status/main/fc5y.user-be?branchName=master)](https://dev.azure.com/fc5y/fc5y/_build/latest?definitionId=7&branchName=master) |
+|  Staging   | Private |                                         ![](https://vsrm.dev.azure.com/fc5y/_apis/public/Release/badge/5733aefa-7440-4173-9990-437724df1c84/7/13)                                         |
+| Production | Private |                                         ![](https://vsrm.dev.azure.com/fc5y/_apis/public/Release/badge/5733aefa-7440-4173-9990-437724df1c84/7/24)                                         |
 
 # Description
 
-User Backend for fc5y project
+User Backend for fc5y project.
 
 # DB Set up
 
@@ -24,6 +23,7 @@ npx sequelize-cli db:migrate:status # migration log
 ```
 
 # Email certification:
+
 [Details](https://docs.google.com/document/d/1XGxTuUXc9CaU1Pljkc7kRp_ZuaLniHSi0iVI82Kx2eY/edit?usp=sharing)
 
 # How to run
