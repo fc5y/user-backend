@@ -25,6 +25,5 @@ async function importUsers({users, contest_id}) {
 }
 
 module.exports = {
-  generateToken,
   importUsers,
 };

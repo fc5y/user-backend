@@ -35,7 +35,7 @@ function getAllByUsername(req, res, next) {
   .then(({count, participations}) => {
     res.json({
       code: 0,
-      msg: "",
+      msg: "Participations",
       data: {
         total: count,
         participations: participations.map(formatParticipation),
@@ -51,7 +51,7 @@ function getCredential(req, res, next) {
   .then((credential) => {
     res.json({
       code: 0,
-      msg: "",
+      msg: "Contest credentials",
       data: {
         contest_username: req.user.username,
         contest_password: credential.contest_password,
