@@ -21,6 +21,12 @@ async function fetchWithToken({method, url, data={}, retry=true}) {
       await fetchWithToken({ method, url, data, retry: false });
     }
   }
+  if (body.error == CMS_ERRORS.WRONG_PARAMS.code) {
+    throw new LogicError(ERRORS.SERVER_ERROR);
+  }
+  if (body.error == CMS_ERRORS.CMS_SYSTEM_ERROR.code) {
+    throw new LogicError(ERRORS.CMS_SERVER_ERROR);
+  }
   return body;
 }
 

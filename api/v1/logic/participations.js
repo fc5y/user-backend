@@ -4,19 +4,10 @@ const { LogicError } = require("../utils/errors");
 const contestData = require("./../data/contests");
 const participationData = require("../data/participations");
 const userData = require("../data/users");
-const { generateContestPassword } = require("../utils/participations");
+const { generateContestPassword, cmsUserImportFormat } = require("../utils/participations");
 
 const cmsUserLogic = require("./cms/users");
 const cmsContestLogic = require("./cms/contests");
-
-function cmsUserImportFormat(participation) {
-  return {
-    contest_password: participation.contest_password,
-    username: participation.user.username,
-    "last_name": participation.user.full_name,
-    "first_name": participation.user.school_name,
-  };
-}
 
 async function register(user_id, contest_name, is_hidden) {
   const contest = await contestData.findOneByContestName(contest_name);
@@ -47,6 +38,9 @@ async function register(user_id, contest_name, is_hidden) {
       users: [cmsUser],
       contest_id: cmsContest.id,
     });
+    // update in_cms = true
+    participation.in_cms = true;
+    participation.save();
   }
 }
 

@@ -1,6 +1,5 @@
 const CMS_SERVER = process.env.CMS_SERVER;
 const { post } = require('../../utils/fetch');
-const { generateToken } = require("./auth");
 const { ERRORS } = require("../../constants");
 const { LogicError } = require("../../utils/errors");
 const { CMS_ERRORS } = require("./errors");
@@ -17,7 +16,7 @@ async function importUsers({users, contest_id}) {
     throw new LogicError(ERRORS.CMS_CONTEST_NOT_FOUND);
   }
   if (body.error === CMS_ERRORS.EXISTS.code) {
-    return;
+    throw new LogicError(ERRORS.CMS_USER_EXISTS);
   }
   if (body.error != 0) {
     throw new LogicError(ERRORS.ERROR_SYSTEM);

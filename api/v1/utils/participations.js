@@ -24,7 +24,17 @@ function generateContestPassword() {
   });
 }
 
+function cmsUserImportFormat(participation) {
+  return {
+    contest_password: participation.contest_password,
+    username: participation.user.username,
+    "last_name": participation.user.full_name,
+    "first_name": participation.user.school_name,
+  };
+}
+
 module.exports = {
   formatParticipation,
   generateContestPassword,
+  cmsUserImportFormat,
 };

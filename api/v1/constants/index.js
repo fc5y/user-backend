@@ -27,6 +27,10 @@ const ERRORS = {
     code: 2501,
     msg: "CMS contest not found",
   },
+  CMS_USER_EXISTS: {
+    code: 2502,
+    msg: "CMS user exists",
+  },
   LOGIN_REQUIRED: {
     code: 3001,
     msg: "Login required",

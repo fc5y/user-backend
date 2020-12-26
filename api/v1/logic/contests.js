@@ -1,6 +1,12 @@
 const { ERRORS } = require("../constants");
 const { LogicError } = require("../utils/errors");
+
 const contestData = require("../data/contests");
+const participationData = require("../data/participations");
+const { cmsUserImportFormat } = require("../utils/participations");
+
+const cmsUserLogic = require("./cms/users");
+const cmsContestLogic = require("./cms/contests");
 
 async function getAllContests({ offset, limit }) {
   return await contestData.getAll({ offset, limit });
@@ -41,6 +47,21 @@ async function updateContest({ contest_name }, newContest) {
   const contest = await contestData.findOneByContestName(contest_name);
   if (contest === null) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
+  }
+  if (newContest.can_enter) {
+    const notInCmsParticipations = await participationData.getAllNotInCmsParticipations(contest.id);
+    console.log(notInCmsParticipations);
+    const cmsUsers = notInCmsParticipations.map(cmsUserImportFormat);
+
+    const cmsContest = await cmsContestLogic.getContest(contest_name);
+    await cmsUserLogic.importUsers({
+      users: cmsUsers,
+      contest_id: cmsContest.id,
+    });
+    // update in_cms = true
+    const parIds = notInCmsParticipations.map(x => x.id);
+    console.log(parIds);
+    await participationData.bulkUpdateInCms(parIds);
   }
   return await contestData.updateOneByContestName(contest_name, {
     ...contest,
