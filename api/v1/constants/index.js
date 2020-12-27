@@ -68,7 +68,7 @@ const ERRORS = {
     msg: "Server error",
   },
   CMS_SERVER_ERROR: {
-    code: 4001,
+    code: 4100,
     msg: "CMS Server error",
   },
 };

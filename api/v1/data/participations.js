@@ -26,7 +26,7 @@ async function getAllNotInCmsParticipations(contest_id) {
 }
 
 async function findOne({ user_id, contest_id }) {
-  const participation = await sequelize.models.Participation.findOne({
+  return await sequelize.models.Participation.findOne({
     where: {
       user_id,
       contest_id,
@@ -36,7 +36,6 @@ async function findOne({ user_id, contest_id }) {
       { model: sequelize.models.User, as: "user" },
     ],
   });
-  return participation;
 }
 
 async function create({
@@ -53,11 +52,22 @@ async function create({
   });
 }
 
-async function bulkUpdateInCms(participation_ids) {
+async function bulkUpdateInCms(participationIds) {
   await sequelize.models.Participation.update(
     { in_cms: true },
-    { where: { id: participation_ids } }
+    { where: { id: participationIds } }
   );
+}
+
+async function getRegisteredByContestId({contest_id}) {
+  return await sequelize.models.Participation.findAll({
+    where: {
+      contest_id,
+    },
+    include: [
+      { model: sequelize.models.User, as: "user" },
+    ],
+  });
 }
 
 module.exports = {
@@ -66,4 +76,5 @@ module.exports = {
   findOne,
   create,
   bulkUpdateInCms,
+  getRegisteredByContestId,
 };

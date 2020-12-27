@@ -1,5 +1,5 @@
 const { ERRORS } = require("../../constants");
-const { CMS_ERRORS } = require("./errors");
+const { CMS_ERRORS } = require("./constants");
 const { LogicError } = require("../../utils/errors");
 
 const { generateToken } = require("./auth");
@@ -21,11 +21,11 @@ async function fetchWithToken({method, url, data={}, retry=true}) {
       await fetchWithToken({ method, url, data, retry: false });
     }
   }
-  if (body.error == CMS_ERRORS.WRONG_PARAMS.code) {
-    throw new LogicError(ERRORS.SERVER_ERROR);
-  }
-  if (body.error == CMS_ERRORS.CMS_SYSTEM_ERROR.code) {
+  if (body.error === CMS_ERRORS.CMS_SYSTEM_ERROR.code) {
     throw new LogicError(ERRORS.CMS_SERVER_ERROR);
+  }
+  if (body.error) {
+    throw new LogicError({ ...ERRORS.CMS_FETCH_ERROR, data: { body } });
   }
   return body;
 }

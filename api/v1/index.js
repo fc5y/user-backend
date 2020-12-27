@@ -8,6 +8,7 @@ const authController = require("./controllers/auth");
 const authValidator = require("./validators/auth");
 const participationController = require("./controllers/participations");
 const participationValidator = require("./validators/participations");
+const cmsController = require("./controllers/cms");
 const { requireAdminRole, requireLogin } = require("./validators/common");
 
 const router = express.Router();
@@ -85,6 +86,16 @@ router.get(
   requireLogin,
   participationValidator.getCredential,
   participationController.getCredential,
+);
+
+// -------- CMS sync -------------------------------------------
+// POST /api/v1/cms/syncAll
+// params contest_name
+// Sync all users that registered this contest
+router.get(
+  "/cms/syncAll",
+  requireAdminRole,
+  cmsController.syncAll,
 );
 
 router.use((error, req, res, _next) => {

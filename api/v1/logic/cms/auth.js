@@ -8,8 +8,8 @@ async function generateToken() {
   const url = `${CMS_SERVER}/api/token/generate/`;
   const data = { signature: CMS_SIGNATURE };
   const body = await post(url, data);
-  if (body.error != 0) {
-    throw new LogicError(ERRORS.CMS_SERVER_ERROR);
+  if (body.error) {
+    throw new LogicError({ ...ERRORS.CMS_FETCH_ERROR, data: { body } });
   }
   return body.data.token;
 }

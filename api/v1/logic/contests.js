@@ -7,6 +7,7 @@ const { cmsUserImportFormat } = require("../utils/participations");
 
 const cmsUserLogic = require("./cms/users");
 const cmsContestLogic = require("./cms/contests");
+const cmsLogic = require("./cms");
 
 async function getAllContests({ offset, limit }) {
   return await contestData.getAll({ offset, limit });
@@ -49,18 +50,7 @@ async function updateContest({ contest_name }, newContest) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
   if (!contest.can_enter && newContest.can_enter) {
-    const notInCmsParticipations = await participationData.getAllNotInCmsParticipations(contest.id);
-    const cmsUsers = notInCmsParticipations.map(cmsUserImportFormat);
-    const cmsContest = await cmsContestLogic.getContest(contest_name);
-
-    await cmsUserLogic.importUsers({
-      users: cmsUsers,
-      contest_id: cmsContest.id,
-    });
-
-    // update in_cms = true
-    const parIds = notInCmsParticipations.map(x => x.id);
-    await participationData.bulkUpdateInCms(parIds);
+    await cmsLogic.syncAll({contest_name: contest_name});
   }
   return await contestData.updateOneByContestName(contest_name, {
     ...contest,
