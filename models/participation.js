@@ -61,7 +61,7 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      in_cms: {
+      synced: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,

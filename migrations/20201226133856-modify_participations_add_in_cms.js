@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn("Participations", "in_cms", {
+    await queryInterface.addColumn("Participations", "synced", {
       type: Sequelize.BOOLEAN,
       allowNull: false,
       defaultValue: false,
@@ -10,6 +10,6 @@ module.exports = {
   },
 
   down: async (queryInterface, _Sequelize) => {
-    await queryInterface.removeColumn("Participations", "in_cms");
+    await queryInterface.removeColumn("Participations", "synced");
   }
 };

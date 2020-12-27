@@ -41,7 +41,7 @@ async function syncAll({contest_name, participations=[]}) {
     users: toBeSyncedUsers,
   });
   // 5. Update in cms
-  await partipationData.bulkUpdateInCms(toBeSyncedParticipations.map(x => x.id));
+  await partipationData.bulkUpdateSynced(toBeSyncedParticipations.map(x => x.id));
 }
 
 module.exports = {

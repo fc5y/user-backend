@@ -13,18 +13,6 @@ async function getAllByUserId({ user_id, offset, limit }) {
   return { count, participations };
 }
 
-async function getAllNotInCmsParticipations(contest_id) {
-  return await sequelize.models.Participation.findAll({
-    where: {
-      contest_id,
-      in_cms: false,
-    },
-    include: [
-      { model: sequelize.models.User, as: "user" },
-    ],
-  });
-}
-
 async function findOne({ user_id, contest_id }) {
   return await sequelize.models.Participation.findOne({
     where: {
@@ -52,9 +40,9 @@ async function create({
   });
 }
 
-async function bulkUpdateInCms(participationIds) {
+async function bulkUpdateSynced(participationIds) {
   await sequelize.models.Participation.update(
-    { in_cms: true },
+    { synced: true },
     { where: { id: participationIds } }
   );
 }
@@ -72,9 +60,8 @@ async function getRegisteredByContestId({contest_id}) {
 
 module.exports = {
   getAllByUserId,
-  getAllNotInCmsParticipations,
   findOne,
   create,
-  bulkUpdateInCms,
+  bulkUpdateSynced,
   getRegisteredByContestId,
 };
