@@ -16,8 +16,13 @@ async function importUsers({contest_id, users}) {
     throw new LogicError(ERRORS.CMS_CONTEST_NOT_FOUND);
   }
   if (body.error === CMS_ERRORS.EXISTS.code) {
-    // throw new LogicError(ERRORS.CMS_USER_EXISTS);
-    // TODO: REcall
+    if (users.length === 1) {
+      return; // do nothing
+    }
+    // import one by one
+    Promise.all(users).then((user) => {
+      importUsers({contest_id: contest_id, users: [user]});
+    });
     return;
   }
   if (body.error) {
