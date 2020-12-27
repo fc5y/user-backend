@@ -1,17 +1,17 @@
 const CMS_SERVER = process.env.CMS_SERVER;
-const { get } = require('../../utils/fetch');
 const { ERRORS } = require("../../constants");
-const { CMS_ERRORS } = require("./constants");
+const { CMS_ERRORS, CMS_APIS } = require("./constants");
 const { LogicError } = require("../../utils/errors");
 const { fetchWithToken } = require('./utils');
 
 async function getContest(contest_name) {
-  const url = `${CMS_SERVER}/api/contests/?name=${contest_name}`;
-  const body = await fetchWithToken({ method: get, url: url });
+  const url = CMS_SERVER + CMS_APIS.GET_CONTEST + `?name=${encodeURIComponent(contest_name)}`;
+  const body = await fetchWithToken({ method: "GET", url: url });
 
-  if (body.error && body.error === CMS_ERRORS.NOT_FOUND.code) {
+  if (body.error === CMS_ERRORS.NOT_FOUND.code) {
     throw new LogicError(ERRORS.CMS_CONTEST_NOT_FOUND);
-  } else if (body.error) {
+  }
+  if (body.error) {
     throw new LogicError({ ...ERRORS.CMS_FETCH_ERROR, data: { body } });
   }
 

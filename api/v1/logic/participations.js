@@ -5,7 +5,7 @@ const cmsLogic = require("./cms");
 const contestData = require("./../data/contests");
 const participationData = require("../data/participations");
 const userData = require("../data/users");
-const { generateContestPassword, cmsUserImportFormat } = require("../utils/participations");
+const { generateContestPassword } = require("../utils/participations");
 
 async function register(user_id, contest_name, is_hidden) {
   const contest = await contestData.findOneByContestName(contest_name);

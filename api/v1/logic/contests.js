@@ -2,11 +2,7 @@ const { ERRORS } = require("../constants");
 const { LogicError } = require("../utils/errors");
 
 const contestData = require("../data/contests");
-const participationData = require("../data/participations");
-const { cmsUserImportFormat } = require("../utils/participations");
 
-const cmsUserLogic = require("./cms/users");
-const cmsContestLogic = require("./cms/contests");
 const cmsLogic = require("./cms");
 
 async function getAllContests({ offset, limit }) {
