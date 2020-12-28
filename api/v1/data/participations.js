@@ -47,7 +47,7 @@ async function bulkUpdateSynced(participationIds) {
   );
 }
 
-async function getRegisteredByContestId({contest_id}) {
+async function getRegisteredByContestId(contest_id) {
   return await sequelize.models.Participation.findAll({
     where: {
       contest_id,

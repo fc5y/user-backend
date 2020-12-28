@@ -1,4 +1,4 @@
-const cmsLogic = require("./../logic/cms");
+const cmsLogic = require("../logic/cms");
 const commonUtils = require("../utils/common");
 
 // POST /api/v1/cms/syncAll

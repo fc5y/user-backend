@@ -5,7 +5,7 @@ function formatParticipation(participation) {
     username: participation.user.username,
     contest_name: participation.contest.contest_name,
     contest_title: participation.contest.contest_title,
-    contest_total_participation: 0, // TODO: fix this
+    contest_total_participations: 0, // TODO: fix this
     is_hidden: participation.is_hidden,
     rating: participation.rating,
     rating_change: participation.rating_change,
@@ -24,17 +24,7 @@ function generateContestPassword() {
   });
 }
 
-function cmsUserImportFormat(participation) {
-  return {
-    password: participation.contest_password,
-    username: participation.user.username,
-    last_name: participation.user.full_name,
-    first_name: participation.user.school_name,
-  };
-}
-
 module.exports = {
   formatParticipation,
   generateContestPassword,
-  cmsUserImportFormat,
 };

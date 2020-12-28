@@ -16,7 +16,7 @@ async function getCmsToken({ forceRenew=false }) {
   return cachedCmsToken;
 }
 
-async function fetchWithToken({method, url, data={}, renewToken=true}) {
+async function fetchWithToken({method, url, data={}, renewToken=false}) {
   const header = {"Authorization": await getCmsToken({forceRenew: renewToken})};
   let body;
   if (method === "GET") {
@@ -30,14 +30,11 @@ async function fetchWithToken({method, url, data={}, renewToken=true}) {
       throw new LogicError(ERRORS.CMS_SERVER_ERROR);
     } else {
       // reset token + retry
-      await fetchWithToken({ method, url, data, renewToken: false });
+      await fetchWithToken({ method, url, data, renewToken: true });
     }
   }
   if (body.error === CMS_ERRORS.CMS_SYSTEM_ERROR.code) {
     throw new LogicError(ERRORS.CMS_SERVER_ERROR);
-  }
-  if (body.error) {
-    throw new LogicError({ ...ERRORS.CMS_FETCH_ERROR, data: { body } });
   }
   return body;
 }

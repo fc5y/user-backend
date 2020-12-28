@@ -32,7 +32,7 @@ async function register(user_id, contest_name, is_hidden) {
   if (contest.can_enter) {
     await cmsLogic.syncAll({
       contest_name: contest_name,
-      participations: [participation],
+      whitelistedParticipations: [participation],
     });
   }
 }

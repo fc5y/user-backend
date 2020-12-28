@@ -23,17 +23,9 @@ const ERRORS = {
     code: 2101,
     msg: "Contest not found",
   },
-  CONTEST_NOT_OPENED_YET: {
-    code: 2501,
-    msg: "Contest has not opened yet",
-  },
   CMS_CONTEST_NOT_FOUND: {
-    code: 2502,
+    code: 2501,
     msg: "CMS contest not found",
-  },
-  CMS_USER_EXISTS: {
-    code: 2503,
-    msg: "CMS user exists",
   },
   LOGIN_REQUIRED: {
     code: 3001,
