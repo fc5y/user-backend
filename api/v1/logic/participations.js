@@ -1,5 +1,6 @@
 const { ERRORS } = require("../constants");
 const { LogicError } = require("../utils/errors");
+const { dateToTimestamp, getTimestampNow } = require("../utils/common");
 
 const contestData = require("./../data/contests");
 const participationData = require("../data/participations");
@@ -43,9 +44,18 @@ async function getCredential(user_id, contest_name) {
   if (!contest) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
+  if (!contest.can_enter) {
+    throw new LogicError(ERRORS.CONTEST_NOT_OPENED_YET);
+  }
+  if (dateToTimestamp(contest.start_time) + contest.duration < getTimestampNow()) {
+    throw new LogicError(ERRORS.CONTEST_ENDED);
+  }
   const participation = await participationData.findOne(user_id, contest.id);
   if (!participation) {
     throw new LogicError(ERRORS.NOT_REGISTERED_YET);
+  }
+  if (!participation.synced) {
+    throw new LogicError(ERRORS.NOT_SYNCED_YET);
   }
   return participation;
 }
