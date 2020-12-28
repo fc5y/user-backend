@@ -8,7 +8,6 @@ const contestData = require("../data/contests");
 const { cmsUserImportFormat } = require("../utils/participations");
 
 async function syncAll({contest_name, participations=[]}) {
-  console.log(contest_name);
   const contest = await contestData.updateOneByContestName(contest_name);
   if (!contest) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);

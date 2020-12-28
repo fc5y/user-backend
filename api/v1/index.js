@@ -9,6 +9,7 @@ const authValidator = require("./validators/auth");
 const participationController = require("./controllers/participations");
 const participationValidator = require("./validators/participations");
 const cmsController = require("./controllers/cms");
+const cmsValidator = require("./validators/cms");
 const { requireAdminRole, requireLogin } = require("./validators/common");
 
 const router = express.Router();
@@ -92,9 +93,10 @@ router.get(
 // POST /api/v1/cms/syncAll
 // params contest_name
 // Sync all users that registered this contest
-router.get(
+router.post(
   "/cms/syncAll",
   requireAdminRole,
+  cmsValidator.syncAll,
   cmsController.syncAll,
 );
 

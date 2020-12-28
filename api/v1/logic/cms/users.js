@@ -30,12 +30,12 @@ async function importUsers({contest_id, users}) {
 }
 
 async function getAll() {
-  const url = CMS_SERVER + CMS_APIS.GET_CONTEST;
+  const url = CMS_SERVER + CMS_APIS.GET_USERS;
   const body = await fetchWithToken({ method: "GET", url: url });
   if (body.error !== 0) {
     throw new LogicError({ ...ERRORS.CMS_FETCH_ERROR, data: { body } });
   }
-  return body.data;
+  return body.data.users;
 }
 
 module.exports = {

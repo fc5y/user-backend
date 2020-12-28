@@ -3,7 +3,7 @@ const commonUtils = require("../utils/common");
 
 // POST /api/v1/cms/syncAll
 function syncAll(req, res, next) {
-  cmsLogic.syncAll({ contest_name: req.params.contest_name })
+  cmsLogic.syncAll({ contest_name: req.body.contest_name })
   .then(() => {
     res.json({
       code: 0,
