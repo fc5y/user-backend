@@ -5,7 +5,9 @@ const { body } = require("express-validator");
 const syncAll = [
   body("contest_name")
     .matches(/^[a-zA-Z0-9_.-]+$/)
-    .isLength({ min: 1, max: 255 }),
+    .withMessage("value must only contain allowed characters")
+    .isLength({ min: 1, max: 255 })
+    .withMessage("value's length must be in range 1 to 255"),
   validationMiddleware,
 ];
 

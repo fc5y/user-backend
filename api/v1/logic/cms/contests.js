@@ -5,7 +5,7 @@ const { LogicError } = require("../../utils/errors");
 const { fetchWithToken } = require('./utils');
 
 async function getContest(contest_name) {
-  const url = CMS_SERVER + CMS_APIS.GET_CONTEST + `?name=${encodeURIComponent(contest_name)}`;
+  const url = `${CMS_SERVER}${CMS_APIS.GET_CONTEST}?name=${encodeURIComponent(contest_name)}`;
   const body = await fetchWithToken({ method: "GET", url: url });
 
   if (body.error === CMS_ERRORS.NOT_FOUND.code) {

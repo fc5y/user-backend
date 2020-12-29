@@ -1,13 +1,14 @@
-const { ERRORS } = require("./constants");
+const { ERRORS } = require("../../constants");
 const { LogicError } = require("../../utils/errors");
 
 const cmsContestLogic = require("./contests");
 const cmsUserLogic = require("./users");
 const participationData = require("../../data/participations");
 const contestData = require("../../data/contests");
+const cms = require("../../validators/cms");
 
 async function syncAll({contest_name, whitelistedParticipations=null}) {
-  const contest = await contestData.updateOneByContestName(contest_name);
+  const contest = await contestData.findOneByContestName(contest_name);
   if (!contest) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
@@ -21,8 +22,10 @@ async function syncAll({contest_name, whitelistedParticipations=null}) {
     toBeSyncedParticipations = whitelistedParticipations;
   } else {
     // 2. fetch all users that already in CMS contest (1)
-    const syncedUsers = await cmsUserLogic.getAll();
+    let syncedUsers = await cmsUserLogic.getAll();
+    syncedUsers = syncedUsers.filter(user => user.contest_id === cmsContest.id);
     const syncedUsernames = new Set(syncedUsers.map(x => x.username));
+
     // 3. fetch all users that registered this contest (2)
     const participations = await participationData.getRegisteredByContestId(contest.id);
     toBeSyncedParticipations = participations.filter(p => !syncedUsernames.has(p.user.username));
