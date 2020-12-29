@@ -5,7 +5,6 @@ const cmsContestLogic = require("./contests");
 const cmsUserLogic = require("./users");
 const participationData = require("../../data/participations");
 const contestData = require("../../data/contests");
-const cms = require("../../validators/cms");
 
 async function syncAll({contest_name, whitelistedParticipations=null}) {
   const contest = await contestData.findOneByContestName(contest_name);
