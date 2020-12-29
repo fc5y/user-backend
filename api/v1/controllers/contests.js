@@ -115,17 +115,21 @@ function getAllContests(req, res, next) {
 // GET /api/v1/contests/{contest_name}
 function getContest(req, res, next) {
   contestLogic
-    .getContest({ contest_name: req.params.contest_name })
-    .then((contest) =>
+    .getContest({
+      contest_name: req.params.contest_name,
+      user_id: (req.user && req.user.id) || null,
+    })
+    .then(({ contest, myParticipation }) => {
       res.json({
         code: 0,
         msg: "Contest",
         data: {
           contest: formatContest(contest),
+          my_participation: formatParticipation(myParticipation),
           server_time: commonUtils.getTimestampNow(),
         },
-      }),
-    )
+      });
+    })
     .catch(next);
 }
 
