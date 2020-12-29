@@ -4,10 +4,24 @@ const { LogicError } = require("../utils/errors");
 const contestData = require("../data/contests");
 const participationData = require("../data/participations");
 
+async function toPlainContestObject(
+  contest,
+  { includeDerivedFields = true } = {},
+) {
+  if (!includeDerivedFields) return contest.toJSON();
+  return {
+    ...contest.toJSON(),
+    total_participations: await participationData.countAllByContestId(
+      contest.id,
+    ),
+  };
+}
+
 const cmsLogic = require("./cms");
 
 async function getAllContests({ offset, limit }) {
-  return await contestData.getAll({ offset, limit });
+  const contests = await contestData.getAll({ offset, limit });
+  return await Promise.all(contests.map(toPlainContestObject));
 }
 
 async function getAllParticipationsByUserId(user_id) {
@@ -24,13 +38,14 @@ async function createContest({
   if (await contestData.findOneByContestName(contest_name)) {
     throw new LogicError(ERRORS.CONTEST_EXISTS);
   }
-  return await contestData.createOne({
+  const contest = await contestData.createOne({
     contest_name,
     contest_title,
     start_time,
     duration,
     can_enter,
   });
+  return await toPlainContestObject(contest);
 }
 
 async function getContest({ contest_name, user_id = null }) {
@@ -43,23 +58,24 @@ async function getContest({ contest_name, user_id = null }) {
     : null;
 
   return {
-    contest,
+    contest: await toPlainContestObject(contest),
     myParticipation,
   };
 }
 
-async function updateContest({ contest_name }, newContest) {
-  const contest = await contestData.findOneByContestName(contest_name);
-  if (contest === null) {
+async function updateContest({ contest_name }, changes) {
+  const oldContest = await contestData.findOneByContestName(contest_name);
+  if (oldContest === null) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
-  if (!contest.can_enter && newContest.can_enter) {
+  if (!oldContest.can_enter && newContest.can_enter) {
     await cmsLogic.syncAll({ contest_name: contest_name });
   }
-  return await contestData.updateOneByContestName(contest_name, {
-    ...contest,
-    ...newContest,
+  const newContest = await contestData.updateOneByContestName(contest_name, {
+    ...oldContest,
+    ...changes,
   });
+  return await toPlainContestObject(newContest);
 }
 
 async function deleteContest({ contest_name }) {
