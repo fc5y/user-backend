@@ -93,7 +93,9 @@ function getAllContests(req, res, next) {
   const userId = (req.user && req.user.id) || null;
   Promise.all([
     contestLogic.getAllContests(offset, limit),
-    userId !== null ? contestLogic.getAllParticipationsByUserId(userId) : { participations: [] },
+    userId !== null
+      ? contestLogic.getAllParticipationsByUserId(userId)
+      : { participations: [] },
   ])
     .then(([contests, { participations: myParticipations }]) => {
       res.send({
@@ -122,7 +124,7 @@ function getContest(req, res, next) {
         msg: "Contest",
         data: {
           contest: formatContest(contest),
-          my_participation: user_id
+          my_participation: myParticipation
             ? formatParticipation(myParticipation)
             : null,
           server_time: commonUtils.getTimestampNow(),
