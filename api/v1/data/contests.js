@@ -19,17 +19,6 @@ async function findOneByContestName(contest_name) {
   });
 }
 
-// TODO: move to data/participations.js
-async function getAllParticipationsByUserId(user_id) {
-  return await sequelize.models.Participation.findAll({
-    where: { user_id },
-    include: [
-      { model: sequelize.models.Contest, as: "contest" },
-      { model: sequelize.models.User, as: "user" },
-    ],
-  });
-}
-
 async function createOne({
   contest_name,
   contest_title,
@@ -60,7 +49,6 @@ async function deleteOneByContestName(contest_name) {
 module.exports = {
   getAll,
   findOneByContestName,
-  getAllParticipationsByUserId,
   createOne,
   updateOneByContestName,
   deleteOneByContestName,

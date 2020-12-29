@@ -6,17 +6,18 @@ const MAX_LIMIT_GET_ALL_PARTICIPATIONS = 50;
 
 // POST /api/v1/participation
 function register(req, res, next) {
-  participationLogic.register(req.user.id, req.body.contest_name, req.body.is_hidden)
-  .then(() => {
-    res.json({
-      code: 0,
-      msg: "Registered successfully",
-      data: {
-        server_time: commonUtils.getTimestampNow(),
-      },
-    });
-  })
-  .catch(next);
+  participationLogic
+    .register(req.user.id, req.body.contest_name, req.body.is_hidden)
+    .then(() => {
+      res.json({
+        code: 0,
+        msg: "Registered successfully",
+        data: {
+          server_time: commonUtils.getTimestampNow(),
+        },
+      });
+    })
+    .catch(next);
 }
 
 function getAllByUsername(req, res, next) {
@@ -27,39 +28,41 @@ function getAllByUsername(req, res, next) {
   );
 
   const username = req.params.username;
-  participationLogic.getAllByUsername({
-    username,
-    offset,
-    limit,
-  })
-  .then(({count, participations}) => {
-    res.json({
-      code: 0,
-      msg: "Participations",
-      data: {
-        total: count,
-        participations: participations.map(formatParticipation),
-        server_time: commonUtils.getTimestampNow(),
-      },
-    });
-  })
-  .catch(next);
+  participationLogic
+    .getAllByUsername({
+      username,
+      offset,
+      limit,
+    })
+    .then(({ count, participations }) => {
+      res.json({
+        code: 0,
+        msg: "Participations",
+        data: {
+          total: count,
+          participations: participations.map(formatParticipation),
+          server_time: commonUtils.getTimestampNow(),
+        },
+      });
+    })
+    .catch(next);
 }
 
 function getCredential(req, res, next) {
-  participationLogic.getCredential(req.user.id, req.params.contest_name)
-  .then((credential) => {
-    res.json({
-      code: 0,
-      msg: "Contest credentials",
-      data: {
-        contest_username: req.user.username,
-        contest_password: credential.contest_password,
-        server_time: commonUtils.getTimestampNow(),
-      },
-    });
-  })
-  .catch(next);
+  participationLogic
+    .getCredential(req.user.id, req.params.contest_name)
+    .then((credential) => {
+      res.json({
+        code: 0,
+        msg: "Contest credentials",
+        data: {
+          contest_username: req.user.username,
+          contest_password: credential.contest_password,
+          server_time: commonUtils.getTimestampNow(),
+        },
+      });
+    })
+    .catch(next);
 }
 
 module.exports = {

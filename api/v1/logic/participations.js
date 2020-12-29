@@ -13,10 +13,12 @@ async function register(user_id, contest_name, is_hidden) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
 
-  if (await participationData.findOne({
-    user_id: user_id,
-    contest_id: contest.id
-  })) {
+  if (
+    await participationData.findOne({
+      user_id: user_id,
+      contest_id: contest.id,
+    })
+  ) {
     return;
   }
 
@@ -27,7 +29,10 @@ async function register(user_id, contest_name, is_hidden) {
     is_hidden: is_hidden,
     contest_password: contest_password,
   });
-  const participation = await participationData.findOne({user_id: user_id, contest_id: contest.id});
+  const participation = await participationData.findOne({
+    user_id: user_id,
+    contest_id: contest.id,
+  });
 
   if (contest.can_enter) {
     await cmsLogic.syncAll({
@@ -55,10 +60,10 @@ async function getCredential(user_id, contest_name) {
   if (!contest) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
-  if (!contest.can_enter) {
-    throw new LogicError(ERRORS.CANNOT_ENTER_CONTEST);
-  }
-  const participation = await participationData.findOne(user_id, contest.id);
+  const participation = await participationData.findOne({
+    user_id: user_id,
+    contest_id: contest.id,
+  });
   if (!participation) {
     throw new LogicError(ERRORS.NOT_REGISTERED_YET);
   }
