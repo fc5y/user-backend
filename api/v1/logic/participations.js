@@ -1,6 +1,7 @@
 const { ERRORS } = require("../constants");
 const { LogicError } = require("../utils/errors");
 
+const cmsLogic = require("./cms");
 const contestData = require("./../data/contests");
 const participationData = require("../data/participations");
 const userData = require("../data/users");
@@ -11,18 +12,29 @@ async function register(user_id, contest_name, is_hidden) {
   if (!contest) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
-  const participation = await participationData.findOne(user_id, contest.id);
-  if (participation) {
-    return participation;
+
+  if (await participationData.findOne({
+    user_id: user_id,
+    contest_id: contest.id
+  })) {
+    return;
   }
 
   const contest_password = generateContestPassword();
-  return await participationData.create({
+  await participationData.create({
     user_id: user_id,
     contest_id: contest.id,
     is_hidden: is_hidden,
     contest_password: contest_password,
   });
+  const participation = await participationData.findOne({user_id: user_id, contest_id: contest.id});
+
+  if (contest.can_enter) {
+    await cmsLogic.syncAll({
+      contest_name: contest_name,
+      whitelistedParticipations: [participation],
+    });
+  }
 }
 
 async function getAllByUsername({ username, offset, limit }) {
@@ -43,7 +55,10 @@ async function getCredential(user_id, contest_name) {
   if (!contest) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
-  const participation = await participationData.findOne(user_id, contest.id);
+  const participation = await participationData.findOne({
+    user_id: user_id,
+    contest_id: contest.id
+  });
   if (!participation) {
     throw new LogicError(ERRORS.NOT_REGISTERED_YET);
   }

@@ -13,8 +13,8 @@ async function getAllByUserId({ user_id, offset, limit }) {
   return { count, participations };
 }
 
-async function findOne(user_id, contest_id) {
-  const participation = await sequelize.models.Participation.findOne({
+async function findOne({ user_id, contest_id }) {
+  return await sequelize.models.Participation.findOne({
     where: {
       user_id,
       contest_id,
@@ -24,7 +24,6 @@ async function findOne(user_id, contest_id) {
       { model: sequelize.models.User, as: "user" },
     ],
   });
-  return participation;
 }
 
 async function create({
@@ -41,8 +40,28 @@ async function create({
   });
 }
 
+async function bulkUpdateSynced(participationIds) {
+  await sequelize.models.Participation.update(
+    { synced: true },
+    { where: { id: participationIds } }
+  );
+}
+
+async function getAllByContestId(contest_id) {
+  return await sequelize.models.Participation.findAll({
+    where: {
+      contest_id,
+    },
+    include: [
+      { model: sequelize.models.User, as: "user" },
+    ],
+  });
+}
+
 module.exports = {
   getAllByUserId,
   findOne,
   create,
+  bulkUpdateSynced,
+  getAllByContestId,
 };

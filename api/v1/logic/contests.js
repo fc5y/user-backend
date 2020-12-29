@@ -1,6 +1,9 @@
 const { ERRORS } = require("../constants");
 const { LogicError } = require("../utils/errors");
+
 const contestData = require("../data/contests");
+
+const cmsLogic = require("./cms");
 
 async function getAllContests({ offset, limit }) {
   return await contestData.getAll({ offset, limit });
@@ -41,6 +44,9 @@ async function updateContest({ contest_name }, newContest) {
   const contest = await contestData.findOneByContestName(contest_name);
   if (contest === null) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
+  }
+  if (!contest.can_enter && newContest.can_enter) {
+    await cmsLogic.syncAll({contest_name: contest_name});
   }
   return await contestData.updateOneByContestName(contest_name, {
     ...contest,
