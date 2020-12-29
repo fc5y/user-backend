@@ -1,4 +1,4 @@
-const { sequelize } = require("./../../../models");
+const { sequelize } = require("../../../models");
 
 async function getAllByUserId({ user_id, offset, limit }) {
   const {
@@ -14,6 +14,11 @@ async function getAllByUserId({ user_id, offset, limit }) {
     ],
   });
   return { count, participations };
+}
+
+// TODO: Potential performance issue here. Cache before the DB becomes big.
+async function countAllByContestId(contest_id) {
+  return await sequelize.models.Participation.count({ where: { contest_id } });
 }
 
 async function findOne({ user_id, contest_id }) {
@@ -54,6 +59,7 @@ async function getAllByContestId(contest_id) {
 
 module.exports = {
   getAllByUserId,
+  countAllByContestId,
   findOne,
   create,
   bulkUpdateSynced,

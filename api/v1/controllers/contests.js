@@ -96,7 +96,7 @@ function getAllContests(req, res, next) {
     contestLogic.getAllContests(offset, limit),
     userId !== null ? contestLogic.getAllParticipationsByUserId(userId) : [],
   ])
-    .then(([contests, myParticipations]) => {
+    .then(([contests, { participations: myParticipations }]) => {
       res.send({
         code: 0,
         msg: "Contest",

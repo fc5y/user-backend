@@ -7,7 +7,10 @@ function formatContest(contest) {
     contest_title: contest.contest_title,
     start_time: commonUtils.dateToTimestamp(contest.start_time),
     duration: contest.duration,
-    total_participation: 0, // TODO: fix this after Participations table is done
+    total_participations:
+      typeof contest.total_participations === "number"
+        ? contest.total_participations
+        : null,
     can_enter: contest.can_enter,
     materials: {
       all_materials_url: materials.all_materials_url || "",
