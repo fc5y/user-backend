@@ -10,7 +10,7 @@ function register(req, res, next) {
   .then(() => {
     res.json({
       code: 0,
-      msg: "Registered sucessfully",
+      msg: "Registered successfully",
       data: {
         server_time: commonUtils.getTimestampNow(),
       },
@@ -51,7 +51,7 @@ function getCredential(req, res, next) {
   .then((credential) => {
     res.json({
       code: 0,
-      "msg": "Contest credentials",
+      msg: "Contest credentials",
       data: {
         contest_username: req.user.username,
         contest_password: credential.contest_password,
