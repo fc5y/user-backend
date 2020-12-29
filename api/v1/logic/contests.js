@@ -68,7 +68,7 @@ async function updateContest({ contest_name }, changes) {
   if (oldContest === null) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
-  if (!oldContest.can_enter && newContest.can_enter) {
+  if (!oldContest.can_enter && changes.can_enter) {
     await cmsLogic.syncAll({ contest_name: contest_name });
   }
   const newContest = await contestData.updateOneByContestName(contest_name, {
