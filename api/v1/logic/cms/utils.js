@@ -25,7 +25,7 @@ async function fetchWithToken({method, url, data={}, renewToken=false}) {
     body = await post(url, data, header);
   }
 
-  if (body.error === CMS_ERRORS.UNAUTH.code || body.error === CMS_ERRORS.EXPIRED_TOKEN.code) {
+  if (body.error === CMS_ERRORS.UNAUTH || body.error === CMS_ERRORS.EXPIRED_TOKEN) {
     if (renewToken) {
       throw new LogicError(ERRORS.CMS_SERVER_ERROR);
     } else {
@@ -33,7 +33,7 @@ async function fetchWithToken({method, url, data={}, renewToken=false}) {
       await fetchWithToken({ method, url, data, renewToken: true });
     }
   }
-  if (body.error === CMS_ERRORS.CMS_SYSTEM_ERROR.code) {
+  if (body.error === CMS_ERRORS.CMS_SYSTEM_ERROR) {
     throw new LogicError(ERRORS.CMS_SERVER_ERROR);
   }
   return body;

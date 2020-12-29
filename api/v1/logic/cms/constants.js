@@ -1,22 +1,10 @@
 const CMS_ERRORS = {
-  CMS_SYSTEM_ERROR: {
-    code: 10001,
-  },
-  WRONG_PARAMS: {
-    code: 10002,
-  },
-  EXISTS: {
-    code: 10003,
-  },
-  NOT_FOUND: {
-    code: 10004,
-  },
-  UNAUTH: {
-    code: 11000,
-  },
-  EXPIRED_TOKEN: {
-    code: 11001,
-  },
+  CMS_SYSTEM_ERROR: 10001,
+  WRONG_PARAMS: 10002,
+  EXISTS: 10003,
+  NOT_FOUND: 10004,
+  UNAUTH: 11000,
+  EXPIRED_TOKEN: 11001,
 };
 
 const CMS_APIS = {

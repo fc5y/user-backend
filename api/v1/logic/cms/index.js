@@ -27,7 +27,7 @@ async function syncAll({contest_name, whitelistedParticipations=null}) {
     const syncedUsernames = new Set(syncedUsers.map(x => x.username));
 
     // 3. fetch all users that registered this contest (2)
-    const participations = await participationData.getRegisteredByContestId(contest.id);
+    const participations = await participationData.getAllByContestId(contest.id);
     toBeSyncedParticipations = participations.filter(p => !syncedUsernames.has(p.user.username));
     if (toBeSyncedParticipations.length === 0) {
       return;

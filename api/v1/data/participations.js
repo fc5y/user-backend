@@ -47,7 +47,7 @@ async function bulkUpdateSynced(participationIds) {
   );
 }
 
-async function getRegisteredByContestId(contest_id) {
+async function getAllByContestId(contest_id) {
   return await sequelize.models.Participation.findAll({
     where: {
       contest_id,
@@ -63,5 +63,5 @@ module.exports = {
   findOne,
   create,
   bulkUpdateSynced,
-  getRegisteredByContestId,
+  getAllByContestId,
 };

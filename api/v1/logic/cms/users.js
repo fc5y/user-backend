@@ -1,8 +1,9 @@
-const CMS_SERVER = process.env.CMS_SERVER;
 const { ERRORS } = require("../../constants");
 const { LogicError } = require("../../utils/errors");
 const { CMS_ERRORS, CMS_APIS } = require("./constants");
 const { fetchWithToken } = require('./utils');
+
+const CMS_SERVER = process.env.CMS_SERVER;
 
 async function importUsers({contest_id, users}) {
   const url = CMS_SERVER + CMS_APIS.POST_USERS;
@@ -11,17 +12,17 @@ async function importUsers({contest_id, users}) {
     users,
   };
   const body = await fetchWithToken({ method: "POST", url: url, data: data });
-  if (body.error === CMS_ERRORS.NOT_FOUND.code) {
+  if (body.error === CMS_ERRORS.NOT_FOUND) {
     throw new LogicError(ERRORS.CMS_CONTEST_NOT_FOUND);
   }
-  if (body.error === CMS_ERRORS.EXISTS.code) {
+  if (body.error === CMS_ERRORS.EXISTS) {
     if (users.length === 1) {
       return; // do nothing
     }
     // import one by one
-    Promise.all(users).then((user) => {
-      importUsers({contest_id: contest_id, users: [user]});
-    });
+    for (const user of users) {
+      await importUsers({contest_id: contest_id, users: [user]});
+    }
     return;
   }
   if (body.error) {
