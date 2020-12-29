@@ -45,10 +45,7 @@ async function getCredential(user_id, contest_name) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
   if (!contest.can_enter) {
-    throw new LogicError(ERRORS.CONTEST_NOT_OPENED_YET);
-  }
-  if (dateToTimestamp(contest.start_time) + contest.duration < getTimestampNow()) {
-    throw new LogicError(ERRORS.CONTEST_ENDED);
+    throw new LogicError(ERRORS.CANNOT_ENTER_CONTEST);
   }
   const participation = await participationData.findOne(user_id, contest.id);
   if (!participation) {

@@ -59,13 +59,9 @@ const ERRORS = {
     code: 3012,
     msg: "OTP verify limit exceeded (per email)",
   },
-  CONTEST_NOT_OPENED_YET: {
+  CANNOT_ENTER_CONTEST: {
     code: 3103,
-    msg: "Contest has not been opened yet",
-  },
-  CONTEST_ENDED: {
-    code: 3104,
-    msg: "Contest ended",
+    msg: "Can not enter this contest",
   },
   NOT_REGISTERED_YET: {
     code: 3201,
