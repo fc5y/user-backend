@@ -11,6 +11,7 @@ function formatParticipation(participation) {
     rating_change: participation.rating_change,
     score: participation.score,
     rank_in_contest: participation.rank_in_contest,
+    synced: participation.synced,
   };
 }
 

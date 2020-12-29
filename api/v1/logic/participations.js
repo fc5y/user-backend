@@ -55,12 +55,15 @@ async function getCredential(user_id, contest_name) {
   if (!contest) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
-  const participation = await participationData.findOne({
-    user_id: user_id,
-    contest_id: contest.id
-  });
+  if (!contest.can_enter) {
+    throw new LogicError(ERRORS.CANNOT_ENTER_CONTEST);
+  }
+  const participation = await participationData.findOne(user_id, contest.id);
   if (!participation) {
     throw new LogicError(ERRORS.NOT_REGISTERED_YET);
+  }
+  if (!participation.synced) {
+    throw new LogicError(ERRORS.NOT_SYNCED_YET);
   }
   return participation;
 }
