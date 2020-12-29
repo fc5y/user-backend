@@ -39,7 +39,7 @@ async function getContest({ contest_name, user_id = null }) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
   const myParticipation = user_id
-    ? await participationData.findOne(user_id, contest.id)
+    ? await participationData.findOne({ user_id, contest_id: contest.id })
     : null;
 
   return {
@@ -54,7 +54,7 @@ async function updateContest({ contest_name }, newContest) {
     throw new LogicError(ERRORS.CONTEST_NOT_FOUND);
   }
   if (!contest.can_enter && newContest.can_enter) {
-    await cmsLogic.syncAll({contest_name: contest_name});
+    await cmsLogic.syncAll({ contest_name: contest_name });
   }
   return await contestData.updateOneByContestName(contest_name, {
     ...contest,
