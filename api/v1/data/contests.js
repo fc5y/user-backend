@@ -5,7 +5,7 @@ const CONTEST_ORDER_CONFIG = [
   ["id", "DESC"],
 ];
 
-async function getAll({ offset, limit }) {
+async function getAndCountAll({ offset, limit }) {
   const {
     count,
     rows: contests,
@@ -51,7 +51,7 @@ async function deleteOneByContestName(contest_name) {
 }
 
 module.exports = {
-  getAll,
+  getAndCountAll,
   findOneByContestName,
   createOne,
   updateOneByContestName,

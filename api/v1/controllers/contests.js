@@ -92,7 +92,7 @@ function getAllContests(req, res, next) {
   );
   const userId = (req.user && req.user.id) || null;
   Promise.all([
-    contestLogic.getAllContests(offset, limit),
+    contestLogic.getAndCountAll(offset, limit),
     userId !== null
       ? contestLogic.getAllParticipationsByUserId(userId)
       : { participations: [] },
