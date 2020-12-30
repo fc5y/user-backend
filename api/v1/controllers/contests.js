@@ -109,7 +109,7 @@ function getAllContests(req, res, next) {
         code: 0,
         msg: "Contests",
         data: {
-          total_contests: totalContests,
+          total: totalContests,
           contests: contests.map(formatContest),
           my_participations: myParticipations
             .filter((p) => contests.some((c) => c.id === p.contest_id))
