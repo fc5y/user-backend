@@ -19,9 +19,13 @@ async function toPlainContestObject(
 
 const cmsLogic = require("./cms");
 
-async function getAllContests({ offset, limit }) {
-  const contests = await contestData.getAll({ offset, limit });
-  return await Promise.all(contests.map(toPlainContestObject));
+async function getAndCountAll({ offset, limit }) {
+  // return {count, contests}
+  const {count, contests} = await contestData.getAndCountAll({ offset, limit });
+  return {
+    count: count,
+    contests: await Promise.all(contests.map(toPlainContestObject))
+  };
 }
 
 async function getAllParticipationsByUserId(user_id) {
@@ -86,7 +90,7 @@ async function deleteContest({ contest_name }) {
 }
 
 module.exports = {
-  getAllContests,
+  getAndCountAll,
   getAllParticipationsByUserId,
   createContest,
   getContest,

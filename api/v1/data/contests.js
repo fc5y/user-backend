@@ -5,12 +5,16 @@ const CONTEST_ORDER_CONFIG = [
   ["id", "DESC"],
 ];
 
-async function getAll({ offset, limit }) {
-  return await sequelize.models.Contest.findAll({
+async function getAndCountAll({ offset, limit }) {
+  const {
+    count,
+    rows: contests,
+  } = await sequelize.models.Contest.findAndCountAll({
     offset,
     limit,
     order: CONTEST_ORDER_CONFIG,
   });
+  return { count, contests };
 }
 
 async function findOneByContestName(contest_name) {
@@ -47,7 +51,7 @@ async function deleteOneByContestName(contest_name) {
 }
 
 module.exports = {
-  getAll,
+  getAndCountAll,
   findOneByContestName,
   createOne,
   updateOneByContestName,

@@ -25,6 +25,9 @@ async function syncAll({contest_name, whitelistedParticipations=null}) {
     syncedUsers = syncedUsers.filter(user => user.contest_id === cmsContest.id);
     const syncedUsernames = new Set(syncedUsers.map(x => x.username));
 
+    // update all synced users
+    await participationData.bulkUpdateSynced(syncedUsers.map(user => user.id));
+
     // 3. fetch all users that registered this contest (2)
     const participations = await participationData.getAllByContestId(contest.id);
     toBeSyncedParticipations = participations.filter(p => !syncedUsernames.has(p.user.username));
@@ -46,7 +49,7 @@ async function syncAll({contest_name, whitelistedParticipations=null}) {
     users: toBeSyncedUsers,
   });
   // 5. Update 'synced' column
-  await participationData.bulkUpdateSynced(toBeSyncedParticipations.map(x => x.id));
+  await participationData.bulkUpdateSynced(toBeSyncedParticipations.map(user => user.id));
 }
 
 module.exports = {

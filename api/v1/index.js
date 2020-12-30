@@ -75,7 +75,6 @@ router.post(
 // Get participations by username
 router.get(
   "/participations/:username",
-  requireLogin,
   participationValidator.getAllByUsername,
   participationController.getAllByUsername,
 );
