@@ -20,8 +20,12 @@ async function toPlainContestObject(
 const cmsLogic = require("./cms");
 
 async function getAllContests({ offset, limit }) {
-  const contests = await contestData.getAll({ offset, limit });
-  return await Promise.all(contests.map(toPlainContestObject));
+  // return {count, contests}
+  const {count, contests} = await contestData.getAll({ offset, limit });
+  return {
+    count: count,
+    contests: await Promise.all(contests.map(toPlainContestObject))
+  };
 }
 
 async function getAllParticipationsByUserId(user_id) {

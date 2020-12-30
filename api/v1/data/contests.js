@@ -6,11 +6,15 @@ const CONTEST_ORDER_CONFIG = [
 ];
 
 async function getAll({ offset, limit }) {
-  return await sequelize.models.Contest.findAll({
+  const {
+    count,
+    rows: contests,
+  } = await sequelize.models.Contest.findAndCountAll({
     offset,
     limit,
     order: CONTEST_ORDER_CONFIG,
   });
+  return { count, contests };
 }
 
 async function findOneByContestName(contest_name) {

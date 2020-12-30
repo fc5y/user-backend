@@ -97,11 +97,19 @@ function getAllContests(req, res, next) {
       ? contestLogic.getAllParticipationsByUserId(userId)
       : { participations: [] },
   ])
-    .then(([contests, { participations: myParticipations }]) => {
+    .then(([
+      {
+        count: totalContests,
+        contests: contests
+      }, {
+        participations: myParticipations
+      }
+    ]) => {
       res.send({
         code: 0,
-        msg: "Contest",
+        msg: "Contests",
         data: {
+          total_contests: totalContests,
           contests: contests.map(formatContest),
           my_participations: myParticipations
             .filter((p) => contests.some((c) => c.id === p.contest_id))
