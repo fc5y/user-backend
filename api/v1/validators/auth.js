@@ -7,6 +7,7 @@ const sendOtp = [
     .withMessage("value must be a valid email address")
     .isLength({ min: 1, max: 255 })
     .withMessage("value's length must be in range 1 to 255"),
+  validationMiddleware,
 ];
 
 const signup = [
@@ -34,6 +35,7 @@ const signup = [
   body("school_name")
     .isLength({ min: 1, max: 255 })
     .withMessage("value's length must be in range 1 to 255"),
+  validationMiddleware,
 ];
 
 const login = [
