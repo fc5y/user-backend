@@ -1,5 +1,6 @@
 const otpGenerator = require("otp-generator");
 const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
 
 const commonUtils = require("../utils/common");
 
@@ -10,19 +11,34 @@ const SEND_OTP_EMAIL_CONFIG = {
   templatePlaceholder: "?",
 };
 
-const transporter = nodemailer.createTransport({
-  host: process.env.GMAIL_HOST,
-  port: process.env.GMAIL_PORT,
-  secure: true,
-  auth: {
-    type: "OAuth2",
-    user: process.env.GMAIL_ADDRESS,
-    clientId: process.env.GMAIL_CLIENT_ID,
-    clientSecret: process.env.GMAIL_CLIENT_SECRET,
-    accessToken: process.env.GMAIL_ACCESS_TOKEN,
-    refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-  },
-});
+async function getTransporter() {
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GMAIL_CLIENT_ID,
+    process.env.GMAIL_CLIENT_SECRET,
+  );
+
+  oauth2Client.setCredentials({
+    refresh_token: process.env.GMAIL_REFRESH_TOKEN,
+  });
+
+  const accessToken = await oauth2Client.getAccessToken();
+
+  const smtpTransporter = nodemailer.createTransport({
+    host: process.env.GMAIL_HOST,
+    port: process.env.GMAIL_PORT,
+    secure: true,
+    auth: {
+      type: "OAuth2",
+      user: process.env.GMAIL_ADDRESS,
+      clientId: process.env.GMAIL_CLIENT_ID,
+      clientSecret: process.env.GMAIL_CLIENT_SECRET,
+      accessToken,
+      refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+    },
+  });
+
+  return smtpTransporter;
+}
 
 function generateOtp() {
   return otpGenerator.generate(6, {
@@ -40,7 +56,9 @@ async function sendOtpEmail({ email, otp }) {
     template,
     templatePlaceholder,
   } = SEND_OTP_EMAIL_CONFIG;
-  const info = await transporter.sendMail({
+  const smtpTransporter = await getTransporter();
+
+  const info = await smtpTransporter.sendMail({
     from: `"${displayed_name}" <${process.env.GMAIL_ADDRESS}>`,
     to: email,
     subject: subject,
