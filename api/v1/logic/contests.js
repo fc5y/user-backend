@@ -11,9 +11,7 @@ async function toPlainContestObject(
   if (!includeDerivedFields) return contest.toJSON();
   return {
     ...contest.toJSON(),
-    total_participations: await participationData.countAllByContestId(
-      contest.id,
-    ),
+    total_participations: -1,
   };
 }
 
@@ -21,10 +19,13 @@ const cmsLogic = require("./cms");
 
 async function getAndCountAll({ offset, limit }) {
   // return {count, contests}
-  const {count, contests} = await contestData.getAndCountAll({ offset, limit });
+  const { count, contests } = await contestData.getAndCountAll({
+    offset,
+    limit,
+  });
   return {
     count: count,
-    contests: await Promise.all(contests.map(toPlainContestObject))
+    contests: await Promise.all(contests.map(toPlainContestObject)),
   };
 }
 
